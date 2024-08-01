@@ -1,4 +1,6 @@
 <?php
+include 'connection.php';
+
 session_start();
 
 // Function to check if the user is signed in
@@ -8,7 +10,47 @@ function isUserSignedIn()
 }
 
 $userPageUrl = isUserSignedIn() ? 'user-dashboard.html' : 'account.php';
-$userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html';
+$userPageUrlFavList = isUserSignedIn() ? 'wishlist.html' : 'fav-list.php';
+$userPageUrlCart = isUserSignedIn() ? 'cart.html' : 'fav-list.php';
+
+
+$query = 'SELECT * FROM products where product_id < 5';
+$result = $conn->query($query);
+
+$popquery = 'SELECT * FROM products where product_id > 5 && product_id < 12';
+$popresult = $conn->query($popquery);
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $product_id = $_POST['product_id'];
+    if (!isset($_SESSION['wishlist'])) {
+        $_SESSION['wishlist'] = array();
+    }
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = array();
+    }
+
+    if ($_POST['action'] == 'add_to_wishlist') {
+        if (!in_array($product_id, $_SESSION['wishlist'])) {
+            $_SESSION['wishlist'][] = $product_id;
+        }
+    } elseif ($_POST['action'] == 'remove_from_wishlist') {
+        if (($key = array_search($product_id, $_SESSION['wishlist'])) !== false) {
+            unset($_SESSION['wishlist'][$key]);
+            // Re-index the array to maintain proper indexing
+            $_SESSION['wishlist'] = array_values($_SESSION['wishlist']);
+        }
+    } elseif ($_POST['action'] == 'add_to_cart') {
+        if (!in_array($product_id, $_SESSION['cart'])) {
+            $_SESSION['cart'][] = $product_id;
+        }
+    } elseif ($_POST['action'] == 'remove_from_cart') {
+        if (($key = array_search($product_id, $_SESSION['cart'])) !== false) {
+            unset($_SESSION['cart'][$key]);
+            // Re-index the array to maintain proper indexing
+            $_SESSION['cart'] = array_values($_SESSION['cart']);
+        }
+    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -20,72 +62,20 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Olog - Home</title>
     <link rel="stylesheet" href="dist/main.css">
+    <link rel="stylesheet" href="dist/aseel.css">
+
 </head>
 
 <body>
     <!-- Header Area Start -->
     <header class="header">
-        <div class="header-top">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="header-top-wrapper">
-                            <div class="header-top-info">
-                                <div class="email">
-                                    <div class="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16.95" height="13.4" viewBox="0 0 16.95 13.4">
-                                            <g id="Mail" transform="translate(0.975 0.7)">
-                                                <path id="Path_1" data-name="Path 1" d="M3.5,4h12A1.5,1.5,0,0,1,17,5.5v9A1.5,1.5,0,0,1,15.5,16H3.5A1.5,1.5,0,0,1,2,14.5v-9A1.5,1.5,0,0,1,3.5,4Z" transform="translate(-2 -4)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
-                                                <path id="Path_2" data-name="Path 2" d="M17,6,9.5,11.25,2,6" transform="translate(-2 -4.5)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
-                                            </g>
-                                        </svg>
-                                    </div>
-                                    <div class="text">
-                                        <span>olog.wetbise@mail.com</span>
-                                    </div>
-                                </div>
-                                <div class="cta">
-                                    <div class="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="13.401" height="13.401" viewBox="0 0 13.401 13.401">
-                                            <g id="Phone_Icon" data-name="Phone Icon" transform="translate(0.7 0.7)">
-                                                <path id="Phone_Icon-2" data-name="Phone Icon" d="M14.111,10.984v1.806A1.206,1.206,0,0,1,12.8,14a11.956,11.956,0,0,1-5.207-1.849,11.754,11.754,0,0,1-3.62-3.613A11.9,11.9,0,0,1,2.117,3.313,1.205,1.205,0,0,1,3.317,2h1.81A1.206,1.206,0,0,1,6.334,3.036a7.719,7.719,0,0,0,.422,1.692A1.2,1.2,0,0,1,6.485,6l-.766.765a9.644,9.644,0,0,0,3.62,3.613l.766-.765a1.208,1.208,0,0,1,1.273-.271,7.76,7.76,0,0,0,1.7.422,1.205,1.205,0,0,1,1.038,1.222Z" transform="translate(-2.112 -2)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
-                                            </g>
-                                        </svg>
-                                    </div>
-                                    <div class="text">
-                                        <span>+8801658 874521</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="header-top-switcher">
-                                <div class="language">
-                                    <select>
-                                        <option data-display="English">English</option>
-                                        <option value="1">Arabic</option>
-                                        <option value="2">Aramaic</option>
-                                        <option value="4">Bangla</option>
-                                    </select>
-                                </div>
-                                <div class="currency">
-                                    <select>
-                                        <option data-display="Currency">USD</option>
-                                        <option value="1">BDT</option>
-                                        <option value="2">SNG</option>
-                                        <option value="4">ERU</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         <div class="header-bottom">
             <div class="container">
                 <div class="d-none d-lg-block">
                     <nav class="menu-area d-flex align-items-center">
                         <div class="logo">
-                            <a href="index.html"><img src="dist/images/logo/logo.png" alt="logo" /></a>
+                            <a href="index.php"><img src="dist/images/logo/logo.png" alt="logo" /></a>
                         </div>
                         <ul class="main-menu d-flex align-items-center">
                             <li><a class="active" href="index.php">Home</a></li>
@@ -130,18 +120,19 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
                                                 <path id="Heart-2" data-name="Heart" d="M20.007,4.59a5.148,5.148,0,0,0-7.444,0L11.548,5.636,10.534,4.59a5.149,5.149,0,0,0-7.444,0,5.555,5.555,0,0,0,0,7.681L4.1,13.317,11.548,21l7.444-7.681,1.014-1.047a5.553,5.553,0,0,0,0-7.681Z" transform="translate(-1.549 -2.998)" fill="#fff" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                             </g>
                                         </svg>
-                                        <span class="heart">3</span>
+                                        <span class="heart" id="wishlist-count"><?php echo isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0; ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="cart.html"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+                                    <a href="<?php echo $userPageUrlCart; ?>">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
                                             <g id="Icon" transform="translate(-1524 -89)">
                                                 <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.909" cy="0.952" rx="0.909" ry="0.952" transform="translate(1531.364 108.095)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                                 <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.909" cy="0.952" rx="0.909" ry="0.952" transform="translate(1541.364 108.095)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                                 <path id="Path_3" data-name="Path 3" d="M1,1H4.636L7.073,13.752a1.84,1.84,0,0,0,1.818,1.533h8.836a1.84,1.84,0,0,0,1.818-1.533L21,5.762H5.545" transform="translate(1524 89)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                             </g>
                                         </svg>
-                                        <span class="cart">3</span>
+                                        <span class="cart" id="cart-count">0</span>
                                     </a>
                                 </li>
                                 <li>
@@ -173,7 +164,7 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
                                 </svg>
                             </div>
                         </div>
-                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.php">Home</a></li>
                         <li><a href="shop.html">Men</a></li>
                         <li><a href="shop.html">Women</a></li>
                         <li><a href="shop.html">Shop</a></li>
@@ -197,7 +188,7 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
                     </div>
                     <div class="mobile-nav d-flex align-items-center justify-content-between">
                         <div class="logo">
-                            <a href="index.html"><img src="dist/images/logo/logo.png" alt="logo" /></a>
+                            <a href="index.php"><img src="dist/images/logo/logo.png" alt="logo" /></a>
                         </div>
                         <div class="search-bar">
                             <input type="text" placeholder="Search for product...">
@@ -212,17 +203,18 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
                         </div>
                         <div class="menu-icon">
                             <ul>
-                                <li> <a href="<?php echo $userPageUrlFavList; ?>">
+                                <li>
+                                    <a href="<?php echo $userPageUrlFavList; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
                                             <g id="Heart" transform="translate(1 1)">
                                                 <path id="Heart-2" data-name="Heart" d="M20.007,4.59a5.148,5.148,0,0,0-7.444,0L11.548,5.636,10.534,4.59a5.149,5.149,0,0,0-7.444,0,5.555,5.555,0,0,0,0,7.681L4.1,13.317,11.548,21l7.444-7.681,1.014-1.047a5.553,5.553,0,0,0,0-7.681Z" transform="translate(-1.549 -2.998)" fill="#fff" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                             </g>
                                         </svg>
-                                        <span class="heart">3</span>
+                                        <span class="heart" id="wishlist-count"><?php echo isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0; ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="cart.html">
+                                    <a href="<?php echo $userPageUrlCart; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
                                             <g id="Icon" transform="translate(-1524 -89)">
                                                 <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.909" cy="0.952" rx="0.909" ry="0.952" transform="translate(1531.364 108.095)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
@@ -280,7 +272,7 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="brand-area">
+                        <!-- <div class="brand-area">
                             <div class="brand-area-image">
                                 <img src="dist/images/brand/01.png" alt="Brand" class="img-fluid">
                             </div>
@@ -299,7 +291,7 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
                             <div class="brand-area-image">
                                 <img src="dist/images/brand/05.png" alt="Brand" class="img-fluid">
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -318,7 +310,59 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
                 </div>
                 <div class="features-wrapper">
                     <div class="features-active">
-                        <div class="product-item">
+                        <?php while ($product = $result->fetch_assoc()) : ?>
+                            <?php
+                            // Check if the product is in the wishlist or cart
+                            $isInWishlist = isset($_SESSION['wishlist']) && in_array($product['product_id'], $_SESSION['wishlist']);
+                            $isInCart = isset($_SESSION['cart']) && in_array($product['product_id'], $_SESSION['cart']);
+                            ?>
+                            <div class="product-item">
+                                <div class="product-item-image">
+                                    <a href="product-details.php?id=<?php echo $product['product_id']; ?>">
+                                        <?php
+                                        if (isset($product['image']) && !empty($product['image'])) {
+                                            $imgData = base64_encode($product['image']);
+                                            $src = 'data:image/jpeg;base64,' . $imgData;
+                                        } else {
+                                            $src = '/dist/images/nike-shoe.jpg';
+                                        }
+                                        ?>
+                                        <img src="<?php echo $src; ?>" alt="<?php echo $product['product_name']; ?>" class="img-fluid">
+                                    </a>
+                                    <div class="cart-icon">
+                                        <form id="wishlist-form-<?php echo $product['product_id']; ?>" method="post" style="display:inline;" onsubmit="return toggleWishlist(event, <?php echo $product['product_id']; ?>)">
+                                            <input type="hidden" name="action" value="<?php echo $isInWishlist ? 'remove_from_wishlist' : 'add_to_wishlist'; ?>">
+                                            <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+                                            <button type="submit" style="border:none; background:white; width:30px;height:30px; border-radius: 50%; padding:3px; margin-right: 3px;">
+                                                <i id="wishlist-icon-<?php echo $product['product_id']; ?>" class="<?php echo $isInWishlist ? 'fas fa-heart' : 'far fa-heart'; ?>"></i>
+                                            </button>
+                                        </form>
+
+                                        <form id="cart-form-<?php echo $product['product_id']; ?>" method="post" style="display:inline;" onsubmit="return toggleCart(event, <?php echo $product['product_id']; ?>)">
+                                            <input type="hidden" name="action" value="<?php echo $isInCart ? 'remove_from_cart' : 'add_to_cart'; ?>">
+                                            <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+                                            <button type="submit" style="border:none; background:white; width:30px;height:30px; border-radius: 50%; padding:3px;">
+                                                <svg id="cart-icon-<?php echo $product['product_id']; ?>" xmlns="http://www.w3.org/2000/svg" width="16.75" height="16.75" viewBox="0 0 16.75 16.75">
+                                                    <g id="Your_Bag" data-name="Your Bag" transform="translate(0.75)">
+                                                        <g id="Icon" transform="translate(0 1)">
+                                                            <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(4.773 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                                                            <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(12.273 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                                                            <path id="Path_3" data-name="Path 3" d="M1,1H3.727l1.827,9.564a1.38,1.38,0,0,0,1.364,1.15h6.627a1.38,1.38,0,0,0,1.364-1.15L16,4.571H4.409" transform="translate(-1 -1)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                        <iframe name="cart-frame-<?php echo $product['product_id']; ?>" style="display:none;"></iframe>
+                                    </div>
+                                </div>
+                                <div class="product-item-info">
+                                    <a href="product-details.php?id=<?php echo $product['product_id']; ?>"><?php echo $product['product_name']; ?></a>
+                                    <span>$<?php echo $product['price']; ?></span>
+                                </div>
+                            </div>
+                        <?php endwhile; ?>
+                        <!-- <div class="product-item">
                             <div class="product-item-image">
                                 <a href="product-details.html"><img src="dist/images/product/05.jpg" alt="Product Name" class="img-fluid"></a>
                                 <div class="cart-icon">
@@ -432,7 +476,7 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
                                 <a href="product-details.html">BERRY TYPE-II: C1N Backpack</a>
                                 <span>$975</span> <del>$999</del>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="slider-arrows">
                         <div class="prev-arrow">
@@ -465,7 +509,7 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
                     <div class="row align-items-center">
                         <div class="col-lg-6 ">
                             <div class="about-area-content-img">
-                                <img src="dist/images/feature/medicine.jpg" alt="img" class="img-fluid">
+                                <img src="dist/images/feature/store.jpg" alt="img" class="img-fluid">
                             </div>
                         </div>
                         <div class="col-lg-6">
@@ -487,13 +531,10 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
                                         <i class="far fa-check-circle"></i>
                                         <span>Shop in 2 languages</span>
                                     </div>
-                                    <div class="icon-area">
-                                        <i class="far fa-check-circle"></i>
-                                        <span>Mauris congue eros in iaculis.</span>
-                                    </div>
+
                                 </div>
 
-                                <a class="btn bg-primary" href="#">Get Started</a>
+                                <!-- <a class="btn bg-primary" href="#">Get Started</a> -->
                             </div>
                         </div>
                     </div>
@@ -513,232 +554,62 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4 col-sm-6">
-                        <div class="product-item">
-                            <div class="product-item-image">
-                                <a href="product-details.html"><img src="dist/images/product/01.jpg" alt="Product Name" class="img-fluid"></a>
-                                <div class="cart-icon">
-                                    <a href="#"><i class="far fa-heart"></i></a>
-                                    <a href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16.75" height="16.75" viewBox="0 0 16.75 16.75">
-                                            <g id="Your_Bag" data-name="Your Bag" transform="translate(0.75)">
-                                                <g id="Icon" transform="translate(0 1)">
-                                                    <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(4.773 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(12.273 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <path id="Path_3" data-name="Path 3" d="M1,1H3.727l1.827,9.564a1.38,1.38,0,0,0,1.364,1.15h6.627a1.38,1.38,0,0,0,1.364-1.15L16,4.571H4.409" transform="translate(-1 -1)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                </g>
-                                            </g>
-                                        </svg>
+
+                    <?php while ($popproduct = $popresult->fetch_assoc()) : ?>
+                        <?php
+                        // Check if the product is in the wishlist or cart
+                        $isInWishlist = isset($_SESSION['wishlist']) && in_array($popproduct['product_id'], $_SESSION['wishlist']);
+                        $isInCart = isset($_SESSION['cart']) && in_array($popproduct['product_id'], $_SESSION['cart']);
+                        ?>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="product-item">
+                                <div class="product-item-image">
+                                    <a href="product-details.php?id=<?php echo $popproduct['product_id']; ?>">
+                                        <?php
+                                        if (isset($popproduct['image']) && !empty($popproduct['image'])) {
+                                            $imgData = base64_encode($popproduct['image']);
+                                            $src = 'data:image/jpeg;base64,' . $imgData;
+                                        } else {
+                                            $src = '/dist/images/nike-shoe.jpg';
+                                        }
+                                        ?>
+                                        <img src="<?php echo $src; ?>" alt="<?php echo $popproduct['product_name']; ?>" class="img-fluid">
                                     </a>
+                                    <div class="cart-icon">
+                                        <form id="wishlist-form-<?php echo $popproduct['product_id']; ?>" method="post" style="display:inline;" onsubmit="return toggleWishlist(event, <?php echo $popproduct['product_id']; ?>)">
+                                            <input type="hidden" name="action" value="<?php echo $isInWishlist ? 'remove_from_wishlist' : 'add_to_wishlist'; ?>">
+                                            <input type="hidden" name="product_id" value="<?php echo $popproduct['product_id']; ?>">
+                                            <button type="submit" style="border:none; background:white; width:30px;height:30px; border-radius: 50%; padding:3px; margin-right: 3px;">
+                                                <i id="wishlist-icon-<?php echo $popproduct['product_id']; ?>" class="<?php echo $isInWishlist ? 'fas fa-heart' : 'far fa-heart'; ?>"></i>
+                                            </button>
+                                        </form>
+
+                                        <form id="cart-form-<?php echo $popproduct['product_id']; ?>" method="post" style="display:inline;" onsubmit="return toggleCart(event, <?php echo $popproduct['product_id']; ?>)">
+                                            <input type="hidden" name="action" value="<?php echo $isInCart ? 'remove_from_cart' : 'add_to_cart'; ?>">
+                                            <input type="hidden" name="product_id" value="<?php echo $popproduct['product_id']; ?>">
+                                            <button type="submit" style="border:none; background:white; width:30px;height:30px; border-radius: 50%; padding:3px;">
+                                                <svg id="cart-icon-<?php echo $popproduct['product_id']; ?>" xmlns="http://www.w3.org/2000/svg" width="16.75" height="16.75" viewBox="0 0 16.75 16.75">
+                                                    <g id="Your_Bag" data-name="Your Bag" transform="translate(0.75)">
+                                                        <g id="Icon" transform="translate(0 1)">
+                                                            <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(4.773 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                                                            <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(12.273 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                                                            <path id="Path_3" data-name="Path 3" d="M1,1H3.727l1.827,9.564a1.38,1.38,0,0,0,1.364,1.15h6.627a1.38,1.38,0,0,0,1.364-1.15L16,4.571H4.409" transform="translate(-1 -1)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                        <iframe name="cart-frame-<?php echo $popproduct['product_id']; ?>" style="display:none;"></iframe>
+                                    </div>
+                                </div>
+                                <div class="product-item-info">
+                                    <a href="product-details.php?id=<?php echo $popproduct['product_id']; ?>"><?php echo $popproduct['product_name']; ?></a>
+                                    <span>$<?php echo $popproduct['price']; ?></span>
                                 </div>
                             </div>
-                            <div class="product-item-info">
-                                <a href="product-details.html">PUMA air max 97</a>
-                                <span>$975</span> <del>$999</del>
-                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <div class="product-item">
-                            <div class="product-item-image">
-                                <a href="product-details.html"><img src="dist/images/product/02.jpg" alt="Product Name" class="img-fluid"></a>
-                                <div class="cart-icon">
-                                    <a href="#"><i class="far fa-heart"></i></a>
-                                    <a href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16.75" height="16.75" viewBox="0 0 16.75 16.75">
-                                            <g id="Your_Bag" data-name="Your Bag" transform="translate(0.75)">
-                                                <g id="Icon" transform="translate(0 1)">
-                                                    <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(4.773 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(12.273 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <path id="Path_3" data-name="Path 3" d="M1,1H3.727l1.827,9.564a1.38,1.38,0,0,0,1.364,1.15h6.627a1.38,1.38,0,0,0,1.364-1.15L16,4.571H4.409" transform="translate(-1 -1)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                </g>
-                                            </g>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="product-item-info">
-                                <a href="product-details.html">Echo Studio. Amazon Echo Studio</a>
-                                <span>$175</span> <del>$199</del>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <div class="product-item">
-                            <div class="product-item-image">
-                                <a href="product-details.html"><img src="dist/images/product/03.jpg" alt="Product Name" class="img-fluid"></a>
-                                <div class="cart-icon">
-                                    <a href="#"><i class="far fa-heart"></i></a>
-                                    <a href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16.75" height="16.75" viewBox="0 0 16.75 16.75">
-                                            <g id="Your_Bag" data-name="Your Bag" transform="translate(0.75)">
-                                                <g id="Icon" transform="translate(0 1)">
-                                                    <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(4.773 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(12.273 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <path id="Path_3" data-name="Path 3" d="M1,1H3.727l1.827,9.564a1.38,1.38,0,0,0,1.364,1.15h6.627a1.38,1.38,0,0,0,1.364-1.15L16,4.571H4.409" transform="translate(-1 -1)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                </g>
-                                            </g>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="product-item-info">
-                                <a href="product-details.html">Corning Sunglasses for Men.</a>
-                                <span>$175</span> <del>$199</del>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <div class="product-item">
-                            <div class="product-item-image">
-                                <a href="product-details.html"><img src="dist/images/product/04.jpg" alt="Product Name" class="img-fluid"></a>
-                                <div class="cart-icon">
-                                    <a href="#"><i class="far fa-heart"></i></a>
-                                    <a href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16.75" height="16.75" viewBox="0 0 16.75 16.75">
-                                            <g id="Your_Bag" data-name="Your Bag" transform="translate(0.75)">
-                                                <g id="Icon" transform="translate(0 1)">
-                                                    <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(4.773 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(12.273 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <path id="Path_3" data-name="Path 3" d="M1,1H3.727l1.827,9.564a1.38,1.38,0,0,0,1.364,1.15h6.627a1.38,1.38,0,0,0,1.364-1.15L16,4.571H4.409" transform="translate(-1 -1)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                </g>
-                                            </g>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="product-item-info">
-                                <a href="product-details.html">Canon PowerShot SX540</a>
-                                <span>$175</span> <del>$199</del>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <div class="product-item">
-                            <div class="product-item-image">
-                                <a href="product-details.html"><img src="dist/images/product/05.jpg" alt="Product Name" class="img-fluid"></a>
-                                <div class="cart-icon">
-                                    <a href="#"><i class="far fa-heart"></i></a>
-                                    <a href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16.75" height="16.75" viewBox="0 0 16.75 16.75">
-                                            <g id="Your_Bag" data-name="Your Bag" transform="translate(0.75)">
-                                                <g id="Icon" transform="translate(0 1)">
-                                                    <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(4.773 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(12.273 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <path id="Path_3" data-name="Path 3" d="M1,1H3.727l1.827,9.564a1.38,1.38,0,0,0,1.364,1.15h6.627a1.38,1.38,0,0,0,1.364-1.15L16,4.571H4.409" transform="translate(-1 -1)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                </g>
-                                            </g>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="product-item-info">
-                                <a href="product-details.html">BERRY TYPE-II: C1N Backpack</a>
-                                <span>$175</span> <del>$199</del>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <div class="product-item">
-                            <div class="product-item-image">
-                                <a href="product-details.html"><img src="dist/images/product/06.jpg" alt="Product Name" class="img-fluid"></a>
-                                <div class="cart-icon">
-                                    <a href="#"><i class="far fa-heart"></i></a>
-                                    <a href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16.75" height="16.75" viewBox="0 0 16.75 16.75">
-                                            <g id="Your_Bag" data-name="Your Bag" transform="translate(0.75)">
-                                                <g id="Icon" transform="translate(0 1)">
-                                                    <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(4.773 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(12.273 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <path id="Path_3" data-name="Path 3" d="M1,1H3.727l1.827,9.564a1.38,1.38,0,0,0,1.364,1.15h6.627a1.38,1.38,0,0,0,1.364-1.15L16,4.571H4.409" transform="translate(-1 -1)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                </g>
-                                            </g>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="product-item-info">
-                                <a href="product-details.html">Kauri Marine Blue (Green Sole)</a>
-                                <span>$175</span> <del>$199</del>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <div class="product-item">
-                            <div class="product-item-image">
-                                <a href="product-details.html"><img src="dist/images/product/07.jpg" alt="Product Name" class="img-fluid"></a>
-                                <div class="cart-icon">
-                                    <a href="#"><i class="far fa-heart"></i></a>
-                                    <a href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16.75" height="16.75" viewBox="0 0 16.75 16.75">
-                                            <g id="Your_Bag" data-name="Your Bag" transform="translate(0.75)">
-                                                <g id="Icon" transform="translate(0 1)">
-                                                    <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(4.773 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(12.273 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <path id="Path_3" data-name="Path 3" d="M1,1H3.727l1.827,9.564a1.38,1.38,0,0,0,1.364,1.15h6.627a1.38,1.38,0,0,0,1.364-1.15L16,4.571H4.409" transform="translate(-1 -1)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                </g>
-                                            </g>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="product-item-info">
-                                <a href="product-details.html">Full Set for photographer</a>
-                                <span>$175</span> <del>$199</del>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <div class="product-item">
-                            <div class="product-item-image">
-                                <a href="product-details.html"><img src="dist/images/product/08.jpg" alt="Product Name" class="img-fluid"></a>
-                                <div class="cart-icon">
-                                    <a href="#"><i class="far fa-heart"></i></a>
-                                    <a href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16.75" height="16.75" viewBox="0 0 16.75 16.75">
-                                            <g id="Your_Bag" data-name="Your Bag" transform="translate(0.75)">
-                                                <g id="Icon" transform="translate(0 1)">
-                                                    <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(4.773 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(12.273 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <path id="Path_3" data-name="Path 3" d="M1,1H3.727l1.827,9.564a1.38,1.38,0,0,0,1.364,1.15h6.627a1.38,1.38,0,0,0,1.364-1.15L16,4.571H4.409" transform="translate(-1 -1)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                </g>
-                                            </g>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="product-item-info">
-                                <a href="product-details.html">Face Masks,Face Masks of 50 Pack</a>
-                                <span>$175</span> <del>$199</del>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <div class="product-item">
-                            <div class="product-item-image">
-                                <a href="product-details.html"><img src="dist/images/product/09.jpg" alt="Product Name" class="img-fluid"></a>
-                                <div class="cart-icon">
-                                    <a href="#"><i class="far fa-heart"></i></a>
-                                    <a href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16.75" height="16.75" viewBox="0 0 16.75 16.75">
-                                            <g id="Your_Bag" data-name="Your Bag" transform="translate(0.75)">
-                                                <g id="Icon" transform="translate(0 1)">
-                                                    <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(4.773 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(12.273 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                    <path id="Path_3" data-name="Path 3" d="M1,1H3.727l1.827,9.564a1.38,1.38,0,0,0,1.364,1.15h6.627a1.38,1.38,0,0,0,1.364-1.15L16,4.571H4.409" transform="translate(-1 -1)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                </g>
-                                            </g>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="product-item-info">
-                                <a href="product-details.html">Fossil Men's Nate Stainless Steel Chronograph Quartz
-                                    Watch</a>
-                                <span>$175</span> <del>$199</del>
-                            </div>
-                        </div>
-                    </div>
+                    <?php endwhile; ?>
+                    
                 </div>
             </div>
         </section>
@@ -1053,5 +924,74 @@ $userPageUrlFavList = isUserSignedIn() ? 'user-dashboard.html' : 'fav-list.html'
             document.getElementById("mySidenav").style.width = "0";
             $('#overlayy').removeClass("active");
         }
+
+        function toggleWishlist(event, productId) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            const form = document.getElementById(`wishlist-form-${productId}`);
+            const formData = new FormData(form);
+
+            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    // Toggle the heart icon
+                    const icon = document.getElementById(`wishlist-icon-${productId}`);
+                    const actionInput = form.querySelector('input[name="action"]');
+                    if (actionInput.value === 'add_to_wishlist') {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        actionInput.value = 'remove_from_wishlist';
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        actionInput.value = 'add_to_wishlist';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+
+            return false;
+        }
+
+        function toggleCart(event, productId) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            const form = document.getElementById(`cart-form-${productId}`);
+            const formData = new FormData(form);
+
+            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    // Toggle the cart icon
+                    const icon = document.getElementById(`cart-icon-${productId}`);
+                    const actionInput = form.querySelector('input[name="action"]');
+                    updateCartCount(); // Update the cart count
+                    if (actionInput.value === 'add_to_cart') {
+                        // If you want to change the icon, add class manipulation here
+                        actionInput.value = 'remove_from_cart';
+                    } else {
+                        // If you want to change the icon, add class manipulation here
+                        actionInput.value = 'add_to_cart';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+
+            return false;
+        }
+
+        function updateCartCount() {
+            fetch("http://localhost/ecommercebreifdb/api/get_cart_count.php")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('cart-count').innerText = data.count;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Call updateCartCount on page load to set the initial cart count
+        document.addEventListener('DOMContentLoaded', updateCartCount);
     </script>
 </body>

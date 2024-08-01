@@ -1,0 +1,36 @@
+.product-item-image img {
+    width: 400px; /* Set your desired width */
+    height: 300px; /* Set your desired height */
+    object-fit: cover; /* Ensure the image fits well within the dimensions */
+  }
+
+
+  .aseelheart{
+    border:none; 
+    background:white; 
+    width:20px;height:20px; 
+    border-radius: 50%; 
+    padding:3px;
+
+  }
+
+  .item > .image{
+    width: 400px; /* Set your desired width */
+    height: 100px; /* Set your desired height */
+    object-fit: cover;
+  }
+
+  .image > img{
+    width: 400px; /* Set your desired width */
+    height: 130px; /* Set your desired height */
+    object-fit: cover;
+  }
+
+  .del {
+    color: #989BA7;
+    background-color: white;
+    font-size: 16px;
+    font-weight: 400; 
+    border:white ;
+padding: 10px;
+border-radius: 0.25rem;}
