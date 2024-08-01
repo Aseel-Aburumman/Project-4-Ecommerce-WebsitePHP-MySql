@@ -34,3 +34,10 @@
     border:white ;
 padding: 10px;
 border-radius: 0.25rem;}
+
+.productcategory-img  img{
+  width: 200px;
+  height: 200px;
+border-radius: 50%;
+
+}

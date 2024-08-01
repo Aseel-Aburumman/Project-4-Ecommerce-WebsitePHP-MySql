@@ -1,6 +1,5 @@
 <?php
 include 'connection.php';
-
 session_start();
 
 // Function to check if the user is signed in
@@ -13,12 +12,16 @@ $userPageUrl = isUserSignedIn() ? 'user-dashboard.html' : 'account.php';
 $userPageUrlFavList = isUserSignedIn() ? 'wishlist.html' : 'fav-list.php';
 $userPageUrlCart = isUserSignedIn() ? 'cart.html' : 'fav-list.php';
 
-
-$query = 'SELECT * FROM products where product_id < 5';
+$query = 'SELECT * FROM products WHERE product_id < 5';
 $result = $conn->query($query);
 
-$popquery = 'SELECT * FROM products where product_id > 5 && product_id < 12';
+$popquery = 'SELECT * FROM products WHERE product_id > 5 AND product_id < 12';
 $popresult = $conn->query($popquery);
+
+$revsql = "SELECT reviews.comment, users.username FROM reviews JOIN users ON reviews.user_id = users.user_id";
+$revresult = $conn->query($revsql);
+
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $product_id = $_POST['product_id'];
@@ -36,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif ($_POST['action'] == 'remove_from_wishlist') {
         if (($key = array_search($product_id, $_SESSION['wishlist'])) !== false) {
             unset($_SESSION['wishlist'][$key]);
-            // Re-index the array to maintain proper indexing
             $_SESSION['wishlist'] = array_values($_SESSION['wishlist']);
         }
     } elseif ($_POST['action'] == 'add_to_cart') {
@@ -46,13 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif ($_POST['action'] == 'remove_from_cart') {
         if (($key = array_search($product_id, $_SESSION['cart'])) !== false) {
             unset($_SESSION['cart'][$key]);
-            // Re-index the array to maintain proper indexing
             $_SESSION['cart'] = array_values($_SESSION['cart']);
         }
     }
 }
-
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -222,19 +224,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                 <path id="Path_3" data-name="Path 3" d="M1,1H4.636L7.073,13.752a1.84,1.84,0,0,0,1.818,1.533h8.836a1.84,1.84,0,0,0,1.818-1.533L21,5.762H5.545" transform="translate(1524 89)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                             </g>
                                         </svg>
-                                        <span class="cart">3</span>
+                                        <span class="cart" id="cart-count">0</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $userPageUrl; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
+                                    <a href="<?php echo $userPageUrl; ?>"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
                                             <g id="Account" transform="translate(1 1)">
                                                 <path id="Path_86" data-name="Path 86" d="M20,21V19a4,4,0,0,0-4-4H8a4,4,0,0,0-4,4v2" transform="translate(-4 -3)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                                 <circle id="Ellipse_9" data-name="Ellipse 9" cx="4" cy="4" r="4" transform="translate(4)" fill="#fff" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                             </g>
-                                        </svg>
-                                    </a>
+                                        </svg></a>
                                 </li>
+
                             </ul>
                         </div>
                         <div class="hamburger-menu">
@@ -609,7 +610,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                         </div>
                     <?php endwhile; ?>
-                    
+
                 </div>
             </div>
         </section>
@@ -629,11 +630,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="#"><img src="dist/images/categorys/tree dasher.jpg" alt="images"></a>
+                                <a href="shop.php?gender=men&product_type=T-Shirt"> <img src="dist/images/categorys/T-Shirt.jpg" alt="images"></a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="#">
-                                    <h6>Tree Dasher</h6>
+                                <a href="shop.php?gender=men&product_type=T-Shirt">
+                                    <h6>T-Shirt</h6>
                                     <span>480 Products</span>
                                 </a>
                             </div>
@@ -642,11 +643,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="#"><img src="dist/images/categorys/wool-shoe.jpg" alt="images"> </a>
+                                <a href="shop.php?gender=men&product_type=Shoes"><img src="dist/images/categorys/Shoes.jpg" alt="images"> </a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="#">
-                                    <h6>Wool Runner Shoes</h6>
+                                <a href="shop.php?gender=men&product_type=Shoes">
+                                    <h6>Shoes</h6>
                                     <span>40 Products</span>
                                 </a>
                             </div>
@@ -655,11 +656,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="#"><img src="dist/images/categorys/jumper.jpg" alt="images"></a>
+                                <a href="shop.php?gender=men&product_type=Hoodies"><img src="dist/images/categorys/Hoodies.png" alt="images"></a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="#">
-                                    <h6>Jumper</h6>
+                                <a href="shop.php?gender=men&product_type=Hoodies">
+                                    <h6>Hoodies</h6>
                                     <span>75 Products</span>
                                 </a>
                             </div>
@@ -668,11 +669,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="#"><img src="dist/images/categorys/iphone.jpg" alt="images"></a>
+                                <a href="shop.php?gender=men&product_type=Jeans"><img src="dist/images/categorys/Jeans.jpg" alt="images"></a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="#">
-                                    <h6>Apple</h6>
+                                <a href="shop.php?gender=men&product_type=Jeans">
+                                    <h6>Jeans</h6>
                                     <span>12 Products</span>
                                 </a>
                             </div>
@@ -681,11 +682,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="#"><img src="dist/images/categorys/iphone.jpg" alt="images"></a>
+                                <a href="shop.php?gender=men&product_type=T-Shirt"><img src="dist/images/categorys/Casual.webp" alt="images"></a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="#">
-                                    <h6>Electronic</h6>
+                                <a href="shop.php?gender=men&product_type=T-Shirt">
+                                    <h6>Casual</h6>
                                     <span>50 Products</span>
                                 </a>
                             </div>
@@ -694,11 +695,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="#"><img src="dist/images/categorys/drone.jpg" alt="images"></a>
+                                <a href="shop.php?gender=men&product_type=Pajamas"><img src="dist/images/categorys/Pajamas.webp" alt="images"></a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="#">
-                                    <h6>Drone</h6>
+                                <a href="shop.php?gender=men&product_type=Pajamas">
+                                    <h6>Pajamas</h6>
                                     <span>20 Products</span>
                                 </a>
                             </div>
@@ -707,43 +708,68 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="#"><img src="dist/images/categorys/headphone.jpg" alt="images"></a>
+                                <a href="shop.php?gender=men&product_type=Shorts"><img src="dist/images/categorys/Shorts.jpg" alt="images"></a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="#">
-                                    <h6>Headphone</h6>
+                                <a href="shop.php?gender=men&product_type=Shorts">
+                                    <h6>Shorts</h6>
                                     <span>10 Products</span>
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6 col-6">
-                        <div class="productcategory text-center">
-                            <div class="productcategory-img">
-                                <a href="#"><img src="dist/images/categorys/chosma.jpg" alt="images"></a>
-                            </div>
-                            <div class="productcategory-text">
-                                <a href="#">
-                                    <h6>Sunglass</h6>
-                                    <span>25 Products</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="features-morebutton text-center">
-                            <a class="btn bt-glass" href="#">View All Categorys</a>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </section>
         <!-- Categorys Section End -->
 
         <!-- Features Section Start -->
         <section class="customersreview">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="section-title">
+                            <h2>What Our Customers Say</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="customersreview-wrapper">
+                    <div class="customersreview-active">
+                        <?php
+                        if ($revresult->num_rows > 0) {
+                            // output data of each row
+                            while ($row = $revresult->fetch_assoc()) {
+                                echo '<div class="customersreview-item">';
+                                echo '<p>' . $row["comment"] . '</p>';
+                                echo '<div class="name">';
+                                echo '<h6>' . $row["username"] . '</h6>';
+                                echo '</div></div>';
+                            }
+                        } else {
+                            echo "0 results";
+                        }
+                        $conn->close();
+                        ?>
+                    </div>
+                    <div class="slider-arrows">
+                        <div class="prev-arrow">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="9.414" height="16.828" viewBox="0 0 9.414 16.828">
+                                <path id="Icon_feather-chevron-left" data-name="Icon feather-chevron-left" d="M20.5,23l-7-7,7-7" transform="translate(-12.5 -7.586)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                            </svg>
+                        </div>
+                        <div class="next-arrow">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="9.414" height="16.828" viewBox="0 0 9.414 16.828">
+                                <path id="Icon_feather-chevron-right" data-name="Icon feather-chevron-right" d="M13.5,23l5.25-5.25.438-.437L20.5,16l-7-7" transform="translate(-12.086 -7.586)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- <section class="customersreview">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-12">
@@ -817,7 +843,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
         <!-- Features Section End -->
     </main>
 
@@ -829,7 +855,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="newsletter-area-text">
                         <h4 class="text-white">Subscribe to get notification.</h4>
                         <p>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            Receive our weekly newsletter.
+                            For dietary content, fashion insider and the best offers.
                         </p>
                     </div>
                 </div>
@@ -849,8 +876,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="main-footer-info">
                         <img src="dist/images/logo/white.png" alt="Logo" class="img-fluid">
                         <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam molestie malesuada
-                            metus, non molestie ligula laoreet vitae. Ut et fringilla risus, vel.
+                            We’re available by phone +962 782 615 549<br>
+                            info@example.com<br>
+                            Sunday till Friday 10 to 6 EST
                         </p>
                     </div>
                 </div>
@@ -948,11 +976,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         icon.classList.add('far');
                         actionInput.value = 'add_to_wishlist';
                     }
+                    updateWishlistCount();
                 })
                 .catch(error => console.error('Error:', error));
 
             return false;
         }
+
+        // function toggleWishlist(event, productId) {
+        //     event.preventDefault(); // Prevent the form from submitting normally
+        //     const form = document.getElementById(`wishlist-form-${productId}`);
+        //     const formData = new FormData(form);
+
+        //     fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+        //             method: "POST",
+        //             body: formData
+        //         })
+        //         .then(response => response.text())
+        //         .then(data => {
+        //             // Toggle the heart icon
+        //             const icon = document.getElementById(`wishlist-icon-${productId}`);
+        //             const actionInput = form.querySelector('input[name="action"]');
+        //             if (actionInput.value === 'add_to_wishlist') {
+        //                 icon.classList.remove('far');
+        //                 icon.classList.add('fas');
+        //                 actionInput.value = 'remove_from_wishlist';
+        //             } else {
+        //                 icon.classList.remove('fas');
+        //                 icon.classList.add('far');
+        //                 actionInput.value = 'add_to_wishlist';
+        //             }
+        //             updateWishlistCount();
+        //         })
+        //         .catch(error => console.error('Error:', error));
+
+        //     return false;
+        // }
 
         function toggleCart(event, productId) {
             event.preventDefault(); // Prevent the form from submitting normally
@@ -966,14 +1025,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 .then(response => response.text())
                 .then(data => {
                     // Toggle the cart icon
-                    const icon = document.getElementById(`cart-icon-${productId}`);
                     const actionInput = form.querySelector('input[name="action"]');
                     updateCartCount(); // Update the cart count
                     if (actionInput.value === 'add_to_cart') {
-                        // If you want to change the icon, add class manipulation here
                         actionInput.value = 'remove_from_cart';
                     } else {
-                        // If you want to change the icon, add class manipulation here
                         actionInput.value = 'add_to_cart';
                     }
                 })
@@ -991,7 +1047,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 .catch(error => console.error('Error:', error));
         }
 
+        function updateWishlistCount() {
+            fetch("http://localhost/ecommercebreifdb/api/get_wishlist_count.php")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('wishlist-count').innerText = data.count;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // function updateWishlistCount() {
+        //     fetch("http://localhost/ecommercebreifdb/api/get_wishlist_count.php")
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             document.getElementById('wishlist-count').innerText = data.count;
+        //         })
+        //         .catch(error => console.error('Error:', error));
+        // }
+
         // Call updateCartCount on page load to set the initial cart count
-        document.addEventListener('DOMContentLoaded', updateCartCount);
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            updateWishlistCount();
+        });
     </script>
 </body>

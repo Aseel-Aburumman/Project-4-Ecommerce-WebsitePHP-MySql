@@ -11023,7 +11023,8 @@ footer {
   .productcategory-img {
     margin-bottom: 20px; }
     .productcategory-img img {
-      border-radius: 50%; }
+      border-radius: 50%; width: 200px;
+      height: 200px; }
   .productcategory-text h6 {
     color: #1A2224;
     font-size: 20px;
@@ -11056,7 +11057,7 @@ footer {
   .productcategory {
     margin-bottom: 30px; }
     .productcategory-img {
-      margin-bottom: 15px; }
+      margin-bottom: 15px;  }
     .productcategory-text h6 {
       font-size: 18px; }
     .productcategory-text span {
