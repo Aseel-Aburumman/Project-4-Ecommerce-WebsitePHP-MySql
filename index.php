@@ -7,7 +7,7 @@ function isUserSignedIn()
 {
     return isset($_SESSION['user_id']);
 }
-
+// اكاونت من عبسي
 $userPageUrl = isUserSignedIn() ? 'user-dashboard.html' : 'account.php';
 $userPageUrlFavList = isUserSignedIn() ? 'wishlist.html' : 'fav-list.php';
 $userPageUrlCart = isUserSignedIn() ? 'cart.html' : 'fav-list.php';
