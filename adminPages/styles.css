@@ -1,0 +1,146 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+}
+
+.sidebar {
+    width: 250px; /* Adjusted width */
+    background-color: #fff; /* Changed to white */
+    color: #333; /* Changed text color to dark */
+    height: 100vh;
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    position: fixed;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin: 20px 0;
+}
+
+.sidebar ul li a {
+    color: #333; /* Changed link color to dark */
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 20px;
+    display: block;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #f4f4f4; /* Light hover background */
+    color: #333;
+}
+
+.main-content {
+    margin-left: 250px; /* Adjusted margin to match sidebar width */
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the content horizontally */
+}
+
+.welcome-message {
+    width: 100%;
+    display: flex; /* Make it a flex container */
+    justify-content: space-between; /* Space between the elements */
+    align-items: center; /* Center items vertically */
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd; /* Add a bottom border */
+    padding-bottom: 10px; /* Add padding to the bottom */
+}
+
+.welcome-message h2 {
+    font-size: 36px;
+    color: #333;
+    margin: 0;
+}
+
+.welcome-message .admin-name {
+    font-size: 24px;
+    color: #666;
+    margin: 0;
+}
+
+.dashboard-container {
+    display: flex;
+    justify-content: center; /* Center the dashboard horizontally */
+    align-items: center; /* Center the dashboard vertically */
+    width: 100%;
+    height: auto; /* Adjusted to fit content */
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three cards per row */
+    gap: 20px;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.card {
+    background-color: #fff;
+    padding: 40px; /* Increased padding for larger cards */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s;
+    flex: 1 1 calc(33.333% - 20px); /* Three cards per row, accounting for gap */
+    box-sizing: border-box;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.card h3 {
+    margin: 0 0 10px;
+    font-size: 24px; /* Increased font size */
+    color: #333;
+}
+
+.card p {
+    font-size: 32px; /* Increased font size */
+    margin: 0;
+    color: #666;
+}
+
+/* Media Queries */
+@media (max-width: 1024px) {
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr); /* Two cards per row for medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard {
+        grid-template-columns: 1fr; /* One card per row for small screens */
+    }
+
+    .card {
+        padding: 30px; /* Adjusted padding for smaller screens */
+    }
+
+    .card h3 {
+        font-size: 20px; /* Adjusted font size for smaller screens */
+    }
+
+    .card p {
+        font-size: 28px; /* Adjusted font size for smaller screens */
+    }
+}

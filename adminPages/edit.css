@@ -1,0 +1,94 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    width: 200px; /* Adjusted width */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff; /* Ensure background color */
+}
+
+.main-content {
+    margin-left: 200px; /* Adjust based on sidebar width */
+    padding: 20px;
+    flex-grow: 1;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0; /* No margin for small screens */
+    }
+
+    .sidebar {
+        width: 100%; /* Full width for small screens */
+        height: auto; /* Auto height for small screens */
+        position: relative; /* Relative positioning for small screens */
+    }
+
+    .sidebar ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .sidebar ul li {
+        margin: 10px;
+    }
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin: 20px 0;
+}
+
+.sidebar ul li a {
+    color: #333; /* Changed link color to dark */
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 20px;
+    display: block;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #f4f4f4; /* Light hover background */
+    color: #333;
+}
+
+.welcome-message {
+    width: 100%;
+    display: flex; /* Make it a flex container */
+    justify-content: space-between; /* Space between the elements */
+    align-items: center; /* Center items vertically */
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd; /* Add a bottom border */
+    padding-bottom: 10px; /* Add padding to the bottom */
+}
+
+.welcome-message h2 {
+    font-size: 36px;
+    color: #333;
+    margin: 0;
+}
+
+.welcome-message .admin-name {
+    font-size: 24px;
+    color: #666;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+}
