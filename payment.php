@@ -49,16 +49,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 $user_id = $_SESSION['user_id'];
 // $user_id = $_SESSION['3'];
 
-$userQuery = $conn->prepare("SELECT username, Full_name, email FROM users WHERE user_id = 3");
-// $userQuery->bind_param('i', $user_id);
+$userQuery = $conn->prepare("SELECT username, Full_name, email FROM users WHERE user_id = ?");
+$userQuery->bind_param('i', $user_id);
 // $userQuery->bind_param('i', '3');
 
 $userQuery->execute();
 $userResult = $userQuery->get_result();
 $userData = $userResult->fetch_assoc();
 
-$userQuery2 = $conn->prepare("SELECT address, building, city, phone FROM billing_information WHERE user_id = 3");
-// $userQuery2->bind_param('i', $user_id);
+$userQuery2 = $conn->prepare("SELECT address, building, city, phone FROM billing_information WHERE user_id = ?");
+$userQuery2->bind_param('i', $user_id);
 // $userQuery->bind_param('i', '3');
 
 $userQuery2->execute();

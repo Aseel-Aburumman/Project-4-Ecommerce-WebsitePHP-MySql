@@ -247,7 +247,7 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
                                 <li class="list-inline-item"><a href="wishlist.php">My wishlist</a></li>
                                 <li class="list-inline-item"><a href="cart.php">My cart</a></li>
                                 <li class="list-inline-item"><a href="order.php" class="active">Order</a></li>
-                                <li class="list-inline-item"><a href="account.php" class="mr-0">Log-out</a></li>
+                                <li class="list-inline-item"><a href="account (1).php" class="mr-0">Log-out</a></li>
                             </ul>
                         </div>
                         <!-- Dashboard-Nav  End-->
