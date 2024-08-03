@@ -9,7 +9,7 @@ function isUserSignedIn()
 }
 // اكاونت من عبسي
 
-$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account.php';
+$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account (1).php';
 $userPageUrlFavList = isUserSignedIn() ? 'wishlist.php' : 'fav-list.php';
 $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
 
@@ -824,7 +824,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             const form = document.getElementById(`wishlist-form-${productId}`);
             const formData = new FormData(form);
 
-            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -855,7 +855,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             const form = document.getElementById(`cart-form-${productId}`);
             const formData = new FormData(form);
 
-            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -876,7 +876,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         function updateCartCount() {
-            fetch("http://localhost/ecommercebreifdb/api/get_cart_count.php")
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_cart_count.php")
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('cart-count').innerText = data.count;
@@ -885,7 +885,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         function updateWishlistCount() {
-            fetch("http://localhost/ecommercebreifdb/api/get_wishlist_count.php")
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_wishlist_count.php")
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('wishlist-count').innerText = data.count;

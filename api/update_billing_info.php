@@ -4,10 +4,10 @@ require '../connection.php'; // Ensure this file contains the database connectio
 
 session_start();
 // user_id in session عفوري 
-// $user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'];
 // test purpose pls fix aseel
 
-$user_id = 3;
+// $user_id = 3;
 
 $firstname = $_POST['firstname'];
 $lastname = $_POST['lastname'];

@@ -1,9 +1,8 @@
 <?php
 session_start();
 
-// Assuming the user ID is stored in the session
-// $user_id = $_SESSION['user_id'] ;
-$user_id = 3;
+$user_id = $_SESSION['user_id'];
+// $user_id = 3;
 
 
 

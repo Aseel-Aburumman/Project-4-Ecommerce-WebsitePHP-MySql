@@ -5,9 +5,9 @@ require '../connection.php';
 session_start();
 // user_id in session عفوري 
 
-// $user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'];
 // test purpose pls fix aseel
-$user_id = 3;
+// $user_id = 3;
 
 
 $sql = "SELECT username, Full_name, email FROM users WHERE user_id = ?";

@@ -5,12 +5,12 @@ session_start();
 // Function to check if the user is signed in
 function isUserSignedIn()
 {
-    // return isset($_SESSION['user_id']);
-    return isset($_SESSION['3']);
+    return isset($_SESSION['user_id']);
+    // return isset($_SESSION['3']);
 }
 // اكاونت من عبسي
 
-$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account.php';
+$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account (1).php';
 $userPageUrlFavList = isUserSignedIn() ? 'wishlist.php' : 'fav-list.php';
 $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
 ?>
@@ -276,7 +276,7 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
                         <div class="body">
                             <?php
 
-                            // $userId = $_SESSION['user_id'];
+                            $userId = $_SESSION['user_id'];
                             // $userId = $_SESSION[3];
 
 
@@ -288,7 +288,7 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
         FROM orderitems oi
         JOIN products p ON oi.product_id = p.product_id
         JOIN orders o ON oi.order_id = o.order_id
-        WHERE o.user_id = 3
+        WHERE o.user_id = $userId
     ";
                             $resultOrderItems = $conn->query($sqlOrderItems);
                             if ($resultOrderItems->num_rows > 0) {
@@ -476,7 +476,8 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
                     <div class="newsletter-area-text">
                         <h4 class="text-white">Subscribe to get notification.</h4>
                         <p>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            Receive our weekly newsletter.
+                            For dietary content, fashion insider and the best offers.
                         </p>
                     </div>
                 </div>
@@ -491,62 +492,18 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
                     </div>
                 </div>
             </div>
-            <div class="row main-footer">
-                <div class="col-lg-4 col-md-12 col-sm-12 col-12">
-                    <div class="main-footer-info">
-                        <img src="dist/images/logo/white.png" alt="Logo" class="img-fluid">
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam molestie malesuada
-                            metus, non molestie ligula laoreet vitae. Ut et fringilla risus, vel.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-2 offset-lg-2 col-md-4 col-sm-6 col-12">
-                    <div class="main-footer-quicklinks">
-                        <h6>Company</h6>
-                        <ul class="quicklink">
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Help &amp; Support</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms of Service</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
-                    <div class="main-footer-quicklinks">
-                        <h6>Quick links</h6>
-                        <ul class="quicklink">
-                            <li><a href="#">New Realease</a></li>
-                            <li><a href="#">Customize</a></li>
-                            <li><a href="#">Sale &amp; Discount</a></li>
-                            <li><a href="#">Men</a></li>
-                            <li><a href="#">Women</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
-                    <div class="main-footer-quicklinks">
-                        <h6>Account</h6>
-                        <ul class="quicklink">
-                            <li><a href="#">Your Bag</a></li>
-                            <li><a href="#">Profile</a></li>
-                            <li><a href="#">Order Completed</a></li>
-                            <li><a href="#">Log-out</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="copyright d-flex justify-content-between align-items-center">
                         <div class="copyright-text order-2 order-lg-1">
-                            <p>&copy; 2020. Design and Developed by <a href="#">Zakir Soft</a></p>
+                            <p>&copy; 2024. All rights reserved. </p>
                         </div>
                         <div class="copyright-links order-1 order-lg-2">
-                            <a href="#" class="ml-0"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fab fa-youtube"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="soon.php" class="ml-0"><i class="fab fa-facebook-f"></i></a>
+                            <a href="soon.php"><i class="fab fa-twitter"></i></a>
+                            <a href="soon.php"><i class="fab fa-youtube"></i></a>
+                            <a href="soon.php"><i class="fab fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>
@@ -577,7 +534,7 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
             const form = document.getElementById(`wishlist-form-${productId}`);
             const formData = new FormData(form);
 
-            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -608,7 +565,7 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
             const form = document.getElementById(`cart-form-${productId}`);
             const formData = new FormData(form);
 
-            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -629,7 +586,7 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
         }
 
         function updateCartCount() {
-            fetch("http://localhost/ecommercebreifdb/api/get_cart_count.php")
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_cart_count.php")
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('cart-count').innerText = data.count;
@@ -638,7 +595,7 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
         }
 
         function updateWishlistCount() {
-            fetch("http://localhost/ecommercebreifdb/api/get_wishlist_count.php")
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_wishlist_count.php")
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('wishlist-count').innerText = data.count;
@@ -659,7 +616,7 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
                 button.addEventListener("click", function() {
                     const productId = this.dataset.productId;
 
-                    fetch("http://localhost/ecommercebreifdb/api/add_to_cart.php", {
+                    fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/add_to_cart.php", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",

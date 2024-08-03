@@ -4,11 +4,11 @@ require '../connection.php';
 
 session_start();
 // user_id in session عفوري 
-// $user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'];
 // test purpose pls fix aseel
+echo $user_id;
 
-
-$user_id = 3;
+// $user_id = 3;
 
 $sql = "SELECT bi.firstname, bi.lastname, bi.address, bi.building, bi.city, bi.phone, u.email 
         FROM billing_information bi 

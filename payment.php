@@ -6,14 +6,14 @@ session_start();
 // Function to check if the user is signed in
 function isUserSignedIn()
 {
-    // return isset($_SESSION['user_id']);
-    return isset($_SESSION['3']);
+    return isset($_SESSION['user_id']);
+    // return isset($_SESSION['3']);
 }
 
-$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account.php';
+$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account (1).php';
 $userPageUrlFavList = isUserSignedIn() ? 'wishlist.php' : 'fav-list.php';
 $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
-$userPageUrlcheckout = isUserSignedIn() ? 'billing-information.php' : 'account.php';
+$userPageUrlcheckout = isUserSignedIn() ? 'billing-information.php' : 'account (1).php';
 
 
 $cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 }
 
 // Fetch user data
-// $user_id = $_SESSION['user_id']; 
+$user_id = $_SESSION['user_id'];
 // $user_id = $_SESSION['3'];
 
 $userQuery = $conn->prepare("SELECT username, Full_name, email FROM users WHERE user_id = 3");
@@ -593,7 +593,7 @@ $conn->close();
                     const exp_date = document.getElementById("exp-date").value;
                     const cvc = document.getElementById("cvc").value;
 
-                    fetch("http://localhost/ecommercebreifdb/api/process_payment.php", {
+                    fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/process_payment.php", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",
@@ -688,7 +688,7 @@ $conn->close();
             const form = document.getElementById(`wishlist-form-${productId}`);
             const formData = new FormData(form);
 
-            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -717,7 +717,7 @@ $conn->close();
             const form = document.getElementById(`cart-form-${productId}`);
             const formData = new FormData(form);
 
-            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -741,7 +741,7 @@ $conn->close();
         }
 
         function updateCartCount() {
-            fetch("http://localhost/ecommercebreifdb/api/get_cart_count.php")
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_cart_count.php")
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('cart-count').innerText = data.count;
@@ -754,7 +754,7 @@ $conn->close();
 
         // the cart coupon funcitionality
         function updateCardPrice() {
-            fetch('http://localhost/ecommercebreifdb/api/get_cart_summary.php')
+            fetch('http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_cart_summary.php')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('item-count').innerText = data.itemCount + ' items';
@@ -771,7 +771,7 @@ $conn->close();
         document.getElementById('coupon-form').onsubmit = async function(e) {
             e.preventDefault();
             const formData = new FormData(this);
-            const response = await fetch('http://localhost/ecommercebreifdb/api/applyCoupon.php', {
+            const response = await fetch('http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/applyCoupon.php', {
                 method: 'POST',
                 body: formData
             });
@@ -808,7 +808,7 @@ $conn->close();
             formData.append('product_id', productId);
             formData.append('quantity', currentQuantity);
 
-            fetch("http://localhost/ecommercebreifdb/cart.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/cart.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -831,7 +831,7 @@ $conn->close();
             formData.append('action', 'remove_from_cart');
             formData.append('product_id', productId);
 
-            fetch("http://localhost/ecommercebreifdb/cart-Guest.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/cart-Guest.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })

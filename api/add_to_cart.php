@@ -2,11 +2,8 @@
 session_start();
 header('Content-Type: application/json');
 
-// Database connection
-include '../connection.php'; // Make sure to include your database connection file
-// Read the JSON input
+include '../connection.php';
 
-// Read the JSON input
 $input = json_decode(file_get_contents('php://input'), true);
 
 if ($input === null && json_last_error() !== JSON_ERROR_NONE) {
@@ -17,7 +14,6 @@ if ($input === null && json_last_error() !== JSON_ERROR_NONE) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($input['product_id'])) {
     $productId = $input['product_id'];
 
-    // Fetch the product details from the database using the product ID
     $sqlProduct = "SELECT * FROM products WHERE product_id = ?";
     $stmt = $conn->prepare($sqlProduct);
     $stmt->bind_param("i", $productId);
@@ -27,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($input['product_id'])) {
     if ($resultProduct->num_rows > 0) {
         $product = $resultProduct->fetch_assoc();
 
-        // Initialize the cart if it doesn't exist
         if (!isset($_SESSION['cart'])) {
             $_SESSION['cart'] = [];
         }
@@ -36,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($input['product_id'])) {
             $_SESSION['cart_quantities'] = [];
         }
 
-        // Add product to the session cart
         if (!in_array($productId, $_SESSION['cart'])) {
             $_SESSION['cart'][] = $productId;
             $_SESSION['cart_quantities'][$productId] = 1;
@@ -44,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($input['product_id'])) {
             $_SESSION['cart_quantities'][$productId] += 1;
         }
 
-        // Recalculate the cart summary
         $itemCount = 0;
         $itemTotalPrice = 0;
         foreach ($_SESSION['cart'] as $id) {
@@ -63,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($input['product_id'])) {
 
         $discount = isset($_SESSION['coupon']['discount']) ? $_SESSION['coupon']['discount'] : 0;
         $discountAmount = $itemTotalPrice * ($discount / 100);
-        $taxes = $itemTotalPrice * 0.16; // Assuming a 16% tax rate
+        $taxes = $itemTotalPrice * 0.16;
         $totalPrice = $itemTotalPrice - $discountAmount + $taxes;
 
         $_SESSION['cart_summary'] = [

@@ -1,17 +1,16 @@
 <?php
 
-
-
-class User {
-
+class User
+{
     private $conn;
 
-
-    public function __construct($conn) {
+    public function __construct($conn)
+    {
         $this->conn = $conn;
     }
 
-    public function register($fullName, $email, $password) {
+    public function register($fullName, $email, $password)
+    {
         // Prepare the SQL statement
         $sql = "INSERT INTO users (username, email, password, role_id) VALUES (?, ?, ?, 2)";
         $stmt = $this->conn->prepare($sql);
@@ -32,7 +31,8 @@ class User {
         }
     }
 
-    public function login($email, $password) {
+    public function login($email, $password)
+    {
         // Prepare the SQL statement
         $sql = "SELECT password FROM users WHERE email = ?";
         $stmt = $this->conn->prepare($sql);
@@ -67,8 +67,22 @@ class User {
         return false;
     }
 
+    public function getUserId($email)
+    {
+        $stmt = $this->conn->prepare("SELECT user_id FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    public function getUsername($email) {
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['user_id'];
+        }
+        return null;
+    }
+
+    public function getUsername($email)
+    {
         $stmt = $this->conn->prepare("SELECT username FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -81,7 +95,8 @@ class User {
         return null;
     }
 
-    public function getRoleId($email) {
+    public function getRoleId($email)
+    {
         $stmt = $this->conn->prepare("SELECT role_id FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -94,4 +109,3 @@ class User {
         return null;
     }
 }
-?>

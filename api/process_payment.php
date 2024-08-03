@@ -54,8 +54,9 @@ try {
 
         if (empty($errors)) {
             // Process the payment logic here
+            $user_id = $_SESSION['user_id'];
 
-            $user_id = 3; // Example user ID
+            // $user_id = 3; // Example user ID
 
             // Insert order details into the orders table
             $cart_summary = $_SESSION['cart_summary'];

@@ -9,7 +9,7 @@ function isUserSignedIn()
     return isset($_SESSION['user_id']);
 }
 
-$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account.php';
+$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account (1).php';
 $userPageUrlFavList = isUserSignedIn() ? 'wishlist.php' : 'fav-list.php';
 $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
 
@@ -321,7 +321,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 
                                         </div>
                                         <div class="price">
-                                            <span><?php echo '$' . number_format($product['price'], 2); ?></span>
+                                            <span><?php echo 'JD' . number_format($product['price'], 2); ?></span>
                                         </div>
                                         <div class="rating">
                                             <i class="fas fa-star"></i> 5.0
@@ -461,7 +461,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             const form = document.getElementById(`wishlist-form-${productId}`);
             const formData = new FormData(form);
 
-            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -490,7 +490,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             const form = document.getElementById(`cart-form-${productId}`);
             const formData = new FormData(form);
 
-            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
