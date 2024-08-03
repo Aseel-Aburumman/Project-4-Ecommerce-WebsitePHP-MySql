@@ -1,5 +1,17 @@
 <?php
-// PHP code here if needed
+session_start();
+if (!isset($_SESSION['user_name'])) {
+    header("Location: login.php");
+    exit();
+}
+
+
+function getFirstTwoWords($string) {
+    $words = explode(' ', $string);
+    return implode(' ', array_slice($words, 0, 2));
+}
+
+$firstTwoWords = getFirstTwoWords($_SESSION['user_name']);
 include '../connection.php';
 ?>
 
@@ -46,7 +58,7 @@ include '../connection.php';
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Admin Dashboard</h1>
-                    <p class="h5">Admin Name</p>
+                    <p class="h5"><?php echo htmlspecialchars($firstTwoWords); ?></p>
                 </div>
 
                 <h2>List of Categories</h2>

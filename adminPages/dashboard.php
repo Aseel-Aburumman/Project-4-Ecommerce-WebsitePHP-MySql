@@ -1,5 +1,18 @@
 
 <?php
+session_start();
+if (!isset($_SESSION['user_name'])) {
+    header("Location: login.php");
+    exit();
+}
+
+
+function getFirstTwoWords($string) {
+    $words = explode(' ', $string);
+    return implode(' ', array_slice($words, 0, 2));
+}
+
+$firstTwoWords = getFirstTwoWords($_SESSION['user_name']);
 include '../connection.php';
 
 
@@ -82,7 +95,7 @@ $conn->close();
         <div class="main-content">
             <div class="welcome-message">
                 <h2>Admin Dashboard</h2>
-                <p class="admin-name">Admin Name</p>
+                <p class="admin-name"><?php echo htmlspecialchars($firstTwoWords); ?></p>
             </div>
             <div class="dashboard-container">
                 <div class="dashboard">
