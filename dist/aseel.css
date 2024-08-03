@@ -15,14 +15,14 @@
   }
 
   .item > .image{
-    width: 400px; /* Set your desired width */
-    height: 100px; /* Set your desired height */
+    width: 400px; 
+    height: 100px; 
     object-fit: cover;
   }
 
   .image > img{
-    width: 400px; /* Set your desired width */
-    height: 130px; /* Set your desired height */
+    width: 400px; 
+    height: 130px; 
     object-fit: cover;
   }
 
@@ -41,3 +41,143 @@ border-radius: 0.25rem;}
 border-radius: 50%;
 
 }
+
+#backImage{
+
+  background-color: #cccccc73 ;
+   background-position: center;
+   background-size: cover; 
+   background-image: url(https://plus.unsplash.com/premium_photo-1664202526535-c01e4b0c42b7?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+
+}
+
+.cart-items .body .item{
+
+  height: 153px;
+}
+
+.thingstothinkabout{
+  visibility: hidden;
+}
+
+.quantity{
+  text-align: center;
+}
+
+.payment-methods .methods {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.payment-methods .methods .input {
+  margin-right: 10px;
+}
+
+.payment-methods .methods .input input[type="radio"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.payment-methods .methods .input input[type="radio"]:checked {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.payment-methods {
+  justify-content: space-evenly;
+}
+
+.payment-methods .methods a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.payment-methods .methods a.active svg {
+  fill: #007bff;
+}
+
+.payment-area-info .credit-card-option input[type="radio"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 10px;
+}
+
+.payment-area-info .credit-card-option input[type="radio"]:checked {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.on-delivery input[type="radio"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 10px;
+}
+
+.on-delivery input[type="radio"]:checked {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.save-info input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 10px;
+}
+
+.save-info input[type="checkbox"]:checked {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.error {
+  color: red;
+  font-size: 0.8em;
+  margin-top: 15px;
+}
+
+.form__div {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.form__input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.form__label {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background: white;
+  padding: 0 5px;
+  font-size: 0.9em;
+}
+

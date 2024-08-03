@@ -1,0 +1,328 @@
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 2324
+    [cvc] => 123
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 23/24
+    [cvc] => 123
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1010
+    [cvc] => 123
+)
+Array
+(
+    [0] => 1
+    [1] => 9
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1010
+    [cvc] => 123
+)
+Array
+(
+    [0] => 1
+    [1] => 9
+    [2] => 9
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1010
+    [cvc] => 123
+)
+Array
+(
+    [0] => 1
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [0] => 1
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [0] => 1
+)
+Array
+(
+    [card_name] => aseel123
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [0] => 1
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [0] => 1
+)
+Array
+(
+    [card_name] => aseel123
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [itemCount] => 1
+    [itemTotalPrice] => 9.99
+    [discount] => 10.00
+    [discountAmount] => 0.999
+    [taxes] => 1.5984
+    [totalPrice] => 13.5894
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [itemCount] => 1
+    [itemTotalPrice] => 9.99
+    [discount] => 10.00
+    [discountAmount] => 0.999
+    [taxes] => 1.5984
+    [totalPrice] => 13.5894
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [itemCount] => 1
+    [itemTotalPrice] => 9.99
+    [discount] => 10.00
+    [discountAmount] => 0.999
+    [taxes] => 1.5984
+    [totalPrice] => 13.5894
+)
+Array
+(
+    [card_name] => aseel1
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [itemCount] => 1
+    [itemTotalPrice] => 9.99
+    [discount] => 10.00
+    [discountAmount] => 0.999
+    [taxes] => 1.5984
+    [totalPrice] => 13.5894
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [itemCount] => 1
+    [itemTotalPrice] => 9.99
+    [discount] => 10.00
+    [discountAmount] => 0.999
+    [taxes] => 1.5984
+    [itemPrice] => 39.99
+    [totalPrice] => 13.5894
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [itemCount] => 1
+    [itemTotalPrice] => 9.99
+    [discount] => 10.00
+    [discountAmount] => 0.999
+    [taxes] => 1.5984
+    [totalPrice] => 13.5894
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [itemCount] => 1
+    [itemTotalPrice] => 9.99
+    [discount] => 10.00
+    [discountAmount] => 0.999
+    [taxes] => 1.5984
+    [totalPrice] => 13.5894
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [itemCount] => 1
+    [itemTotalPrice] => 9.99
+    [discount] => 10.00
+    [discountAmount] => 0.999
+    [taxes] => 1.5984
+    [totalPrice] => 13.5894
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [0] => 3
+    [1] => 4
+    [2] => 4
+)
+Array
+(
+    [card_name] => asee
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [itemCount] => 2
+    [itemTotalPrice] => 79.98
+    [discount] => 10.00
+    [discountAmount] => 7.998
+    [taxes] => 12.7968
+    [totalPrice] => 87.7788
+)
+Array
+(
+    [card_name] => asa
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [itemCount] => 2
+    [itemTotalPrice] => 79.98
+    [discount] => 10.00
+    [discountAmount] => 7.998
+    [taxes] => 12.7968
+    [totalPrice] => 87.7788
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [itemCount] => 6
+    [itemTotalPrice] => 305.94
+    [discount] => 10.00
+    [discountAmount] => 30.594
+    [taxes] => 48.9504
+    [totalPrice] => 327.2964
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [itemCount] => 6
+    [itemTotalPrice] => 305.94
+    [discount] => 10.00
+    [discountAmount] => 30.594
+    [taxes] => 48.9504
+    [totalPrice] => 327.2964
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)
+Array
+(
+    [card_name] => aseel
+    [card_number] => 4333640143363227
+    [exp_date] => 1212
+    [cvc] => 123
+)

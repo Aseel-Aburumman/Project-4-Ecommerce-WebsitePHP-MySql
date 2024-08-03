@@ -1,3 +1,61 @@
+<?php
+include 'connection.php';
+session_start();
+
+// Function to check if the user is signed in
+function isUserSignedIn()
+{
+    return isset($_SESSION['user_id']);
+}
+// اكاونت من عبسي
+
+$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account.php';
+$userPageUrlFavList = isUserSignedIn() ? 'wishlist.php' : 'fav-list.php';
+$userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
+
+$query = 'SELECT * FROM products WHERE product_id < 5';
+$result = $conn->query($query);
+
+$popquery = 'SELECT * FROM products WHERE product_id > 5 AND product_id < 12';
+$popresult = $conn->query($popquery);
+
+$revsql = "SELECT reviews.comment, users.username FROM reviews JOIN users ON reviews.user_id = users.user_id";
+$revresult = $conn->query($revsql);
+
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $product_id = $_POST['product_id'];
+    if (!isset($_SESSION['wishlist'])) {
+        $_SESSION['wishlist'] = array();
+    }
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = array();
+    }
+
+    if ($_POST['action'] == 'add_to_wishlist') {
+        if (!in_array($product_id, $_SESSION['wishlist'])) {
+            $_SESSION['wishlist'][] = $product_id;
+        }
+    } elseif ($_POST['action'] == 'remove_from_wishlist') {
+        if (($key = array_search($product_id, $_SESSION['wishlist'])) !== false) {
+            unset($_SESSION['wishlist'][$key]);
+            $_SESSION['wishlist'] = array_values($_SESSION['wishlist']);
+        }
+    } elseif ($_POST['action'] == 'add_to_cart') {
+        if (!in_array($product_id, $_SESSION['cart'])) {
+            $_SESSION['cart'][] = $product_id;
+        }
+    } elseif ($_POST['action'] == 'remove_from_cart') {
+        if (($key = array_search($product_id, $_SESSION['cart'])) !== false) {
+            unset($_SESSION['cart'][$key]);
+            $_SESSION['cart'] = array_values($_SESSION['cart']);
+        }
+    }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,10 +79,11 @@
                             <a href="index.php"><img src="dist/images/logo/logo.png" alt="logo" /></a>
                         </div>
                         <ul class="main-menu d-flex align-items-center">
-                            <li><a class="active" href="index.php">Home</a></li>
-                            <li><a href="shop.html">Men</a></li>
-                            <li><a href="shop.html">Women</a></li>
-                            <li><a href="shop.html">Shop</a></li>
+                            <!-- <li><a class="active" href="index.php">Home</a></li> -->
+                            <li><a href="shop.php?gender=Clothing">Clothing</a></li>
+                            <li><a href="shop.php?gender=Footwear">Footwear</a></li>
+                            <li><a href="shop.php?gender=Accessories">Accessories</a></li>
+                            <li><a href="shop.php">Shop</a></li>
                             <li>
                                 <a href="javascript:void(0)">Category
                                     <svg xmlns="http://www.w3.org/2000/svg" width="9.98" height="5.69" viewBox="0 0 9.98 5.69">
@@ -34,17 +93,21 @@
                                     </svg>
                                 </a>
                                 <ul class="sub-menu">
-                                    <li><a href="javascript:void(0)">Category 1</a></li>
-                                    <li><a href="javascript:void(0)">Category 2</a></li>
-                                    <li><a href="javascript:void(0)">Category 3</a></li>
-                                    <li><a href="javascript:void(0)">Category 4</a></li>
-                                    <li><a href="javascript:void(0)">Category 5</a></li>
+                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=T-Shirt"; ?>">T-Shirt</a></li>
+                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shoes"; ?>">Shoes</a></li>
+                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Hoodies"; ?>">Hoodies</a></li>
+                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Jeans"; ?>">Jeans</a></li>
+                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Casual"; ?>">Casual</a></li>
+                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Pajamas"; ?>">Pajamas</a></li>
+                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shorts"; ?>">Shorts</a></li>
                                 </ul>
                             </li>
                             <li><a href="javascript:void(0)">Sales</a></li>
                         </ul>
+
                         <div class="search-bar">
-                            <input type="text" placeholder="Search for product...">
+                            <input type="text" placeholder="Search for product..." id="searchInput" oninput="performSearch(this)"> <!-- //fdfdsfdsfdsf -->
+                            <div id="suggestions"></div>
                             <div class="icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20.414" height="20.414" viewBox="0 0 20.414 20.414">
                                     <g id="Search_Icon" data-name="Search Icon" transform="translate(1 1)">
@@ -138,10 +201,10 @@
                                 </svg>
                             </div>
                         </div>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="shop.html">Men</a></li>
-                        <li><a href="shop.html">Women</a></li>
-                        <li><a href="shop.html">Shop</a></li>
+                        <li><a href="shop.php">Shop</a></li>
+                        <li><a href="shop.php?gender=Clothing">Clothing</a></li>
+                        <li><a href="shop.php?gender=Footwear">Footwear</a></li>
+                        <li><a href="shop.php?gender=Accessories">Accessories</a></li>
                         <li>
                             <a href="javascript:void(0)">Category
                                 <svg xmlns="http://www.w3.org/2000/svg" width="9.98" height="5.69" viewBox="0 0 9.98 5.69">
@@ -151,18 +214,20 @@
                                 </svg>
                             </a>
                             <ul class="sub-menu">
-                                <li><a href="javascript:void(0)">Category 1</a></li>
-                                <li><a href="javascript:void(0)">Category 2</a></li>
-                                <li><a href="javascript:void(0)">Category 3</a></li>
-                                <li><a href="javascript:void(0)">Category 4</a></li>
-                                <li><a href="javascript:void(0)">Category 5</a></li>
+                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=T-Shirt"; ?>">T-Shirt</a></li>
+                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shoes"; ?>">Shoes</a></li>
+                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Hoodies"; ?>">Hoodies</a></li>
+                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Jeans"; ?>">Jeans</a></li>
+                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Casual"; ?>">Casual</a></li>
+                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Pajamas"; ?>">Pajamas</a></li>
+                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shorts"; ?>">Shorts</a></li>
                             </ul>
                         </li>
                         <li><a href="javascript:void(0)">Sales</a></li>
                     </div>
                     <div class="mobile-nav d-flex align-items-center justify-content-between">
                         <div class="logo">
-                            <a href="index.html"><img src="dist/images/logo/logo.png" alt="logo" /></a>
+                            <a href="index.php"><img src="dist/images/logo/logo.png" alt="logo" /></a>
                         </div>
                         <div class="search-bar">
                             <input type="text" placeholder="Search for product...">
@@ -177,17 +242,18 @@
                         </div>
                         <div class="menu-icon">
                             <ul>
-                                <li> <a href="wishlist.html">
+                                <li>
+                                    <a href="<?php echo $userPageUrlFavList; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
                                             <g id="Heart" transform="translate(1 1)">
                                                 <path id="Heart-2" data-name="Heart" d="M20.007,4.59a5.148,5.148,0,0,0-7.444,0L11.548,5.636,10.534,4.59a5.149,5.149,0,0,0-7.444,0,5.555,5.555,0,0,0,0,7.681L4.1,13.317,11.548,21l7.444-7.681,1.014-1.047a5.553,5.553,0,0,0,0-7.681Z" transform="translate(-1.549 -2.998)" fill="#fff" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                             </g>
                                         </svg>
-                                        <span class="heart">3</span>
+                                        <span class="heart" id="wishlist-count"><?php echo isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0; ?></span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="cart.html">
+                                    <a href="<?php echo $userPageUrlCart; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
                                             <g id="Icon" transform="translate(-1524 -89)">
                                                 <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.909" cy="0.952" rx="0.909" ry="0.952" transform="translate(1531.364 108.095)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
@@ -195,19 +261,18 @@
                                                 <path id="Path_3" data-name="Path 3" d="M1,1H4.636L7.073,13.752a1.84,1.84,0,0,0,1.818,1.533h8.836a1.84,1.84,0,0,0,1.818-1.533L21,5.762H5.545" transform="translate(1524 89)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                             </g>
                                         </svg>
-                                        <span class="cart">3</span>
+                                        <span class="cart" id="cart-count">0</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="account.html">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
+                                    <a href="<?php echo $userPageUrl; ?>"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
                                             <g id="Account" transform="translate(1 1)">
                                                 <path id="Path_86" data-name="Path 86" d="M20,21V19a4,4,0,0,0-4-4H8a4,4,0,0,0-4,4v2" transform="translate(-4 -3)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                                 <circle id="Ellipse_9" data-name="Ellipse 9" cx="4" cy="4" r="4" transform="translate(4)" fill="#fff" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                             </g>
-                                        </svg>
-                                    </a>
+                                        </svg></a>
                                 </li>
+
                             </ul>
                         </div>
                         <div class="hamburger-menu">
@@ -230,7 +295,7 @@
                     <div class="col-lg-12">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Account</li>
                             </ol>
                         </nav>
@@ -249,13 +314,13 @@
                         <!-- Dashboard-Nav  Start-->
                         <div class="dashboard-nav">
                             <ul class="list-inline">
-                                <li class="list-inline-item"><a href="user-dashboard.html" class="active">Account
+                                <li class="list-inline-item"><a href="user-dashboard.php" class="active">Account
                                         settings</a></li>
-                                <li class="list-inline-item"><a href="deliver-info.html">Billing information</a></li>
-                                <li class="list-inline-item"><a href="wishlist.html">My wishlist</a></li>
-                                <li class="list-inline-item"><a href="cart.html">My cart</a></li>
-                                <li class="list-inline-item"><a href="order.html">Order</a></li>
-                                <li class="list-inline-item"><a href="account.html" class="mr-0">Log-out</a></li>
+                                <li class="list-inline-item"><a href="deliver-info.php">Billing information</a></li>
+                                <li class="list-inline-item"><a href="wishlist.php">My wishlist</a></li>
+                                <li class="list-inline-item"><a href="cart.php">My cart</a></li>
+                                <li class="list-inline-item"><a href="order.php">Order</a></li>
+                                <li class="list-inline-item"><a href="account.php" class="mr-0">Log-out</a></li>
                             </ul>
                         </div>
                         <!-- Dashboard-Nav  End-->
@@ -264,6 +329,51 @@
                         <div class="account-setting">
                             <h6>Account setting</h6>
                             <form action="#">
+                                <div class="form__div">
+                                    <input type="text" name="username" class="form__input" placeholder=" ">
+                                    <label for="" class="form__label">UserName</label>
+                                </div>
+                                <div class="form__div">
+                                    <input type="text" name="full_name" class="form__input" placeholder=" ">
+                                    <label for="" class="form__label">Full Name</label>
+                                </div>
+                                <div class="form__div">
+                                    <input type="email" name="email" class="form__input" placeholder=" ">
+                                    <label for="" class="form__label">Email</label>
+                                </div>
+                                <button type="submit" class="btn bg-primary">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <div class="change-password">
+                            <h6>Change password</h6>
+                            <form action="#">
+                                <div class="form__div">
+                                    <input type="password" name="current_password" class="form__input" placeholder=" ">
+                                    <label for="" class="form__label">Current password</label>
+                                </div>
+                                <div class="form__div">
+                                    <input type="password" name="new_password" class="form__input" placeholder=" ">
+                                    <label for="" class="form__label">New password</label>
+                                </div>
+                                <div class="form__div mb-40">
+                                    <input type="password" name="confirm_password" class="form__input" placeholder=" ">
+                                    <label for="" class="form__label">Confirm password</label>
+                                </div>
+                                <button type="submit" class="btn bg-primary">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- <div class="col-lg-6 col-md-12">
+                        <div class="account-setting">
+                            <h6>Account setting</h6>
+                            <form action="#">
+                                <div class="form__div">
+                                    <input type="text" class="form__input" placeholder="
+                                    ">
+                                    <label for="" class="form__label">UserName</label>
+                                </div>
                                 <div class="form__div">
                                     <input type="text" class="form__input" placeholder="
                                     ">
@@ -297,7 +407,7 @@
                                 <button type="submit" class="btn bg-primary">Save Changes</button>
                             </form>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </section>
@@ -313,7 +423,8 @@
                     <div class="newsletter-area-text">
                         <h4 class="text-white">Subscribe to get notification.</h4>
                         <p>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            Receive our weekly newsletter.
+                            For dietary content, fashion insider and the best offers.
                         </p>
                     </div>
                 </div>
@@ -328,62 +439,18 @@
                     </div>
                 </div>
             </div>
-            <div class="row main-footer">
-                <div class="col-lg-4 col-md-12 col-sm-12 col-12">
-                    <div class="main-footer-info">
-                        <img src="dist/images/logo/white.png" alt="Logo" class="img-fluid">
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam molestie malesuada
-                            metus, non molestie ligula laoreet vitae. Ut et fringilla risus, vel.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-2 offset-lg-2 col-md-4 col-sm-6 col-12">
-                    <div class="main-footer-quicklinks">
-                        <h6>Company</h6>
-                        <ul class="quicklink">
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Help &amp; Support</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms of Service</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
-                    <div class="main-footer-quicklinks">
-                        <h6>Quick links</h6>
-                        <ul class="quicklink">
-                            <li><a href="#">New Realease</a></li>
-                            <li><a href="#">Customize</a></li>
-                            <li><a href="#">Sale &amp; Discount</a></li>
-                            <li><a href="#">Men</a></li>
-                            <li><a href="#">Women</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
-                    <div class="main-footer-quicklinks">
-                        <h6>Account</h6>
-                        <ul class="quicklink">
-                            <li><a href="#">Your Bag</a></li>
-                            <li><a href="#">Profile</a></li>
-                            <li><a href="#">Order Completed</a></li>
-                            <li><a href="#">Log-out</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="copyright d-flex justify-content-between align-items-center">
                         <div class="copyright-text order-2 order-lg-1">
-                            <p>&copy; 2020. Design and Developed by <a href="#">Zakir Soft</a></p>
+                            <p>&copy; 2024. All rights reserved. </p>
                         </div>
                         <div class="copyright-links order-1 order-lg-2">
-                            <a href="#" class="ml-0"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fab fa-youtube"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="soon.php" class="ml-0"><i class="fab fa-facebook-f"></i></a>
+                            <a href="soon.php"><i class="fab fa-twitter"></i></a>
+                            <a href="soon.php"><i class="fab fa-youtube"></i></a>
+                            <a href="soon.php"><i class="fab fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>
@@ -407,6 +474,129 @@
         function closeNav() {
             document.getElementById("mySidenav").style.width = "0";
             $('#overlayy').removeClass("active");
+
         }
+
+        function toggleWishlist(event, productId) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            const form = document.getElementById(`wishlist-form-${productId}`);
+            const formData = new FormData(form);
+
+            fetch("http://localhost/ecommercebreifdb/user-dashboard.php", { // Use the current page URL
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    // Toggle the heart icon
+                    const icon = document.getElementById(`wishlist-icon-${productId}`);
+                    const actionInput = form.querySelector('input[name="action"]');
+                    if (actionInput.value === 'add_to_wishlist') {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        actionInput.value = 'remove_from_wishlist';
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        actionInput.value = 'add_to_wishlist';
+                    }
+                    updateWishlistCount();
+                })
+                .catch(error => console.error('Error:', error));
+
+            return false;
+        }
+
+
+
+        function toggleCart(event, productId) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            const form = document.getElementById(`cart-form-${productId}`);
+            const formData = new FormData(form);
+
+            fetch("http://localhost/ecommercebreifdb/user-dashboard.php", { // Use the current page URL
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    // Toggle the cart icon
+                    const actionInput = form.querySelector('input[name="action"]');
+                    updateCartCount(); // Update the cart count
+                    if (actionInput.value === 'add_to_cart') {
+                        actionInput.value = 'remove_from_cart';
+                    } else {
+                        actionInput.value = 'add_to_cart';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+
+            return false;
+        }
+
+        function updateCartCount() {
+            fetch("http://localhost/ecommercebreifdb/api/get_cart_count.php")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('cart-count').innerText = data.count;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function updateWishlistCount() {
+            fetch("http://localhost/ecommercebreifdb/api/get_wishlist_count.php")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('wishlist-count').innerText = data.count;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            updateWishlistCount();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('http://localhost/ecommercebreifdb/api/fetch_aseel_user_data.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        document.querySelector('input[name="username"]').value = data.username;
+                        document.querySelector('input[name="full_name"]').value = data.Full_name;
+                        document.querySelector('input[name="email"]').value = data.email;
+                    } else {
+                        alert(data.error);
+                    }
+                });
+
+            document.querySelector('.account-setting form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+
+                fetch('http://localhost/ecommercebreifdb/api/update_aseel_user_data.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.success || data.error);
+                    });
+            });
+
+            document.querySelector('.change-password form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+
+                fetch('http://localhost/ecommercebreifdb/api/update_aseel_user_data.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.success || data.error);
+                    });
+            });
+        });
     </script>
 </body>
