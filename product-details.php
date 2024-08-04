@@ -473,7 +473,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                 $imgData = base64_encode($product['image']);
                                                 $src = 'data:image/jpeg;base64,' . $imgData;
                                             } else {
-                                                $src = 'dist/images/product/02.jpg';
+                                                $src = 'dist/images/categorys/Casual.webp';
                                             }
                                             ?>
                                             <img src="<?= $src ?>" />
