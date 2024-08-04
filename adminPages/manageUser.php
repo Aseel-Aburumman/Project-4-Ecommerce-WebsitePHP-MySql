@@ -28,15 +28,20 @@ include '../connection.php';
     <div class="container-fluid">
         <div class="row">
             <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-                <div class="position-sticky pt-3">
+            <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
+                    <li class="nav-item">
+                            <a class="nav-link active" href="dashboard.php">
+                                Main dashboard
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="manageUser.php">
                                 Manage Users
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="manageCategories.php">
+                            <a class="nav-link" href="#manage-categories">
                                 Manage Categories
                             </a>
                         </li>
@@ -46,8 +51,9 @@ include '../connection.php';
                             </a>
                         </li>
                         <li lass="nav-item"><a class="nav-link" href="manageProductType.php">Manage Product Type</a></li>
+                        <li lass="nav-item"><a class="nav-link" href="manageCoupons.php">Manage Coupons</a></li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#logout">
+                            <a class="nav-link" href="../account (1).php">
                                 Logout
                             </a>
                         </li>

@@ -85,11 +85,14 @@ $conn->close();
     <div class="container">
         <div class="sidebar">
             <ul>
+            <li><a href="dashboard.php">Main dashboard</a></li>
+
                 <li><a href="manageUser.php">Manage Users</a></li>
                 <li><a href="manageCategories.php">Manage Categories</a></li>
                 <li><a href="manageProducts.php">Manage Products</a></li>
                 <li><a href="manageProductType.php">Manage Product Type</a></li>
-                <li><a href="#logout">Logout</a></li>
+                <li><a href="manageCoupons.php">Manage Coupons</a></li>
+                <li><a href="../account (1).php">Logout</a></li>
             </ul>
         </div>
         <div class="main-content">

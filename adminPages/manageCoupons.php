@@ -1,52 +1,135 @@
-<?php while ($product = $result->fetch_assoc()) : ?>
-                            <?php
-                            // Check if the product is in the wishlist or cart
-                            $isInWishlist = isset($_SESSION['wishlist']) && in_array($product['product_id'], $_SESSION['wishlist']);
-                            $isInCart = isset($_SESSION['cart']) && in_array($product['product_id'], $_SESSION['cart']);
-                            ?>
-                            <div class="product-item">
-                                <div class="product-item-image">
-                                    <a href="product-details.php?id=<?php echo $product['product_id']; ?>">
-                                        <?php
-                                        if (isset($product['image']) && !empty($product['image'])) {
-                                            $imgData = base64_encode($product['image']);
-                                            $src = 'data:image/jpeg;base64,' . $imgData;
-                                        } else {
-                                            $src = '/dist/images/nike-shoe.jpg';
-                                        }
-                                        ?>
-                                        <img src="<?php echo $src; ?>" alt="<?php echo $product['product_name']; ?>" class="img-fluid">
-                                    </a>
-                                    <div class="cart-icon">
-                                        <form id="wishlist-form-<?php echo $product['product_id']; ?>" method="post" style="display:inline;" onsubmit="return toggleWishlist(event, <?php echo $product['product_id']; ?>)">
-                                            <input type="hidden" name="action" value="<?php echo $isInWishlist ? 'remove_from_wishlist' : 'add_to_wishlist'; ?>">
-                                            <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
-                                            <button type="submit" style="border:none; background:white; width:30px;height:30px; border-radius: 50%; padding:3px; margin-right: 3px;">
-                                                <i id="wishlist-icon-<?php echo $product['product_id']; ?>" class="<?php echo $isInWishlist ? 'fas fa-heart' : 'far fa-heart'; ?>"></i>
-                                            </button>
-                                        </form>
+<?php
+session_start();
+if (!isset($_SESSION['user_name'])) {
+    header("Location: login.php");
+    exit();
+}
 
-                                        <form id="cart-form-<?php echo $product['product_id']; ?>" method="post" style="display:inline;" onsubmit="return toggleCart(event, <?php echo $product['product_id']; ?>)">
-                                            <input type="hidden" name="action" value="<?php echo $isInCart ? 'remove_from_cart' : 'add_to_cart'; ?>">
-                                            <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
-                                            <button type="submit" style="border:none; background:white; width:30px;height:30px; border-radius: 50%; padding:3px;">
-                                                <svg id="cart-icon-<?php echo $product['product_id']; ?>" xmlns="http://www.w3.org/2000/svg" width="16.75" height="16.75" viewBox="0 0 16.75 16.75">
-                                                    <g id="Your_Bag" data-name="Your Bag" transform="translate(0.75)">
-                                                        <g id="Icon" transform="translate(0 1)">
-                                                            <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(4.773 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                            <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.682" cy="0.714" rx="0.682" ry="0.714" transform="translate(12.273 13.571)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                            <path id="Path_3" data-name="Path 3" d="M1,1H3.727l1.827,9.564a1.38,1.38,0,0,0,1.364,1.15h6.627a1.38,1.38,0,0,0,1.364-1.15L16,4.571H4.409" transform="translate(-1 -1)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
-                                                        </g>
-                                                    </g>
-                                                </svg>
-                                            </button>
-                                        </form>
-                                        <iframe name="cart-frame-<?php echo $product['product_id']; ?>" style="display:none;"></iframe>
-                                    </div>
-                                </div>
-                                <div class="product-item-info">
-                                    <a href="product-details.php?id=<?php echo $product['product_id']; ?>"><?php echo $product['product_name']; ?></a>
-                                    <span>$<?php echo $product['price']; ?></span>
-                                </div>
-                            </div>
-                        <?php endwhile; ?>
+
+function getFirstTwoWords($string) {
+    $words = explode(' ', $string);
+    return implode(' ', array_slice($words, 0, 2));
+}
+
+$firstTwoWords = getFirstTwoWords($_SESSION['user_name']);
+include '../connection.php';
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - List of Coupons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="manageStyle.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                    <li class="nav-item">
+                            <a class="nav-link active" href="dashboard.php">
+                                Main dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="manageUser.php">
+                                Manage Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#manage-categories">
+                                Manage Categories
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="manageProducts.php">
+                                Manage Products
+                            </a>
+                        </li>
+                        <li lass="nav-item"><a class="nav-link" href="manageProductType.php">Manage Product Type</a></li>
+                        <li lass="nav-item"><a class="nav-link" href="manageCoupons.php">Manage Coupons</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../account (1).php">
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Admin Dashboard</h1>
+                    <p class="h5"><?php echo htmlspecialchars($firstTwoWords); ?></p>
+                </div>
+
+                <h2>List of Categories</h2>
+                <div class="d-flex mb-3">
+                    <form class="d-flex me-3" method="get" action="">
+                        <input class="form-control me-2" type="search" name="search" placeholder="Search clients" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                    <div>
+                        <a class="btn btn-primary me-2" href="addCoupons.php" role="button">Add Coupons</a>
+                        <a class="btn btn-secondary" href="dashboard.php" role="button">Back</a>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Code</th>
+                                <th>discount</th>
+                                <th>Max discount amount</th>
+                                <th>Is Active</th>
+                                <th>Expiry Date</th>
+                                <th class="actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $search = isset($_GET["search"]) ? $conn->real_escape_string($_GET["search"]) : '';
+                            $sql = $search ? "SELECT * FROM coupons WHERE code LIKE '%$search%' " : "SELECT * FROM coupons ";
+                            $result = $conn->query($sql);
+
+                            if (!$result) {
+                                die("Invalid query: " . $conn->error);
+                            }
+
+                            while ($row = $result->fetch_assoc()) {
+                                echo "
+                                <tr>
+                                <td>{$row['id']}</td>
+                                    <td>{$row['code']}</td>
+                                    <td>{$row['discount']}</td>
+                                    <td>{$row['max_discount_amount']}</td>
+                                    <td>{$row['is_active']}</td>
+                                    <td>{$row['expiry_date']}</td>
+                                  
+                                    <td class='actions'>
+        
+                                        <a class='btn btn-warning btn-sm' href='editCoupons.php?category_id={$row['id']}'>Edit</a>
+                                        <a class='btn btn-danger btn-sm' href='delete.php?category_id={$row['id']}'>Delete</a>
+                                    </td>
+                                </tr>
+                                ";
+                            }
+
+                            $conn->close();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+Wwl5kL5MW/xyxF2YLVivBcc2xMMJ" crossorigin="anonymous"></script>
+</body>
+</html>
