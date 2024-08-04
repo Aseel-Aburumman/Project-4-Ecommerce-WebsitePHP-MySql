@@ -95,6 +95,47 @@ function isUserSignedIn()
 $userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account (1).php';
 $userPageUrlFavList = isUserSignedIn() ? 'wishlist.php' : 'fav-list.php';
 $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
+
+$query = 'SELECT * FROM products WHERE product_id < 5';
+$result = $conn->query($query);
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    session_start(); // Ensure session is started
+    $product_id = $_POST['product_id'];
+    $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
+
+    if (!isset($_SESSION['wishlist'])) {
+        $_SESSION['wishlist'] = array();
+    }
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = array();
+        $_SESSION['cart_quantities'] = [];
+    }
+
+    if ($_POST['action'] == 'add_to_wishlist') {
+        if (!in_array($product_id, $_SESSION['wishlist'])) {
+            $_SESSION['wishlist'][] = $product_id;
+        }
+    } elseif ($_POST['action'] == 'remove_from_wishlist') {
+        if (($key = array_search($product_id, $_SESSION['wishlist'])) !== false) {
+            unset($_SESSION['wishlist'][$key]);
+            $_SESSION['wishlist'] = array_values($_SESSION['wishlist']);
+        }
+    } elseif ($_POST['action'] == 'add_to_cart') {
+        if (!in_array($product_id, $_SESSION['cart'])) {
+            $_SESSION['cart'][] = $product_id;
+        }
+        $_SESSION['cart_quantities'][$product_id] = $quantity;
+    } elseif ($_POST['action'] == 'remove_from_cart') {
+        if (($key = array_search($product_id, $_SESSION['cart'])) !== false) {
+            unset($_SESSION['cart'][$key]);
+            unset($_SESSION['cart_quantities'][$product_id]);
+            $_SESSION['cart'] = array_values($_SESSION['cart']);
+        }
+    }
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -239,7 +280,7 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
                                     <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shorts"; ?>">Shorts</a></li>
                                 </ul>
                             </li>
-                            <li><a href="javascript:void(0)">Sales</a></li>
+                            <li><a href="sales.php">Sales</a></li>
                         </ul>
 
                         <form class="search-bar">
@@ -331,7 +372,7 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
                                 <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shorts"; ?>">Shorts</a></li>
                             </ul>
                         </li>
-                        <li><a href="javascript:void(0)">Sales</a></li>
+                        <li><a href="sales.php">Sales</a></li>
                     </div>
                     <div class="mobile-nav d-flex align-items-center justify-content-between">
                         <div class="logo">
@@ -524,7 +565,61 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
                                     </div>
                                 </div> -->
 
-                                <div class="product-pricelist-selector-quantity">
+
+                                <div>
+                                    <!-- <div class="product-pricelist-selector-quantity">
+                                        <h6>Quantity</h6>
+                                        <div class="wan-spinner wan-spinner-4">
+                                            <a href="javascript:void(0)" class="minus" onclick="quantity_minus(this)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="11.98" height="6.69" viewBox="0 0 11.98 6.69">
+                                                    <path id="Arrow" d="M1474.286,26.4l5,5,5-5" transform="translate(-1473.296 -25.41)" fill="none" stroke="#989ba7" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
+                                                </svg>
+                                            </a>
+                                            <input type="text" value="1" min="1" id="quantity" name="quantity">
+                                            <a href="javascript:void(0)" class="plus" onclick="quantity_plus()">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="11.98" height="6.69" viewBox="0 0 11.98 6.69">
+                                                    <g id="Arrow" transform="translate(10.99 5.7) rotate(180)">
+                                                        <path id="Arrow-2" data-name="Arrow" d="M1474.286,26.4l5,5,5-5" transform="translate(-1474.286 -26.4)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
+                                                    </g>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div> -->
+
+                                    <div style="display: flex;" class="product-pricelist-selector-button">
+                                        <form id="cart-form" method="post" onsubmit="return toggleCart(event, <?php echo $product_id; ?>)">
+                                            <input type="hidden" name="action" value="add_to_cart">
+                                            <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+                                            <input type="hidden" name="quantity" id="cart-quantity" value="1">
+                                            <button type="submit" class="btn cart-bg">
+                                                Add to cart
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart">
+                                                    <circle cx="9" cy="21" r="1"></circle>
+                                                    <circle cx="20" cy="21" r="1"></circle>
+                                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+
+                                        <form id="wishlist-form" method="post" onsubmit="return toggleWishlist(event, <?php echo $product_id; ?>)">
+                                            <input type="hidden" name="action" value="add_to_wishlist">
+                                            <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+                                            <button type="submit" class="btn bg-primary cart-hart">
+                                                <svg id="Heart" xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
+                                                    <g id="Repeat_Grid_1" data-name="Repeat Grid 1">
+                                                        <g transform="translate(1 1)">
+                                                            <path id="Heart-2" data-name="Heart" d="M20.007,4.59a5.148,5.148,0,0,0-7.444,0L11.548,5.636,10.534,4.59a5.149,5.149,0,0,0-7.444,0,5.555,5.555,0,0,0,0,7.681L4.1,13.317,11.548,21l7.444-7.681,1.014-1.047a5.553,5.553,0,0,0,0-7.681Z" transform="translate(-1.549 -2.998)" fill="#fff" stroke="#335aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </div>
+
+
+                                <!-- <div class="product-pricelist-selector-quantity">
                                     <h6>quantity</h6>
                                     <div class="wan-spinner wan-spinner-4">
                                         <a href="javascript:void(0)" class="minus" onclick="quantity_minus(this)">
@@ -565,7 +660,7 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
                                             </g>
                                         </g>
                                     </svg>
-                                </a>
+                                </a> -->
                                 <div class="product-pricelist-selector-button-item">
                                     <div class="shipping">
                                         <div class="icon">
@@ -859,41 +954,41 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
         // console.log('after');
 
 
-        function quantity_minus(myele) {
+        // function quantity_minus(myele) {
 
-            let quantity_value_string = document.getElementById("quantity").value;
-            let quantity_value = parseInt(quantity_value_string);
+        //     let quantity_value_string = document.getElementById("quantity").value;
+        //     let quantity_value = parseInt(quantity_value_string);
 
-            if (quantity_value > 1) {
-                quantity_value -= 1;
-                document.getElementById("quantity").value = quantity_value;
-            }
-
-
-            if (quantity_value > 1) {
-                document.querySelector(".minus #Arrow").style.stroke = '#1a2224';
-            } else {
-                document.querySelector(".minus #Arrow").style.stroke = '#989ba7';
-            }
-        }
-
-        function quantity_plus() {
-            let quantity_value_string = document.getElementById("quantity").value;
-            let quantity_value = parseInt(quantity_value_string);
+        //     if (quantity_value > 1) {
+        //         quantity_value -= 1;
+        //         document.getElementById("quantity").value = quantity_value;
+        //     }
 
 
+        //     if (quantity_value > 1) {
+        //         document.querySelector(".minus #Arrow").style.stroke = '#1a2224';
+        //     } else {
+        //         document.querySelector(".minus #Arrow").style.stroke = '#989ba7';
+        //     }
+        // }
 
-            if (true) {
-                quantity_value += 1;
-                document.getElementById("quantity").value = quantity_value;
-            }
+        // function quantity_plus() {
+        //     let quantity_value_string = document.getElementById("quantity").value;
+        //     let quantity_value = parseInt(quantity_value_string);
 
-            if (quantity_value > 1) {
-                document.querySelector(".minus #Arrow").style.stroke = '#1a2224';
-            } else {
-                document.querySelector(".minus #Arrow").style.stroke = '#989ba7';
-            }
-        }
+
+
+        //     if (true) {
+        //         quantity_value += 1;
+        //         document.getElementById("quantity").value = quantity_value;
+        //     }
+
+        //     if (quantity_value > 1) {
+        //         document.querySelector(".minus #Arrow").style.stroke = '#1a2224';
+        //     } else {
+        //         document.querySelector(".minus #Arrow").style.stroke = '#989ba7';
+        //     }
+        // }
     </script>
 
 
@@ -1008,28 +1103,51 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
         // function onfocusout_down(){
         //       document.getElementById('suggestions_down').innerHTML = '';
         // }
+        function quantity_minus(myele) {
+            let quantity_value_string = document.getElementById("quantity").value;
+            let quantity_value = parseInt(quantity_value_string);
+
+            if (quantity_value > 1) {
+                quantity_value -= 1;
+                document.getElementById("quantity").value = quantity_value;
+            }
+
+            if (quantity_value > 1) {
+                document.querySelector(".minus #Arrow").style.stroke = '#1a2224';
+            } else {
+                document.querySelector(".minus #Arrow").style.stroke = '#989ba7';
+            }
+        }
+
+        function quantity_plus() {
+            let quantity_value_string = document.getElementById("quantity").value;
+            let quantity_value = parseInt(quantity_value_string);
+
+            quantity_value += 1;
+            document.getElementById("quantity").value = quantity_value;
+
+            if (quantity_value > 1) {
+                document.querySelector(".minus #Arrow").style.stroke = '#1a2224';
+            } else {
+                document.querySelector(".minus #Arrow").style.stroke = '#989ba7';
+            }
+        }
 
         function toggleWishlist(event, productId) {
-            event.preventDefault(); // Prevent the form from submitting normally
-            const form = document.getElementById(`wishlist-form-${productId}`);
+            event.preventDefault();
+            const form = document.getElementById('wishlist-form');
             const formData = new FormData(form);
 
-            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", {
                     method: "POST",
                     body: formData
                 })
                 .then(response => response.text())
                 .then(data => {
-                    // Toggle the heart icon
-                    const icon = document.getElementById(`wishlist-icon-${productId}`);
                     const actionInput = form.querySelector('input[name="action"]');
                     if (actionInput.value === 'add_to_wishlist') {
-                        icon.classList.remove('far');
-                        icon.classList.add('fas');
                         actionInput.value = 'remove_from_wishlist';
                     } else {
-                        icon.classList.remove('fas');
-                        icon.classList.add('far');
                         actionInput.value = 'add_to_wishlist';
                     }
                     updateWishlistCount();
@@ -1039,21 +1157,21 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
             return false;
         }
 
-
         function toggleCart(event, productId) {
-            event.preventDefault(); // Prevent the form from submitting normally
-            const form = document.getElementById(`cart-form-${productId}`);
+            event.preventDefault();
+            const form = document.getElementById('cart-form');
             const formData = new FormData(form);
+            const quantity = document.getElementById('quantity').value;
+            formData.set('quantity', quantity);
 
-            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", {
                     method: "POST",
                     body: formData
                 })
                 .then(response => response.text())
                 .then(data => {
-                    // Toggle the cart icon
                     const actionInput = form.querySelector('input[name="action"]');
-                    updateCartCount(); // Update the cart count
+                    updateCartCount();
                     if (actionInput.value === 'add_to_cart') {
                         actionInput.value = 'remove_from_cart';
                     } else {
@@ -1083,7 +1201,6 @@ $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
                 .catch(error => console.error('Error:', error));
         }
 
-        // Call updateCartCount on page load to set the initial cart count
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
             updateWishlistCount();

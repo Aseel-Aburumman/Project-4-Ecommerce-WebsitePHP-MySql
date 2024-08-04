@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shorts"; ?>">Shorts</a></li>
                                 </ul>
                             </li>
-                            <li><a href="javascript:void(0)">Sales</a></li>
+                            <li><a href="sales.php">Sales</a></li>
                         </ul>
 
                         <div class="search-bar">
@@ -192,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shorts"; ?>">Shorts</a></li>
                             </ul>
                         </li>
-                        <li><a href="javascript:void(0)">Sales</a></li>
+                        <li><a href="sales.php">Sales</a></li>
                     </div>
                     <div class="mobile-nav d-flex align-items-center justify-content-between">
                         <div class="logo">
