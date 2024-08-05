@@ -1,34 +1,29 @@
 <?php
 include "connection.php";
 
-$sql = "SELECT * FROM products WHERE product_id=90";
+$check = '';
 
 if (isset($_REQUEST['id'])) {
-    // echo ' if ';
+
     if ($_REQUEST['id']) {
         $id_p = $_REQUEST['id'];
         $sql = "SELECT * FROM products WHERE product_id=$id_p";
+        $check = "id=$id_p";
     }
 } elseif (isset($_REQUEST['serch_product'])) {
-    // echo 'else if ';
+
     if ($_REQUEST['serch_product']) {
         $name_p = $_REQUEST['serch_product'];
-        // echo $name_p;
-        $sql = "SELECT * FROM products WHERE 	product_name='$name_p'";
+        $check = "serch_product=$name_p";
+        $sql = "SELECT * FROM products WHERE product_name='$name_p'";
     }
 } else {
-    // echo 'else  ';
-    $sql = "SELECT * FROM products WHERE product_id=90";
+    header('location: shop.php');
 }
-
 
 $result =  $conn->query($sql);
 $product = $result->fetch_assoc();
 
-
-// echo "<pre>";
-// print_r($product);
-// echo "</pre>";
 
 
 
@@ -38,11 +33,14 @@ if (isset($_REQUEST['submit_send_comminte'])) {
     if (isset($_REQUEST['username'])  && isset($_REQUEST['usercomminte'])) {
 
         $product_id = $product['product_id'];
+
+        $comment_for_id = $product['product_id'];
         //  $username = $_REQUEST['username'];
-        $username = 'regular_user';
+        $username = 'regular_user';    //                                            is this Loging in ? or gest?
         $comminte = $_REQUEST['usercomminte'];
 
         $rating = 'null';    // Default Value
+
 
         if (isset($_REQUEST['rating'])) {
             if ($_REQUEST['rating'] > 0 && $_REQUEST['rating'] < 6) {
@@ -50,26 +48,16 @@ if (isset($_REQUEST['submit_send_comminte'])) {
             }
         }
 
-        if ($username && $comminte) :
+        if ($username && $comminte) {
             $sql_set_commint = "INSERT INTO reviews (reviews.product_id, reviews.user_id, reviews.rating, reviews.comment, reviews.review_date)
                  VALUES 
                  ($product_id,(SELECT users.user_id FROM users WHERE users.username='$username'), $rating,'$comminte', '2022-11-3');";
             $conn->query($sql_set_commint);
-        endif;
-        header('Location:' . $_SERVER['PHP_SELF']);
+        }
+        header("Location: product-details.php?id=$product_id");
     } else {
-        header('Location:' . $_SERVER['PHP_SELF']);
+        header("Location: product-details.php?id=$product_id");
     }
-}
-
-
-// ما اله داعي
-if (isset($_REQUEST['Add_to_cart'])) {
-    if (isset($_REQUEST['quantity'])) {
-
-        echo $_REQUEST['quantity'];
-    }
-    // quantity
 }
 
 
@@ -77,10 +65,10 @@ if (isset($_REQUEST['Add_to_cart'])) {
 if (isset($_REQUEST['product_name'])) {
     if ($_REQUEST['product_name']) {
         $name_p = $_REQUEST['product_name'];
-        echo $name_p;
         header("Location: product-details.php?product_name=$name_p");
     }
 }
+
 
 session_start();
 
@@ -498,8 +486,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <span><?= $product['price'] ?></span>
                                 </div>
                                 <div class="star">
-                                    <ul> <!--   SELECT ((SUM(rating)/(COUNT(rating)*5))*5) FROM reviews WHERE product_id = 2
-                                    ; -->
+                                    <ul>
                                         <?php
 
 
@@ -514,9 +501,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                                         if ($rating[0]['r'] && $rating[0]['n']) {
 
-                                            $curent_rating = 0;
 
-                                            if ((($rating[0]['r'] * 10000000) % (round($rating[0]['r']) * 10000000)) / 10000000) {
+                                            $calc_to_rating = '';
+                                            if (round($rating[0]['r']) > $rating[0]['r']) {
+                                                $calc_to_rating = ((round($rating[0]['r']) * 10000000) % ($rating[0]['r'] * 10000000)) / 10000000;
+                                            } elseif (round($rating[0]['r']) < $rating[0]['r']) {
+                                                $calc_to_rating = (($rating[0]['r'] * 10000000) % (round($rating[0]['r']) * 10000000)) / 10000000;
+                                            }
+
+
+
+
+
+                                            $h_r_r = handel_raing_rating($rating[0]['r']);
+
+                                            $curent_rating = 0;
+                                            if ($calc_to_rating && round($rating[0]['r']) < $rating[0]['r'] && $h_r_r != round($rating[0]['r'])) {
                                                 $curent_rating = round($rating[0]['r'])  + 1;
                                             } else {
                                                 $curent_rating = round($rating[0]['r']);
@@ -527,9 +527,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                 $list_stars_staut[$i] = 'star_on';
                                             }
                                         }
+                                        // echo $curent_rating;
 
 
-
+                                        function handel_raing_rating($rat)
+                                        {
+                                            $list = explode('.', $rat);
+                                            if ($list[1] == 0) {
+                                                return $list[0];
+                                            } else {
+                                                return $list[0] . '.' . $list[1][0];
+                                            }
+                                        }
 
                                         ?>
                                         <li><i class="fas fa-star <?= $list_stars_staut[0] ?>"></i></li>
@@ -537,7 +546,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <li><i class="fas fa-star <?= $list_stars_staut[2] ?>"></i></li>
                                         <li><i class="fas fa-star <?= $list_stars_staut[3] ?>"></i></li>
                                         <li><i class="fas fa-star <?= $list_stars_staut[4] ?>"></i></li>
-                                        <li><?= $rating[0]['r'] ?></li>
+                                        <li><?= $h_r_r ?></li>
                                         <li class="point">(<?= $rating[0]['n'] ?> Rating)</li>
                                     </ul>
                                 </div>
@@ -615,52 +624,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             </button>
                                         </form>
                                     </div>
-
                                 </div>
 
-
-                                <!-- <div class="product-pricelist-selector-quantity">
-                                    <h6>quantity</h6>
-                                    <div class="wan-spinner wan-spinner-4">
-                                        <a href="javascript:void(0)" class="minus" onclick="quantity_minus(this)">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="11.98" height="6.69" viewBox="0 0 11.98 6.69">
-                                                <path id="Arrow" d="M1474.286,26.4l5,5,5-5" transform="translate(-1473.296 -25.41)" fill="none" stroke="#989ba7" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
-                                            </svg>
-                                        </a>
-                                        <input type="text" value="1" min="1" id="quantity" name="quantity">
-                                        <a href="javascript:void(0)" class="plus" onclick="quantity_plus()">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="11.98" height="6.69" viewBox="0 0 11.98 6.69">
-                                                <g id="Arrow" transform="translate(10.99 5.7) rotate(180)">
-                                                    <path id="Arrow-2" data-name="Arrow" d="M1474.286,26.4l5,5,5-5" transform="translate(-1474.286 -26.4)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
-                                                </g>
-                                            </svg>
-                                        </a>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="product-pricelist-selector-button">
-                                <a class="btn cart-bg " href="<?= $_SERVER['PHP_SELF'] ?>?Add_to_cart">Add to cart
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart">
-                                        <circle cx="9" cy="21" r="1"></circle>
-                                        <circle cx="20" cy="21" r="1"></circle>
-                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                                    </svg>
-                                </a>
-                                <a class="btn bg-primary cart-hart" href="#">
-                                    <svg id="Heart" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22" height="20" viewBox="0 0 22 20">
-                                        <defs>
-                                            <clipPath id="clip-path">
-                                                <rect width="22" height="20" fill="none" />
-                                            </clipPath>
-                                        </defs>
-                                        <g id="Repeat_Grid_1" data-name="Repeat Grid 1" clip-path="url(#clip-path)">
-                                            <g transform="translate(1 1)">
-                                                <path id="Heart-2" data-name="Heart" d="M20.007,4.59a5.148,5.148,0,0,0-7.444,0L11.548,5.636,10.534,4.59a5.149,5.149,0,0,0-7.444,0,5.555,5.555,0,0,0,0,7.681L4.1,13.317,11.548,21l7.444-7.681,1.014-1.047a5.553,5.553,0,0,0,0-7.681Z" transform="translate(-1.549 -2.998)" fill="#fff" stroke="#335aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </a> -->
                                 <div class="product-pricelist-selector-button-item">
                                     <div class="shipping">
                                         <div class="icon">
@@ -704,10 +669,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </section>
         <!-- Product Details Area End -->
 
-        <!-- Commint Section Start -->
 
+        <!-- Commint Section Start -->
         <section style="display:flex; justify-content:center; width:100%;">
-            <!-- <div class="col-lg-6 col-md-12"> -->
             <div class="account-setting" style="width: 83%;">
                 <h6>Commint</h6>
                 <form action="<?= $_SERVER['PHP_SELF'] ?>" method="get">
@@ -725,22 +689,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <label for="star1"></label>
                     </div>
 
+                    <input type="hidden" name="id" value="<?= $product_id ?>">
                     <div class="form__div">
                         <input type="text" class="form__input" placeholder="" name="username">
                         <label for="" class="form__label">Full Name</label>
                     </div>
-                    <!-- <div class="form__div">
-                            <input type="email" class="form__input" placeholder="" name="useremail">
-                            <label for="" class="form__label">Email</label>
-                        </div> -->
+
                     <div class="form__div">
                         <input type="text" class="form__input" placeholder="" name="usercomminte">
                         <label for="" class="form__label">Your comminte</label>
                     </div>
-                    <button type="submit" class="btn bg-primary" name="submit_send_comminte">Send</button>
+                    <input type="submit" name="submit_send_comminte" class="btn bg-primary" value="Send">
                 </form>
             </div>
-            <!-- </div> -->
         </section>
         <!-- Commint Section End -->
 
@@ -1018,12 +979,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         let list_for_search = [];
         async function yousef() {
-
             let api = await fetch(`api_get.php/products.json`);
+            // console.log(api);
 
             let Json = await api.json();
+            console.log(Json);
             Json.forEach(element => {
+
+                const name = element['product_name'].split(",")[0];
+
                 Object_yousef = {
+                    // name: name
                     name: element['product_name']
                 }
                 list_for_search.push(Object_yousef);
@@ -1034,16 +1000,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
         function performSearch(ele) {
+
             var search_id = 'searchInput';
             var div_id = 'suggestions';
 
-            if (ele.id == 'searchInput') {
-                search_id = 'searchInput';
-                div_id = 'suggestions';
-            } else if (ele.id == 'searchInput_down') {
-                search_id = 'searchInput_down';
-                div_id = 'suggestions_down';
-            }
+
             const query = document.getElementById(search_id).value.toLowerCase();
             const suggestionsDiv = document.getElementById(div_id);
 
@@ -1056,19 +1017,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             const filteredData = list_for_search.filter(item => item.name.toLowerCase().includes(query));
 
+            console.log(filteredData)
+
             if (filteredData.length > 0) {
-                filteredData.forEach(item => {
-                    //   const div = document.createElement('div');
+
+                for (let i = 0; i < 8; i++) {
+
                     const div = document.createElement('input');
                     div.type = 'submit';
                     div.name = 'serch_product';
-                    //   div.textContent = item.name;
-                    div.value = item.name;
+
+                    div.value = filteredData[i].name;
                     div.className = 'suggestion-item';
-                    //   div.onclick = () => selectSuggestion(item.name,search_id, div_id);
+
                     suggestionsDiv.appendChild(div);
                     check_my_div()
-                });
+                }
             }
         }
 
@@ -1077,7 +1041,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 document.getElementById(search_id).value = suggestion;
                 document.getElementById(div_id).innerHTML = '';
-                //   location.href = "product-details.php?fsdf" + suggestion;
             }
         }
 

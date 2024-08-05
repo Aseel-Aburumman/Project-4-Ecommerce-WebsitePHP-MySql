@@ -1,6 +1,7 @@
 <!-- نسخة يوسف -->
 
 <?php
+
 include 'connection.php';
 
 // Delfault value
@@ -76,6 +77,50 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Olog - Home</title>
     <link rel="stylesheet" href="dist/main.css">
+    <style>
+        #suggestions {
+            position: absolute;
+            top: 44px;
+            width: 100%;
+            z-index: 2000;
+            border-radius: 0 0 10px 10px;
+            border: none;
+            border-top: none;
+            box-shadow: 0 4px 5px #0000001f;
+            /* background-color: red;  */
+            background-color: white;
+
+        }
+
+        .suggestion-item {
+            cursor: pointer;
+            padding: 2px 0 2px 16px;
+            background-color: transparent;
+            border-radius: 0 !important;
+            border: none !important;
+
+        }
+
+        .suggestion-item:hover {
+            background-color: #2b2b5b45;
+        }
+
+        .style_searching_input {
+            border-radius: 10px 10px !important;
+            border-bottom: none !important;
+            border: none !important;
+            box-shadow: 0 -2px 5px #0000001f;
+        }
+
+        .style_searching_input_with_results {
+            border-bottom: none !important;
+
+            border-radius: 10px 10px 0 0 !important;
+            border-bottom: none !important;
+            border: none !important;
+            box-shadow: 0 -4px 5px #0000001f;
+        }
+    </style>
 </head>
 
 <body>
@@ -115,9 +160,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <li><a href="sales.php">Sales</a></li>
                         </ul>
 
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search for product..." id="searchInput" oninput="performSearch(this)"> <!-- //fdfdsfdsfdsf -->
-                            <div id="suggestions"></div>
+                        <!-- <div class="search-bar"> -->
+                        <form class="search-bar" action="product-details.php">
+
+                            <!-- <input type="text" placeholder="Search for product..." id="searchInput" class="style_searching_input" onchange="performSearch(this)"> -->
+                            <!-- <input type="text" onchange="hi123()"> -->
+                            <input type="text" placeholder="Search for product..." oninput="performSearch(this)" id="searchInput" class="style_searching_input">
+
                             <div class="icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20.414" height="20.414" viewBox="0 0 20.414 20.414">
                                     <g id="Search_Icon" data-name="Search Icon" transform="translate(1 1)">
@@ -126,7 +175,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     </g>
                                 </svg>
                             </div>
-                        </div>
+                            <div id="suggestions"></div>
+                            <!-- </div> -->
+                        </form>
 
 
 
@@ -326,11 +377,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <!-- Catagory Search End -->
 
         <!-- Catagory item start -->
-        <section class="categoryitem">
+        <!-- <section class="categoryitem">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="categoryitem-wrapper">
-                        <!-- <form action=""></form> -->
                         <div class="categoryitem-wrapper-itembox">
                             <h6>Categories</h6>
                             <select name="taskOption">
@@ -364,12 +414,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </form>
                         </div>
 
-                        <input type="submit" value="SEND"> <!-- fdsfdsf -->
+                        <input type="submit" value="SEND"> 
 
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
         <!-- Catagory item End -->
 
         <!-- Populer Product Strat -->
@@ -378,6 +428,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="row">
 
                     <?php
+                    // if(isset($_REQUEST['page'])){
+                    //     if($_REQUEST['page']){
+
+                    //         $curent_number = $_REQUEST['page'] -1;
+
+                    //         $from = 1+($curent_number * 8);
+                    //         $to = 12+($curent_number * 8);
+                    //     }
+                    // }else{
+                    //     $from = 1;
+                    //     $to = 12;   
+                    // }
+
                     if ($gender != 'all' && $product_type != 'all') {
 
                         $sql = "SELECT products.product_id, products.product_name, products.description, products.price, products.image,
@@ -389,17 +452,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                           products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender') 
                           AND
                           products.product_type_id=(SELECT producttypes.product_type_id FROM producttypes WHERE producttypes.type_name='$product_type')
-                                          
+                          
                           ORDER BY product_id;";
                     } elseif ($gender != 'all') {
-
                         $sql = "SELECT products.product_id, products.product_name, products.description, products.price, products.image,
                           products.category_id, products.product_type_id FROM products 
                           Join categories ON products.category_id = categories.category_id
                           Join producttypes ON products.product_type_id = producttypes.product_type_id
                           WHERE
-                          products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender') 
+                          products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender')
                           ORDER BY product_id;";
+
+
+                        // $sql = "SELECT products.product_id, products.product_name, products.description, products.price, products.image,
+                        //         products.category_id, products.product_type_id FROM products 
+                        //         Join categories ON products.category_id = categories.category_id
+                        //         Join producttypes ON products.product_type_id = producttypes.product_type_id
+
+                        //         HAVING 
+                        //         products.product_id 
+                        //         BETWEEN
+
+
+                        //         	(SELECT fm.product_id  FROM 
+                        //             (SELECT * FROM products WHERE products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender') ORDER BY product_id LIMIT $from) fm 
+                        //         	HAVING fm.product_id = (SELECT MAX(f.product_id) FROM (SELECT * FROM products WHERE products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender') ORDER BY product_id LIMIT $from) f))
+
+                        //         	AND
+
+                        //         	(SELECT fm.product_id  FROM (SELECT * FROM products WHERE products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender') ORDER BY product_id LIMIT $to) fm 
+                        //         	HAVING fm.product_id = (SELECT MAX(f.product_id) FROM (SELECT * FROM products WHERE products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender') ORDER BY product_id LIMIT $to) f))
+
+
+
+
+                        //         AND
+                        //         products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender')";
+
+
+
+
+
+
                     } elseif ($product_type != 'all') {
 
                         $sql = "SELECT products.product_id, products.product_name, products.description, products.price, products.image,
@@ -409,14 +503,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                           Join producttypes ON products.product_type_id = producttypes.product_type_id
                           WHERE
                           products.product_type_id=(SELECT producttypes.product_type_id FROM producttypes WHERE producttypes.type_name='$product_type') 
+                          
                           ORDER BY product_id;";
                     } else {
 
+
+                        // $sql = "SELECT * FROM products 
+                        //         WHERE products.product_id 
+
+                        //         BETWEEN
+
+                        //         (SELECT fm.product_id  FROM (SELECT * FROM products ORDER BY product_id LIMIT $from) fm 
+                        //         HAVING fm.product_id = (SELECT MAX(f.product_id) FROM (SELECT * FROM products ORDER BY product_id LIMIT $from) f))
+
+                        //         AND
+
+                        //         (SELECT fm.product_id  FROM (SELECT * FROM products ORDER BY product_id LIMIT $to) fm 
+                        //         HAVING fm.product_id = (SELECT MAX(f.product_id) FROM (SELECT * FROM products ORDER BY product_id LIMIT $to) f))
+                        //         ";
                         $sql = "SELECT * FROM products ORDER BY product_id";
                     }
-
                     $result =  $conn->query($sql);
-                    // $list_data = [];
                     $GLOBALS['list_data'] = [];
                     $number_in_one_dev = 12;
                     // ماكس الصفحة 
@@ -440,10 +547,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         // var_dump($product);
                         $number_in_one_dev--;
 
-                        $list_data[] = $product;
+                        $list_data[] = $product['product_name'];
+                        // var_dump($list_data);
                     ?>
                         <!-- بدل echo مساواة كافية -->
                         <div class="col-md-4 col-sm-6 <?= "page$class_dev" ?>" style="display: <?= $class_dev != $pageNumber ? "none" : "block"; ?> !important;">
+                            <!-- <div class="col-md-4 col-sm-6 <?= "page" ?>"> -->
                             <?php
                             $isInWishlist = isset($_SESSION['wishlist']) && in_array($product['product_id'], $_SESSION['wishlist']);
                             $isInCart = isset($_SESSION['cart']) && in_array($product['product_id'], $_SESSION['cart']);
@@ -516,7 +625,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                         <?php
                         // عملت كومنت وفعلت الي تحتها 
-                        // $numProd = 30;
+                        //  $sql = "SELECT COUNT(product_id) as c FROM products";
+                        //  $result =  $conn->query($sql);
+                        //  $count = $result->fetch_assoc();
+
+                        //  $GLOBALS['list_data'] = [];
+                        //  echo count($list_data);
+
+                        // $numProd = $count['c'];
                         $numProd = count($list_data);
                         // معادلة لحساب عدد الصفحات التوتال 
                         // (15-15/12)/12
@@ -538,12 +654,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             ?>
                                 <a href="shop.php?<?php echo "gender=$gender&product_type=$product_type"; ?>&page=<?= $pag ?>" class="cdp_i <?= $staute ?>">0<?= $pag ?></a>
                             <?php endfor; ?>
-
-                            <!-- <a href="shop.php?<?php echo "gender=$gender&product_type=$product_type"; ?>&page=2" class="cdp_i">02</a>
-                        <a href="" class="cdp_i">03</a> -->
-
-                            <!-- <a href="shop.php?<?php echo "gender=$gender&product_type=$product_type"; ?>&page=4" class="cdp_i">...</a>
-                        <a href="shop.php?<?php echo "gender=$gender&product_type=$product_type"; ?>&page=5" class="cdp_i">05</a> -->
 
                             <!--  ما تتفعل اذا عدد الصفحات خلص هاي الاكبر (البعد) -->
 
@@ -673,7 +783,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </script>
 
     <!--  السيرش الي فوق هاي مو جاهزة من يوسف  -->
-    <script src="searching.js"></script>
+    <!-- <script src="searching.js"></script> -->
 
     <script>
         function updateWishlistIcon(productId) {
@@ -770,6 +880,187 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         document.addEventListener('DOMContentLoaded', () => {
             updateCartCount();
             updateWishlistCount();
+
         });
+
+
+
+
+
+        // let list_for_search = [];
+
+        // async function fetchData() {
+        //     // try {
+        //     let response = await fetch(`api_get.php/products.json`);
+        //     let data = await response.json();
+        //     list_for_search = data.map(element => ({
+        //         name: element['product_name']
+        //     }));
+        //     // } catch (error) {
+        //     //     console.error('Error fetching data:', error);
+        //     // }
+        // }
+        // fetchData();
+
+        // function check_my_div() {
+        //     let myYousef = document.querySelector("#suggestions");
+        //     if (myYousef.innerHTML === '') {
+        //         document.querySelector("#searchInput").className = 'style_searching_input';
+        //         myYousef.style.visibility = 'hidden';
+        //     } else {
+        //         document.querySelector("#searchInput").className = 'style_searching_input_with_results';
+        //         myYousef.style.visibility = 'visible';
+        //     }
+        // }
+
+        // function performSearch(ele) {
+        //     console.log('jfdlksfjsld');
+        //     const search_id = 'searchInput';
+        //     const div_id = 'suggestions';
+        //     const query = ele.value.toLowerCase();
+        //     const suggestionsDiv = document.getElementById(div_id);
+        //     suggestionsDiv.innerHTML = '';
+
+        //     if (query.length === 0) {
+        //         check_my_div();
+        //         return;
+        //     }
+
+        //     const filteredData = list_for_search.filter(item => item.name.toLowerCase().includes(query));
+
+        //     if (filteredData.length > 0) {
+        //         filteredData.forEach(item => {
+        //             const div = document.createElement('input');
+        //             div.type = 'submit';
+        //             div.name = 'serch_product';
+        //             div.value = item.name;
+        //             div.className = 'suggestion-item';
+        //             // div.onclick = () => selectSuggestion(item.name, search_id, div_id);
+        //             suggestionsDiv.appendChild(div);
+        //         });
+        //     }
+        //     check_my_div();
+        // }
+
+        // function selectSuggestion(suggestion = '', search_id = '', div_id = '') {
+        //     if (suggestion && search_id && div_id) {
+        //         document.getElementById(search_id).value = suggestion;
+        //         document.getElementById(div_id).innerHTML = '';
+        //     }
+        // }
+
+
+
+        // عشان لما تطلع من الاينبوت يحذف الخيارات
+
+        // document.getElementById('searchInput').addEventListener('focusout', onfocusout);
+
+
+        // if(document.getElementById('searchInput_down')){
+        //     document.getElementById('searchInput_down').addEventListener('blur', onfocusout_down);
+        // }
+
+        //function onfocusout(){
+        //    document.querySelector('.suggestion-item1').addEventListener('mouseover', function hi(){
+        //        console.log("hi");
+        //    } );
+        //    
+        //
+        //    document.getElementById('suggestions').innerHTML = '';
+        //    check_my_div()
+        //}
+        // function onfocusout_down(){
+        //       document.getElementById('suggestions_down').innerHTML = '';
+        // }
+    </script>
+
+    <script>
+        function check_my_div() {
+
+            myYousef = document.querySelector("#suggestions");
+            if (myYousef.innerHTML == '') {
+                // myYousef.style.borderColor = 'green';
+                document.querySelector("#searchInput").className = 'style_searching_input';
+                myYousef.style.visibility = 'hidden';
+                // document.querySelector("#searchInput").classList.remove("mystyle") = 'style_searching_input';
+            } else {
+                document.querySelector("#searchInput").className = 'style_searching_input_with_results';
+                myYousef.style.visibility = 'visible';
+                // myYousef.style.borderColor = 'red ';
+            }
+        }
+        check_my_div()
+
+
+
+
+
+
+        let list_for_search = [];
+        async function yousef() {
+            let api = await fetch(`api_get.php/products.json`);
+            // console.log(api);
+
+            let Json = await api.json();
+            console.log(Json);
+            Json.forEach(element => {
+
+                const name = element['product_name'].split(",")[0];
+
+                Object_yousef = {
+                    // name: name
+                    name: element['product_name']
+                }
+                list_for_search.push(Object_yousef);
+            });
+        }
+        yousef()
+
+
+
+        function performSearch(ele) {
+
+            var search_id = 'searchInput';
+            var div_id = 'suggestions';
+
+
+            const query = document.getElementById(search_id).value.toLowerCase();
+            const suggestionsDiv = document.getElementById(div_id);
+
+            suggestionsDiv.innerHTML = '';
+
+
+            if (query.length === 0) {
+                return;
+            }
+
+            const filteredData = list_for_search.filter(item => item.name.toLowerCase().includes(query));
+
+            console.log(filteredData)
+
+            if (filteredData.length > 0) {
+
+                for (let i = 0; i < 8; i++) {
+
+                    const div = document.createElement('input');
+                    div.type = 'submit';
+                    div.name = 'serch_product';
+
+                    div.value = filteredData[i].name;
+                    div.className = 'suggestion-item';
+
+                    suggestionsDiv.appendChild(div);
+                    check_my_div()
+                }
+            }
+        }
+
+        function selectSuggestion(suggestion = '', search_id = '', div_id = '') {
+            if (suggestion && search_id && div_id) {
+
+                document.getElementById(search_id).value = suggestion;
+                document.getElementById(div_id).innerHTML = '';
+            }
+        }
     </script>
 </body>
