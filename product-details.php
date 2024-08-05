@@ -1,6 +1,27 @@
 <?php
 include "connection.php";
 
+<<<<<<< HEAD
+    $check = '';
+    
+    if (isset($_REQUEST['id'])) {
+        
+        if ($_REQUEST['id']) {
+            $id_p = $_REQUEST['id'];
+            $sql = "SELECT * FROM products WHERE product_id=$id_p";
+            $check = "id=$id_p";
+        }
+    } elseif (isset($_REQUEST['serch_product'])) {
+        
+        if ($_REQUEST['serch_product']) {
+            $name_p = $_REQUEST['serch_product'];
+            $check = "serch_product=$name_p";
+            $sql = "SELECT * FROM products WHERE product_name='$name_p'";
+        }
+    } else {
+        header('location: shop.php');
+    }
+=======
 $check = '';
 
 if (isset($_REQUEST['id'])) {
@@ -20,6 +41,7 @@ if (isset($_REQUEST['id'])) {
 } else {
     header('location: shop.php');
 }
+>>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
 
 $result =  $conn->query($sql);
 $product = $result->fetch_assoc();
@@ -48,7 +70,11 @@ if (isset($_REQUEST['submit_send_comminte'])) {
             }
         }
 
+<<<<<<< HEAD
+        if ($username && $comminte){
+=======
         if ($username && $comminte) {
+>>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
             $sql_set_commint = "INSERT INTO reviews (reviews.product_id, reviews.user_id, reviews.rating, reviews.comment, reviews.review_date)
                  VALUES 
                  ($product_id,(SELECT users.user_id FROM users WHERE users.username='$username'), $rating,'$comminte', '2022-11-3');";
@@ -503,20 +529,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
                                             $calc_to_rating = '';
+<<<<<<< HEAD
+                                            if(round($rating[0]['r']) > $rating[0]['r']){
+                                                $calc_to_rating = ( (round($rating[0]['r']) * 10000000) % ($rating[0]['r'] * 10000000) ) / 10000000;
+                                            }elseif(round($rating[0]['r']) < $rating[0]['r']){
+                                                $calc_to_rating = ( ($rating[0]['r'] * 10000000) % (round($rating[0]['r']) * 10000000) ) / 10000000;
+                                            }
+                                
+=======
                                             if (round($rating[0]['r']) > $rating[0]['r']) {
                                                 $calc_to_rating = ((round($rating[0]['r']) * 10000000) % ($rating[0]['r'] * 10000000)) / 10000000;
                                             } elseif (round($rating[0]['r']) < $rating[0]['r']) {
                                                 $calc_to_rating = (($rating[0]['r'] * 10000000) % (round($rating[0]['r']) * 10000000)) / 10000000;
                                             }
 
+>>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
 
 
 
 
                                             $h_r_r = handel_raing_rating($rating[0]['r']);
+<<<<<<< HEAD
+                                            
+                                            $curent_rating = 0;
+                                            if ($calc_to_rating && round($rating[0]['r']) < $rating[0]['r'] && $h_r_r != round($rating[0]['r']) ) {
+=======
 
                                             $curent_rating = 0;
                                             if ($calc_to_rating && round($rating[0]['r']) < $rating[0]['r'] && $h_r_r != round($rating[0]['r'])) {
+>>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                                                 $curent_rating = round($rating[0]['r'])  + 1;
                                             } else {
                                                 $curent_rating = round($rating[0]['r']);
@@ -530,6 +571,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         // echo $curent_rating;
 
 
+<<<<<<< HEAD
+                                        function handel_raing_rating($rat){
+                                            $list = explode('.', $rat);
+                                            if($list[1] == 0){
+                                                return $list[0];
+                                            }else{
+                                                return $list[0] . '.' .$list[1][0];
+=======
                                         function handel_raing_rating($rat)
                                         {
                                             $list = explode('.', $rat);
@@ -537,6 +586,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                 return $list[0];
                                             } else {
                                                 return $list[0] . '.' . $list[1][0];
+>>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                                             }
                                         }
 
@@ -546,7 +596,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <li><i class="fas fa-star <?= $list_stars_staut[2] ?>"></i></li>
                                         <li><i class="fas fa-star <?= $list_stars_staut[3] ?>"></i></li>
                                         <li><i class="fas fa-star <?= $list_stars_staut[4] ?>"></i></li>
+<<<<<<< HEAD
+                                        <li><?=$h_r_r ?></li>
+=======
                                         <li><?= $h_r_r ?></li>
+>>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                                         <li class="point">(<?= $rating[0]['n'] ?> Rating)</li>
                                     </ul>
                                 </div>
@@ -669,12 +723,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </section>
         <!-- Product Details Area End -->
 
+<<<<<<< HEAD
+        
+=======
 
+>>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
         <!-- Commint Section Start -->
         <section style="display:flex; justify-content:center; width:100%;">
             <div class="account-setting" style="width: 83%;">
                 <h6>Commint</h6>
-                <form action="<?= $_SERVER['PHP_SELF'] ?>" method="get">
+                <form action="<?=$_SERVER['PHP_SELF'] ?>" method="get">
 
                     <div class="rating">
                         <input value="5" name="rating" id="star5" type="radio">
@@ -688,13 +746,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <input value="1" name="rating" id="star1" type="radio">
                         <label for="star1"></label>
                     </div>
+<<<<<<< HEAD
+                    
+                    <input type="hidden" name="id" value="<?=$product_id?>">
+=======
 
                     <input type="hidden" name="id" value="<?= $product_id ?>">
+>>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                     <div class="form__div">
                         <input type="text" class="form__input" placeholder="" name="username">
                         <label for="" class="form__label">Full Name</label>
                     </div>
+<<<<<<< HEAD
+    
+=======
 
+>>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                     <div class="form__div">
                         <input type="text" class="form__input" placeholder="" name="usercomminte">
                         <label for="" class="form__label">Your comminte</label>
@@ -956,6 +1023,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
     <script>
+
         function check_my_div() {
 
             myYousef = document.querySelector("#suggestions");
@@ -987,7 +1055,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             Json.forEach(element => {
 
                 const name = element['product_name'].split(",")[0];
+<<<<<<< HEAD
+                
+=======
 
+>>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                 Object_yousef = {
                     // name: name
                     name: element['product_name']
@@ -1004,7 +1076,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             var search_id = 'searchInput';
             var div_id = 'suggestions';
 
+<<<<<<< HEAD
+          
+=======
 
+>>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
             const query = document.getElementById(search_id).value.toLowerCase();
             const suggestionsDiv = document.getElementById(div_id);
 
@@ -1021,6 +1097,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if (filteredData.length > 0) {
 
+<<<<<<< HEAD
+                for(let i = 0; i<8 ; i++){
+                    
+                    const div = document.createElement('input');
+                    div.type = 'submit';
+                    div.name = 'serch_product';
+        
+                    div.value = filteredData[i].name;
+                    div.className = 'suggestion-item';
+                    
+=======
                 for (let i = 0; i < 8; i++) {
 
                     const div = document.createElement('input');
@@ -1030,6 +1117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     div.value = filteredData[i].name;
                     div.className = 'suggestion-item';
 
+>>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                     suggestionsDiv.appendChild(div);
                     check_my_div()
                 }
