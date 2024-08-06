@@ -1,13 +1,9 @@
 <?php
 header('Content-Type: application/json');
-require '../connection.php'; // Ensure this file contains the database connection logic
+require '../connection.php';
 
 session_start();
-// user_id in session عفوري 
 $user_id = $_SESSION['user_id'];
-// test purpose pls fix aseel
-
-// $user_id = 3;
 
 $firstname = $_POST['firstname'];
 $lastname = $_POST['lastname'];
@@ -37,9 +33,9 @@ if ($result->num_rows > 0) {
 $stmt->execute();
 
 if ($stmt->affected_rows > 0) {
-    echo json_encode(['success' => 'Billing information updated successfully']);
+    echo json_encode(['success' => true, 'message' => 'Billing information updated successfully']);
 } else {
-    echo json_encode(['error' => 'Failed to update billing information']);
+    echo json_encode(['success' => false, 'message' => 'Failed to update billing information']);
 }
 
 $stmt->close();

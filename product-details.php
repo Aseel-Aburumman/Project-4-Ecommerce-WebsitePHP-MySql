@@ -1,27 +1,6 @@
 <?php
 include "connection.php";
 
-<<<<<<< HEAD
-    $check = '';
-    
-    if (isset($_REQUEST['id'])) {
-        
-        if ($_REQUEST['id']) {
-            $id_p = $_REQUEST['id'];
-            $sql = "SELECT * FROM products WHERE product_id=$id_p";
-            $check = "id=$id_p";
-        }
-    } elseif (isset($_REQUEST['serch_product'])) {
-        
-        if ($_REQUEST['serch_product']) {
-            $name_p = $_REQUEST['serch_product'];
-            $check = "serch_product=$name_p";
-            $sql = "SELECT * FROM products WHERE product_name='$name_p'";
-        }
-    } else {
-        header('location: shop.php');
-    }
-=======
 $check = '';
 
 if (isset($_REQUEST['id'])) {
@@ -41,7 +20,6 @@ if (isset($_REQUEST['id'])) {
 } else {
     header('location: shop.php');
 }
->>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
 
 $result =  $conn->query($sql);
 $product = $result->fetch_assoc();
@@ -70,11 +48,7 @@ if (isset($_REQUEST['submit_send_comminte'])) {
             }
         }
 
-<<<<<<< HEAD
-        if ($username && $comminte){
-=======
         if ($username && $comminte) {
->>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
             $sql_set_commint = "INSERT INTO reviews (reviews.product_id, reviews.user_id, reviews.rating, reviews.comment, reviews.review_date)
                  VALUES 
                  ($product_id,(SELECT users.user_id FROM users WHERE users.username='$username'), $rating,'$comminte', '2022-11-3');";
@@ -264,188 +238,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Header Area Start -->
     <header class="header">
 
-        <div class="header-bottom">
-            <div class="container">
-                <div class="d-none d-lg-block">
-                    <nav class="menu-area d-flex align-items-center">
-                        <div class="logo">
-                            <a href="index.php"><img src="dist/images/logo/logo.png" alt="logo" /></a>
-                        </div>
-                        <ul class="main-menu d-flex align-items-center">
-                            <li><a href="shop.php?gender=Clothing">Clothing</a></li>
-                            <li><a href="shop.php?gender=Footwear">Footwear</a></li>
-                            <li><a href="shop.php?gender=Accessories">Accessories</a></li>
-                            <li><a href="shop.php">Shop</a></li>
-                            <li>
-                                <a href="javascript:void(0)">Category
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="9.98" height="5.69" viewBox="0 0 9.98 5.69">
-                                        <g id="Arrow" transform="translate(0.99 0.99)">
-                                            <path id="Arrow-2" data-name="Arrow" d="M1474.286,26.4l4,4,4-4" transform="translate(-1474.286 -26.4)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
-                                        </g>
-                                    </svg>
-                                </a>
-                                <ul class="sub-menu">
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=T-Shirt"; ?>">T-Shirt</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shoes"; ?>">Shoes</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Hoodies"; ?>">Hoodies</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Jeans"; ?>">Jeans</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Casual"; ?>">Casual</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Pajamas"; ?>">Pajamas</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shorts"; ?>">Shorts</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="sales.php">Sales</a></li>
-                        </ul>
+        <?php
 
-                        <form class="search-bar">
-                            <input type="text" placeholder="Search for product..." oninput="performSearch(this)" id="searchInput" class="style_searching_input">
+        function isUserSignedInbtn()
+        {
+            return isset($_SESSION['user_id']);
+        }
+        // اكاونت من عبسي
 
-                            <div class="icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20.414" height="20.414" viewBox="0 0 20.414 20.414">
-                                    <g id="Search_Icon" data-name="Search Icon" transform="translate(1 1)">
-                                        <ellipse id="Ellipse_1" data-name="Ellipse 1" cx="8.158" cy="8" rx="8.158" ry="8" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                        <line id="Line_4" data-name="Line 4" x1="3.569" y1="3.5" transform="translate(14.431 14.5)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                    </g>
-                                </svg>
-                            </div>
-                            <div id="suggestions"></div>
-                            <!-- <input type="submit"> -->
-                        </form>
-                        <div class="menu-icon ml-auto">
-                            <ul>
-                                <li>
-                                    <a href="<?php echo $userPageUrlFavList; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
-                                            <g id="Heart" transform="translate(1 1)">
-                                                <path id="Heart-2" data-name="Heart" d="M20.007,4.59a5.148,5.148,0,0,0-7.444,0L11.548,5.636,10.534,4.59a5.149,5.149,0,0,0-7.444,0,5.555,5.555,0,0,0,0,7.681L4.1,13.317,11.548,21l7.444-7.681,1.014-1.047a5.553,5.553,0,0,0,0-7.681Z" transform="translate(-1.549 -2.998)" fill="#fff" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </svg>
-                                        <span class="heart" id="wishlist-count"><?php echo isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0; ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $userPageUrlCart; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
-                                            <g id="Icon" transform="translate(-1524 -89)">
-                                                <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.909" cy="0.952" rx="0.909" ry="0.952" transform="translate(1531.364 108.095)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                                <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.909" cy="0.952" rx="0.909" ry="0.952" transform="translate(1541.364 108.095)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                                <path id="Path_3" data-name="Path 3" d="M1,1H4.636L7.073,13.752a1.84,1.84,0,0,0,1.818,1.533h8.836a1.84,1.84,0,0,0,1.818-1.533L21,5.762H5.545" transform="translate(1524 89)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </svg>
-                                        <span class="cart" id="cart-count">0</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $userPageUrl; ?>"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
-                                            <g id="Account" transform="translate(1 1)">
-                                                <path id="Path_86" data-name="Path 86" d="M20,21V19a4,4,0,0,0-4-4H8a4,4,0,0,0-4,4v2" transform="translate(-4 -3)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                                <circle id="Ellipse_9" data-name="Ellipse 9" cx="4" cy="4" r="4" transform="translate(4)" fill="#fff" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </svg></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                </div>
-                <!-- Mobile Menu -->
-                <aside class="d-lg-none">
-                    <div id="mySidenav" class="sidenav">
-                        <div class="close-mobile-menu">
-                            <a href="javascript:void(0)" id="menu-close" class="closebtn" onclick="closeNav()">&times;</a>
-                        </div>
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search for product...">
-                            <div class="icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20.414" height="20.414" viewBox="0 0 20.414 20.414">
-                                    <g id="Search_Icon" data-name="Search Icon" transform="translate(1 1)">
-                                        <ellipse id="Ellipse_1" data-name="Ellipse 1" cx="8.158" cy="8" rx="8.158" ry="8" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                        <line id="Line_4" data-name="Line 4" x1="3.569" y1="3.5" transform="translate(14.431 14.5)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
-                        <li><a href="shop.php?gender=Clothing">Clothing</a></li>
-                        <li><a href="shop.php?gender=Footwear">Footwear</a></li>
-                        <li><a href="shop.php?gender=Accessories">Accessories</a></li>
-                        <li><a href="shop.php">Shop</a></li>
-                        <li>
-                            <a href="javascript:void(0)">Category
-                                <svg xmlns="http://www.w3.org/2000/svg" width="9.98" height="5.69" viewBox="0 0 9.98 5.69">
-                                    <g id="Arrow" transform="translate(0.99 0.99)">
-                                        <path id="Arrow-2" data-name="Arrow" d="M1474.286,26.4l4,4,4-4" transform="translate(-1474.286 -26.4)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
-                                    </g>
-                                </svg>
-                            </a>
-                            <ul class="sub-menu">
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=T-Shirt"; ?>">T-Shirt</a></li>
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shoes"; ?>">Shoes</a></li>
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Hoodies"; ?>">Hoodies</a></li>
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Jeans"; ?>">Jeans</a></li>
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Casual"; ?>">Casual</a></li>
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Pajamas"; ?>">Pajamas</a></li>
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shorts"; ?>">Shorts</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="sales.php">Sales</a></li>
-                    </div>
-                    <div class="mobile-nav d-flex align-items-center justify-content-between">
-                        <div class="logo">
-                            <a href="index.html"><img src="dist/images/logo/logo.png" alt="logo" /></a>
-                        </div>
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search for product...">
-                            <div class="icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20.414" height="20.414" viewBox="0 0 20.414 20.414">
-                                    <g id="Search_Icon" data-name="Search Icon" transform="translate(1 1)">
-                                        <ellipse id="Ellipse_1" data-name="Ellipse 1" cx="8.158" cy="8" rx="8.158" ry="8" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                        <line id="Line_4" data-name="Line 4" x1="3.569" y1="3.5" transform="translate(14.431 14.5)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="menu-icon">
-                            <ul>
-                                <li>
-                                    <a href="<?php echo $userPageUrlFavList; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
-                                            <g id="Heart" transform="translate(1 1)">
-                                                <path id="Heart-2" data-name="Heart" d="M20.007,4.59a5.148,5.148,0,0,0-7.444,0L11.548,5.636,10.534,4.59a5.149,5.149,0,0,0-7.444,0,5.555,5.555,0,0,0,0,7.681L4.1,13.317,11.548,21l7.444-7.681,1.014-1.047a5.553,5.553,0,0,0,0-7.681Z" transform="translate(-1.549 -2.998)" fill="#fff" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </svg>
-                                        <span class="heart" id="wishlist-count"><?php echo isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0; ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $userPageUrlCart; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
-                                            <g id="Icon" transform="translate(-1524 -89)">
-                                                <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.909" cy="0.952" rx="0.909" ry="0.952" transform="translate(1531.364 108.095)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                                <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.909" cy="0.952" rx="0.909" ry="0.952" transform="translate(1541.364 108.095)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                                <path id="Path_3" data-name="Path 3" d="M1,1H4.636L7.073,13.752a1.84,1.84,0,0,0,1.818,1.533h8.836a1.84,1.84,0,0,0,1.818-1.533L21,5.762H5.545" transform="translate(1524 89)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </svg>
-                                        <span class="cart" id="cart-count">0</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $userPageUrl; ?>"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
-                                            <g id="Account" transform="translate(1 1)">
-                                                <path id="Path_86" data-name="Path 86" d="M20,21V19a4,4,0,0,0-4-4H8a4,4,0,0,0-4,4v2" transform="translate(-4 -3)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                                <circle id="Ellipse_9" data-name="Ellipse 9" cx="4" cy="4" r="4" transform="translate(4)" fill="#fff" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </svg></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="hamburger-menu">
-                            <a style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</a>
-                        </div>
-                    </div>
-                </aside>
-                <!-- Body overlay -->
-                <div class="overlay" id="overlayy"></div>
-            </div>
-        </div>
+        if (isUserSignedInbtn()) {
+            include 'navbar.php';
+        } else {
+            include 'navbar_guest.php';
+        }
+
+
+
+        ?>
     </header>
     <!-- Header Area End -->
 
@@ -529,35 +338,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
                                             $calc_to_rating = '';
-<<<<<<< HEAD
-                                            if(round($rating[0]['r']) > $rating[0]['r']){
-                                                $calc_to_rating = ( (round($rating[0]['r']) * 10000000) % ($rating[0]['r'] * 10000000) ) / 10000000;
-                                            }elseif(round($rating[0]['r']) < $rating[0]['r']){
-                                                $calc_to_rating = ( ($rating[0]['r'] * 10000000) % (round($rating[0]['r']) * 10000000) ) / 10000000;
-                                            }
-                                
-=======
                                             if (round($rating[0]['r']) > $rating[0]['r']) {
                                                 $calc_to_rating = ((round($rating[0]['r']) * 10000000) % ($rating[0]['r'] * 10000000)) / 10000000;
                                             } elseif (round($rating[0]['r']) < $rating[0]['r']) {
                                                 $calc_to_rating = (($rating[0]['r'] * 10000000) % (round($rating[0]['r']) * 10000000)) / 10000000;
                                             }
 
->>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
 
 
 
 
                                             $h_r_r = handel_raing_rating($rating[0]['r']);
-<<<<<<< HEAD
-                                            
-                                            $curent_rating = 0;
-                                            if ($calc_to_rating && round($rating[0]['r']) < $rating[0]['r'] && $h_r_r != round($rating[0]['r']) ) {
-=======
 
                                             $curent_rating = 0;
                                             if ($calc_to_rating && round($rating[0]['r']) < $rating[0]['r'] && $h_r_r != round($rating[0]['r'])) {
->>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                                                 $curent_rating = round($rating[0]['r'])  + 1;
                                             } else {
                                                 $curent_rating = round($rating[0]['r']);
@@ -571,14 +365,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         // echo $curent_rating;
 
 
-<<<<<<< HEAD
-                                        function handel_raing_rating($rat){
-                                            $list = explode('.', $rat);
-                                            if($list[1] == 0){
-                                                return $list[0];
-                                            }else{
-                                                return $list[0] . '.' .$list[1][0];
-=======
                                         function handel_raing_rating($rat)
                                         {
                                             $list = explode('.', $rat);
@@ -586,7 +372,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                 return $list[0];
                                             } else {
                                                 return $list[0] . '.' . $list[1][0];
->>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                                             }
                                         }
 
@@ -596,11 +381,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <li><i class="fas fa-star <?= $list_stars_staut[2] ?>"></i></li>
                                         <li><i class="fas fa-star <?= $list_stars_staut[3] ?>"></i></li>
                                         <li><i class="fas fa-star <?= $list_stars_staut[4] ?>"></i></li>
-<<<<<<< HEAD
-                                        <li><?=$h_r_r ?></li>
-=======
                                         <li><?= $h_r_r ?></li>
->>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                                         <li class="point">(<?= $rating[0]['n'] ?> Rating)</li>
                                     </ul>
                                 </div>
@@ -723,16 +504,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </section>
         <!-- Product Details Area End -->
 
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
         <!-- Commint Section Start -->
         <section style="display:flex; justify-content:center; width:100%;">
             <div class="account-setting" style="width: 83%;">
                 <h6>Commint</h6>
-                <form action="<?=$_SERVER['PHP_SELF'] ?>" method="get">
+                <form action="<?= $_SERVER['PHP_SELF'] ?>" method="get">
 
                     <div class="rating">
                         <input value="5" name="rating" id="star5" type="radio">
@@ -746,22 +523,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <input value="1" name="rating" id="star1" type="radio">
                         <label for="star1"></label>
                     </div>
-<<<<<<< HEAD
-                    
-                    <input type="hidden" name="id" value="<?=$product_id?>">
-=======
 
                     <input type="hidden" name="id" value="<?= $product_id ?>">
->>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                     <div class="form__div">
                         <input type="text" class="form__input" placeholder="" name="username">
                         <label for="" class="form__label">Full Name</label>
                     </div>
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                     <div class="form__div">
                         <input type="text" class="form__input" placeholder="" name="usercomminte">
                         <label for="" class="form__label">Your comminte</label>
@@ -1023,7 +791,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
     <script>
-
         function check_my_div() {
 
             myYousef = document.querySelector("#suggestions");
@@ -1055,11 +822,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             Json.forEach(element => {
 
                 const name = element['product_name'].split(",")[0];
-<<<<<<< HEAD
-                
-=======
 
->>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                 Object_yousef = {
                     // name: name
                     name: element['product_name']
@@ -1076,11 +839,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             var search_id = 'searchInput';
             var div_id = 'suggestions';
 
-<<<<<<< HEAD
-          
-=======
 
->>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
             const query = document.getElementById(search_id).value.toLowerCase();
             const suggestionsDiv = document.getElementById(div_id);
 
@@ -1097,17 +856,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if (filteredData.length > 0) {
 
-<<<<<<< HEAD
-                for(let i = 0; i<8 ; i++){
-                    
-                    const div = document.createElement('input');
-                    div.type = 'submit';
-                    div.name = 'serch_product';
-        
-                    div.value = filteredData[i].name;
-                    div.className = 'suggestion-item';
-                    
-=======
                 for (let i = 0; i < 8; i++) {
 
                     const div = document.createElement('input');
@@ -1117,7 +865,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     div.value = filteredData[i].name;
                     div.className = 'suggestion-item';
 
->>>>>>> 8661dbfa4b6ec4f4dad3b277c8f1a0e584e509ed
                     suggestionsDiv.appendChild(div);
                     check_my_div()
                 }

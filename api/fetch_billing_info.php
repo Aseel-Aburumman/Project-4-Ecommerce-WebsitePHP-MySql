@@ -6,7 +6,7 @@ session_start();
 // user_id in session عفوري 
 $user_id = $_SESSION['user_id'];
 // test purpose pls fix aseel
-echo $user_id;
+// echo $user_id;
 
 // $user_id = 3;
 

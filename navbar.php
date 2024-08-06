@@ -22,9 +22,10 @@ function isUserSignedIn()
 }
 // اكاونت من عبسي
 
-$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account.php';
+$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account (1).php';
 $userPageUrlFavList = isUserSignedIn() ? 'wishlist.php' : 'fav-list.php';
 $userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'fav-list.php';
+$userPageUrlcheckout = isUserSignedIn() ? 'billing-information.php' : 'account (1).php';
 
 $query = 'SELECT * FROM products WHERE product_id < 5';
 $result = $conn->query($query);
@@ -139,11 +140,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <li><a href="shop.php">Shop</a></li>
                             <li>
                                 <a href="javascript:void(0)">Category
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="9.98" height="5.69" viewBox="0 0 9.98 5.69">
+                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="9.98" height="5.69" viewBox="0 0 9.98 5.69">
                                         <g id="Arrow" transform="translate(0.99 0.99)">
                                             <path id="Arrow-2" data-name="Arrow" d="M1474.286,26.4l4,4,4-4" transform="translate(-1474.286 -26.4)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
                                         </g>
-                                    </svg>
+                                    </svg> -->
                                 </a>
                                 <ul class="sub-menu">
                                     <li><a href="shop.php?<?php echo "gender=$gender&product_type=T-Shirt"; ?>">T-Shirt</a></li>
@@ -204,12 +205,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $userPageUrl; ?>"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
+                                    <a href="<?php echo $userPageUrl; ?>">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
                                             <g id="Account" transform="translate(1 1)">
                                                 <path id="Path_86" data-name="Path 86" d="M20,21V19a4,4,0,0,0-4-4H8a4,4,0,0,0-4,4v2" transform="translate(-4 -3)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                                 <circle id="Ellipse_9" data-name="Ellipse 9" cx="4" cy="4" r="4" transform="translate(4)" fill="#fff" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                                             </g>
-                                        </svg></a>
+                                        </svg>
+                                    </a>
                                 </li>
                             </ul>
                         </div>

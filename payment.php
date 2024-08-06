@@ -3,17 +3,8 @@ include 'connection.php';
 
 session_start();
 
-// Function to check if the user is signed in
-function isUserSignedIn()
-{
-    return isset($_SESSION['user_id']);
-    // return isset($_SESSION['3']);
-}
 
-$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account (1).php';
-$userPageUrlFavList = isUserSignedIn() ? 'wishlist.php' : 'fav-list.php';
-$userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
-$userPageUrlcheckout = isUserSignedIn() ? 'billing-information.php' : 'account (1).php';
+
 
 
 $cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
@@ -84,194 +75,46 @@ $conn->close();
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Olog -Payment</title>
     <link rel="stylesheet" href="dist/main.css">
+    <style>
+        .error {
+            color: red;
+            font-size: 0.875em;
+            margin-top: 0.25em;
+            display: block;
+        }
+
+        .form__div {
+            position: relative;
+            margin-bottom: 1.5em;
+        }
+
+        .form__input {
+            margin-bottom: 0.5em;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Header Area Start -->
     <header class="header">
+        <?php
 
-        <div class="header-bottom">
-            <div class="container">
-                <div class="d-none d-lg-block">
-                    <nav class="menu-area d-flex align-items-center">
-                        <div class="logo">
-                            <a href="index.php"><img src="dist/images/logo/logo.png" alt="logo" /></a>
-                        </div>
-                        <ul class="main-menu d-flex align-items-center">
-                            <!-- <li><a class="active" href="index.php">Home</a></li> -->
-                            <li><a href="shop.php?gender=Clothing">Clothing</a></li>
-                            <li><a href="shop.php?gender=Footwear">Footwear</a></li>
-                            <li><a href="shop.php?gender=Accessories">Accessories</a></li>
-                            <li><a href="shop.php">Shop</a></li>
-                            <li>
-                                <a href="javascript:void(0)">Category
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="9.98" height="5.69" viewBox="0 0 9.98 5.69">
-                                        <g id="Arrow" transform="translate(0.99 0.99)">
-                                            <path id="Arrow-2" data-name="Arrow" d="M1474.286,26.4l4,4,4-4" transform="translate(-1474.286 -26.4)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
-                                        </g>
-                                    </svg>
-                                </a>
-                                <ul class="sub-menu">
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=T-Shirt"; ?>">T-Shirt</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shoes"; ?>">Shoes</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Hoodies"; ?>">Hoodies</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Jeans"; ?>">Jeans</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Casual"; ?>">Casual</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Pajamas"; ?>">Pajamas</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shorts"; ?>">Shorts</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="sales.php">Sales</a></li>
-                        </ul>
+        function isUserSignedInbtn()
+        {
+            return isset($_SESSION['user_id']);
+        }
+        // اكاونت من عبسي
 
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search for product..." id="searchInput" oninput="performSearch(this)"> <!-- //fdfdsfdsfdsf -->
-                            <div id="suggestions"></div>
-                            <div class="icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20.414" height="20.414" viewBox="0 0 20.414 20.414">
-                                    <g id="Search_Icon" data-name="Search Icon" transform="translate(1 1)">
-                                        <ellipse id="Ellipse_1" data-name="Ellipse 1" cx="8.158" cy="8" rx="8.158" ry="8" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                        <line id="Line_4" data-name="Line 4" x1="3.569" y1="3.5" transform="translate(14.431 14.5)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="menu-icon ml-auto">
-                            <ul>
-                                <li>
-                                    <a href="<?php echo $userPageUrlFavList; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
-                                            <g id="Heart" transform="translate(1 1)">
-                                                <path id="Heart-2" data-name="Heart" d="M20.007,4.59a5.148,5.148,0,0,0-7.444,0L11.548,5.636,10.534,4.59a5.149,5.149,0,0,0-7.444,0,5.555,5.555,0,0,0,0,7.681L4.1,13.317,11.548,21l7.444-7.681,1.014-1.047a5.553,5.553,0,0,0,0-7.681Z" transform="translate(-1.549 -2.998)" fill="#fff" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </svg>
-                                        <span class="heart" id="wishlist-count"><?php echo isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0; ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $userPageUrlCart; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
-                                            <g id="Icon" transform="translate(-1524 -89)">
-                                                <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.909" cy="0.952" rx="0.909" ry="0.952" transform="translate(1531.364 108.095)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                                <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.909" cy="0.952" rx="0.909" ry="0.952" transform="translate(1541.364 108.095)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                                <path id="Path_3" data-name="Path 3" d="M1,1H4.636L7.073,13.752a1.84,1.84,0,0,0,1.818,1.533h8.836a1.84,1.84,0,0,0,1.818-1.533L21,5.762H5.545" transform="translate(1524 89)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </svg>
-                                        <span class="cart" id="cart-count">0</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $userPageUrl; ?>"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
-                                            <g id="Account" transform="translate(1 1)">
-                                                <path id="Path_86" data-name="Path 86" d="M20,21V19a4,4,0,0,0-4-4H8a4,4,0,0,0-4,4v2" transform="translate(-4 -3)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                                <circle id="Ellipse_9" data-name="Ellipse 9" cx="4" cy="4" r="4" transform="translate(4)" fill="#fff" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </svg></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                </div>
-                <!-- Mobile Menu -->
-                <aside class="d-lg-none">
-                    <div id="mySidenav" class="sidenav">
-                        <div class="close-mobile-menu">
-                            <a href="javascript:void(0)" id="menu-close" class="closebtn" onclick="closeNav()">&times;</a>
-                        </div>
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search for product...">
-                            <div class="icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20.414" height="20.414" viewBox="0 0 20.414 20.414">
-                                    <g id="Search_Icon" data-name="Search Icon" transform="translate(1 1)">
-                                        <ellipse id="Ellipse_1" data-name="Ellipse 1" cx="8.158" cy="8" rx="8.158" ry="8" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                        <line id="Line_4" data-name="Line 4" x1="3.569" y1="3.5" transform="translate(14.431 14.5)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
-                        <li><a href="shop.php">Shop</a></li>
-                        <li><a href="shop.php?gender=Clothing">Clothing</a></li>
-                        <li><a href="shop.php?gender=Footwear">Footwear</a></li>
-                        <li><a href="shop.php?gender=Accessories">Accessories</a></li>
-                        <li>
-                            <a href="javascript:void(0)">Category
-                                <svg xmlns="http://www.w3.org/2000/svg" width="9.98" height="5.69" viewBox="0 0 9.98 5.69">
-                                    <g id="Arrow" transform="translate(0.99 0.99)">
-                                        <path id="Arrow-2" data-name="Arrow" d="M1474.286,26.4l4,4,4-4" transform="translate(-1474.286 -26.4)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" />
-                                    </g>
-                                </svg>
-                            </a>
-                            <ul class="sub-menu">
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=T-Shirt"; ?>">T-Shirt</a></li>
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shoes"; ?>">Shoes</a></li>
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Hoodies"; ?>">Hoodies</a></li>
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Jeans"; ?>">Jeans</a></li>
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Casual"; ?>">Casual</a></li>
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Pajamas"; ?>">Pajamas</a></li>
-                                <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shorts"; ?>">Shorts</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="sales.php">Sales</a></li>
-                    </div>
-                    <div class="mobile-nav d-flex align-items-center justify-content-between">
-                        <div class="logo">
-                            <a href="index.php"><img src="dist/images/logo/logo.png" alt="logo" /></a>
-                        </div>
-                        <div class="search-bar">
-                            <input type="text" placeholder="Search for product...">
-                            <div class="icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20.414" height="20.414" viewBox="0 0 20.414 20.414">
-                                    <g id="Search_Icon" data-name="Search Icon" transform="translate(1 1)">
-                                        <ellipse id="Ellipse_1" data-name="Ellipse 1" cx="8.158" cy="8" rx="8.158" ry="8" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                        <line id="Line_4" data-name="Line 4" x1="3.569" y1="3.5" transform="translate(14.431 14.5)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                    </g>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="menu-icon">
-                            <ul>
-                                <li>
-                                    <a href="<?php echo $userPageUrlFavList; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
-                                            <g id="Heart" transform="translate(1 1)">
-                                                <path id="Heart-2" data-name="Heart" d="M20.007,4.59a5.148,5.148,0,0,0-7.444,0L11.548,5.636,10.534,4.59a5.149,5.149,0,0,0-7.444,0,5.555,5.555,0,0,0,0,7.681L4.1,13.317,11.548,21l7.444-7.681,1.014-1.047a5.553,5.553,0,0,0,0-7.681Z" transform="translate(-1.549 -2.998)" fill="#fff" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </svg>
-                                        <span class="heart" id="wishlist-count"><?php echo isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0; ?></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $userPageUrlCart; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
-                                            <g id="Icon" transform="translate(-1524 -89)">
-                                                <ellipse id="Ellipse_2" data-name="Ellipse 2" cx="0.909" cy="0.952" rx="0.909" ry="0.952" transform="translate(1531.364 108.095)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                                <ellipse id="Ellipse_3" data-name="Ellipse 3" cx="0.909" cy="0.952" rx="0.909" ry="0.952" transform="translate(1541.364 108.095)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                                <path id="Path_3" data-name="Path 3" d="M1,1H4.636L7.073,13.752a1.84,1.84,0,0,0,1.818,1.533h8.836a1.84,1.84,0,0,0,1.818-1.533L21,5.762H5.545" transform="translate(1524 89)" fill="none" stroke="#1a2224" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </svg>
-                                        <span class="cart" id="cart-count">0</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $userPageUrl; ?>"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
-                                            <g id="Account" transform="translate(1 1)">
-                                                <path id="Path_86" data-name="Path 86" d="M20,21V19a4,4,0,0,0-4-4H8a4,4,0,0,0-4,4v2" transform="translate(-4 -3)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                                <circle id="Ellipse_9" data-name="Ellipse 9" cx="4" cy="4" r="4" transform="translate(4)" fill="#fff" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                                            </g>
-                                        </svg></a>
-                                </li>
+        if (isUserSignedInbtn()) {
+            include 'navbar.php';
+        } else {
+            include 'navbar_guest.php';
+        }
 
-                            </ul>
-                        </div>
-                        <div class="hamburger-menu">
-                            <a style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</a>
-                        </div>
-                    </div>
-                </aside>
-                <!-- Body overlay -->
-                <div class="overlay" id="overlayy"></div>
-            </div>
-        </div>
+
+
+        ?>
+
     </header>
     <!-- Header Area End -->
 
@@ -464,103 +307,78 @@ $conn->close();
                                             <div class="form__div">
                                                 <input type="text" class="form__input" id="card-name" name="card_name" placeholder="">
                                                 <label for="card-name" class="form__label">Name on Card</label>
+                                                <p style="line-height: 44px;"><br> </p>
                                                 <div class="error" id="card-name-error"></div>
                                             </div>
                                         </div>
                                     </div>
+                                    <br>
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="form__div">
-                                                <input type="text" class="form__input" id="card-number" name="card_number" placeholder="">
+                                                <input type="number" class="form__input" id="card-number" name="card_number" placeholder="">
                                                 <label for="card-number" class="form__label">Card Number</label>
+                                                <p style="line-height: 44px;"><br> </p>
+
                                                 <div class="error" id="card-number-error"></div>
                                             </div>
                                         </div>
                                     </div>
+                                    <br>
+
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="form__div">
                                                 <input type="text" class="form__input" id="exp-date" name="exp_date" placeholder="">
                                                 <label for="exp-date" class="form__label">Expiration Date (MM / YY)</label>
+                                                <p style="line-height: 44px;"><br> </p>
+
                                                 <div class="error" id="exp-date-error"></div>
                                             </div>
                                         </div>
+                                        <br>
+
                                         <div class="col-lg-6">
                                             <div class="form__div">
                                                 <input type="text" class="form__input" id="cvc" name="cvc" placeholder="">
                                                 <label for="cvc" class="form__label">CVC</label>
+                                                <p style="line-height: 44px;"><br> </p>
+
                                                 <div class="error" id="cvc-error"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="on-delivery">
-                                    <input type="radio" name="payment-methods" id="on-delivery">
-                                    <label for="on-delivery">Cash on Delivery</label>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-12 d-flex align-items-center justify-content-between bottom flex-wrap">
-                                        <a href="shipping.php">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left">
-                                                <polyline points="15 18 9 12 15 6"></polyline>
-                                            </svg>
-                                            Return to shipping
-                                        </a>
-                                        <button class="btn bg-primary mt-0" type="submit">Pay Now</button>
-                                    </div>
-                                </div>
-                            </form>
+                        </div>
+                        <div class="on-delivery">
+                            <input type="radio" name="payment-methods" id="on-delivery">
+                            <label for="on-delivery">Cash on Delivery</label>
                         </div>
 
+                        <div class="row">
+                            <div class="col-12 d-flex align-items-center justify-content-between bottom flex-wrap">
+                                <a href="shipping.php">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left">
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                    Return to shipping
+                                </a>
+                                <button class="btn bg-primary mt-0" type="submit">Pay Now</button>
+                            </div>
+                        </div>
+                        </form>
                     </div>
+
                 </div>
+            </div>
             </div>
         </section>
         <!-- Payment Area End -->
     </main>
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row align-items-center newsletter-area">
-                <div class="col-lg-5">
-                    <div class="newsletter-area-text">
-                        <h4 class="text-white">Subscribe to get notification.</h4>
-                        <p>
-                            Receive our weekly newsletter.
-                            For dietary content, fashion insider and the best offers.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-6 offset-lg-1">
-                    <div class="newsletter-area-button">
-                        <form action="#">
-                            <div class="form">
-                                <input type="email" name="email" id="mail" placeholder="Enter your email address" class="form-control">
-                                <button class="btn bg-secondary border text-capitalize">Subscribe</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="copyright d-flex justify-content-between align-items-center">
-                        <div class="copyright-text order-2 order-lg-1">
-                            <p>&copy; 2024. All rights reserved. </p>
-                        </div>
-                        <div class="copyright-links order-1 order-lg-2">
-                            <a href="soon.php" class="ml-0"><i class="fab fa-facebook-f"></i></a>
-                            <a href="soon.php"><i class="fab fa-twitter"></i></a>
-                            <a href="soon.php"><i class="fab fa-youtube"></i></a>
-                            <a href="soon.php"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php
+    include 'footer.php';
+    ?>
     <!-- Footer -->
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -587,170 +405,109 @@ $conn->close();
             if (paymentForm) {
                 paymentForm.addEventListener("submit", function(e) {
                     e.preventDefault();
+                    if (validateForm()) {
+                        const cardname = document.getElementById("card-name").value;
+                        const card_number = document.getElementById("card-number").value;
+                        const exp_date = document.getElementById("exp-date").value;
+                        const cvc = document.getElementById("cvc").value;
 
-                    const cardname = document.getElementById("card-name").value;
-                    const card_number = document.getElementById("card-number").value;
-                    const exp_date = document.getElementById("exp-date").value;
-                    const cvc = document.getElementById("cvc").value;
+                        fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/process_payment.php", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    card_name: cardname,
+                                    card_number: card_number,
+                                    exp_date: exp_date,
+                                    cvc: cvc
+                                }),
+                            })
+                            .then((response) => response.text()) // Get the raw response text
+                            .then((text) => {
+                                console.log("Raw Response:", text); // Log the raw response
 
-                    fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/process_payment.php", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                card_name: cardname,
-                                card_number: card_number,
-                                exp_date: exp_date,
-                                cvc: cvc
-                            }),
-                        })
-                        .then((response) => response.text()) // Get the raw response text
-                        .then((text) => {
-                            console.log("Raw Response:", text); // Log the raw response
-
-                            try {
-                                const data = JSON.parse(text);
-                                if (data.success) {
-                                    alert("Payment successful");
-                                    window.location.href = "order_success.php";
-                                } else {
-                                    alert("Payment failed: " + data.message);
-                                    console.error("Errors:", data.errors);
+                                try {
+                                    const data = JSON.parse(text);
+                                    if (data.success) {
+                                        alert("Payment successful");
+                                        window.location.href = "order_success.php";
+                                    } else {
+                                        displayErrors(data.errors);
+                                    }
+                                } catch (error) {
+                                    console.error("Response is not valid JSON:", text);
                                 }
-                            } catch (error) {
-                                console.error("Response is not valid JSON:", text);
-                            }
-                        })
-                        .catch((error) => {
-                            console.error("Error:", error);
-                        });
+                            })
+                            .catch((error) => {
+                                console.error("Error:", error);
+                            });
+                    }
                 });
             } else {
-                console.error("Form with id 'payment-form' not found.");
+                console.error("Form with id 'payment_form' not found.");
+            }
+
+            function validateForm() {
+                let isValid = true;
+
+                // Validate Name on Card
+                const cardName = document.getElementById('card-name').value.trim();
+                if (cardName === '') {
+                    document.getElementById('card-name-error').textContent = 'Name on card is required';
+                    isValid = false;
+                } else {
+                    document.getElementById('card-name-error').textContent = '';
+                }
+
+                // Validate Card Number
+                const cardNumber = document.getElementById('card-number').value.trim();
+                const cardNumberRegex = /^\d{16}$/;
+                if (!cardNumberRegex.test(cardNumber)) {
+                    document.getElementById('card-number-error').textContent = 'Invalid card number';
+                    isValid = false;
+                } else {
+                    document.getElementById('card-number-error').textContent = '';
+                }
+
+                // Validate Expiration Date
+                const expDate = document.getElementById('exp-date').value.trim();
+                const expDateRegex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
+                if (!expDateRegex.test(expDate)) {
+                    document.getElementById('exp-date-error').textContent = 'Invalid expiration date';
+                    isValid = false;
+                } else {
+                    document.getElementById('exp-date-error').textContent = '';
+                }
+
+                // Validate CVC
+                const cvc = document.getElementById('cvc').value.trim();
+                const cvcRegex = /^[0-9]{3,4}$/;
+                if (!cvcRegex.test(cvc)) {
+                    document.getElementById('cvc-error').textContent = 'Invalid CVC';
+                    isValid = false;
+                } else {
+                    document.getElementById('cvc-error').textContent = '';
+                }
+
+                return isValid;
+            }
+
+            function displayErrors(errors) {
+                if (errors.card_name) {
+                    document.getElementById('card-name-error').textContent = errors.card_name;
+                }
+                if (errors.card_number) {
+                    document.getElementById('card-number-error').textContent = errors.card_number;
+                }
+                if (errors.exp_date) {
+                    document.getElementById('exp-date-error').textContent = errors.exp_date;
+                }
+                if (errors.cvc) {
+                    document.getElementById('cvc-error').textContent = errors.cvc;
+                }
             }
         });
-
-
-
-
-
-
-
-
-        function validateForm() {
-            let isValid = true;
-
-            // Validate Name on Card
-            const cardName = document.getElementById('card-name').value.trim();
-            if (cardName === '') {
-                document.getElementById('card-name-error').textContent = 'Name on card is required';
-                isValid = false;
-            } else {
-                document.getElementById('card-name-error').textContent = '';
-            }
-
-            // Validate Card Number
-            const cardNumber = document.getElementById('card-number').value.trim();
-            const cardNumberRegex = /^\d{16}$/;
-            if (!cardNumberRegex.test(cardNumber)) {
-                document.getElementById('card-number-error').textContent = 'Invalid card number';
-                isValid = false;
-            } else {
-                document.getElementById('card-number-error').textContent = '';
-            }
-
-            // Validate Expiration Date
-            const expDate = document.getElementById('exp-date').value.trim();
-            const expDateRegex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
-            if (!expDateRegex.test(expDate)) {
-                document.getElementById('exp-date-error').textContent = 'Invalid expiration date';
-                isValid = false;
-            } else {
-                document.getElementById('exp-date-error').textContent = '';
-            }
-
-            // Validate CVC
-            const cvc = document.getElementById('cvc').value.trim();
-            const cvcRegex = /^[0-9]{3,4}$/;
-            if (!cvcRegex.test(cvc)) {
-                document.getElementById('cvc-error').textContent = 'Invalid CVC';
-                isValid = false;
-            } else {
-                document.getElementById('cvc-error').textContent = '';
-            }
-
-            return isValid;
-        }
-
-        function toggleWishlist(event, productId) {
-            event.preventDefault(); // Prevent the form from submitting normally
-            const form = document.getElementById(`wishlist-form-${productId}`);
-            const formData = new FormData(form);
-
-            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
-                    method: "POST",
-                    body: formData
-                })
-                .then(response => response.text())
-                .then(data => {
-                    // Toggle the heart icon
-                    const icon = document.getElementById(`wishlist-icon-${productId}`);
-                    const actionInput = form.querySelector('input[name="action"]');
-                    if (actionInput.value === 'add_to_wishlist') {
-                        icon.classList.remove('far');
-                        icon.classList.add('fas');
-                        actionInput.value = 'remove_from_wishlist';
-                    } else {
-                        icon.classList.remove('fas');
-                        icon.classList.add('far');
-                        actionInput.value = 'add_to_wishlist';
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-
-            return false;
-        }
-
-        function toggleCart(event, productId) {
-            event.preventDefault(); // Prevent the form from submitting normally
-            const form = document.getElementById(`cart-form-${productId}`);
-            const formData = new FormData(form);
-
-            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
-                    method: "POST",
-                    body: formData
-                })
-                .then(response => response.text())
-                .then(data => {
-                    // Toggle the cart icon
-                    const icon = document.getElementById(`cart-icon-${productId}`);
-                    const actionInput = form.querySelector('input[name="action"]');
-                    updateCartCount(); // Update the cart count
-                    if (actionInput.value === 'add_to_cart') {
-                        // If you want to change the icon, add class manipulation here
-                        actionInput.value = 'remove_from_cart';
-                    } else {
-                        // If you want to change the icon, add class manipulation here
-                        actionInput.value = 'add_to_cart';
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-
-            return false;
-        }
-
-        function updateCartCount() {
-            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_cart_count.php")
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('cart-count').innerText = data.count;
-                })
-                .catch(error => console.error('Error:', error));
-        }
-
-        // Call updateCartCount on page load to set the initial cart count
-        document.addEventListener('DOMContentLoaded', updateCartCount);
 
         // the cart coupon funcitionality
         function updateCardPrice() {

@@ -20,14 +20,6 @@ try {
         $errors = [];
         $data = json_decode(file_get_contents('php://input'), true);
 
-        // Debugging: Log received data
-        file_put_contents('debug.log', print_r($data, true), FILE_APPEND);
-
-        // Debugging: Check if $data is an array
-        if (!is_array($data)) {
-            throw new Exception('Invalid input data');
-        }
-
         // Validate Name on Card
         $card_name = isset($data['card_name']) ? $data['card_name'] : null;
         if (empty($card_name)) {
@@ -55,8 +47,6 @@ try {
         if (empty($errors)) {
             // Process the payment logic here
             $user_id = $_SESSION['user_id'];
-
-            // $user_id = 3; // Example user ID
 
             // Insert order details into the orders table
             $cart_summary = $_SESSION['cart_summary'];

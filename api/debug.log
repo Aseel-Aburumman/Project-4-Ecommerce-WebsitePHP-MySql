@@ -326,3 +326,31 @@ Array
     [exp_date] => 1212
     [cvc] => 123
 )
+Array
+(
+    [card_name] => [
+    [card_number] => 
+    [exp_date] => 
+    [cvc] => 
+)
+Array
+(
+    [card_name] => DS
+    [card_number] => SD
+    [exp_date] => SD
+    [cvc] => SD
+)
+Array
+(
+    [card_name] => HJ
+    [card_number] => HGJG
+    [exp_date] => HGJ
+    [cvc] => HG
+)
+Array
+(
+    [card_name] => HJ
+    [card_number] => 14
+    [exp_date] => 1010
+    [cvc] => 123
+)
