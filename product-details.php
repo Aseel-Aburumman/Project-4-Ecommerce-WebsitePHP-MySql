@@ -72,56 +72,11 @@ if (isset($_REQUEST['product_name'])) {
 
 session_start();
 
-// Function to check if the user is signed in
-function isUserSignedIn()
-{
-    return isset($_SESSION['user_id']);
-    // return isset($_SESSION['3']);
-}
-// اكاونت من عبسي
-
-$userPageUrl = isUserSignedIn() ? 'user-dashboard.php' : 'account (1).php';
-$userPageUrlFavList = isUserSignedIn() ? 'wishlist.php' : 'fav-list.php';
-$userPageUrlCart = isUserSignedIn() ? 'cart.php' : 'cart-Guest.php';
 
 $query = 'SELECT * FROM products WHERE product_id < 5';
 $result = $conn->query($query);
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    session_start(); // Ensure session is started
-    $product_id = $_POST['product_id'];
-    $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
 
-    if (!isset($_SESSION['wishlist'])) {
-        $_SESSION['wishlist'] = array();
-    }
-    if (!isset($_SESSION['cart'])) {
-        $_SESSION['cart'] = array();
-        $_SESSION['cart_quantities'] = [];
-    }
-
-    if ($_POST['action'] == 'add_to_wishlist') {
-        if (!in_array($product_id, $_SESSION['wishlist'])) {
-            $_SESSION['wishlist'][] = $product_id;
-        }
-    } elseif ($_POST['action'] == 'remove_from_wishlist') {
-        if (($key = array_search($product_id, $_SESSION['wishlist'])) !== false) {
-            unset($_SESSION['wishlist'][$key]);
-            $_SESSION['wishlist'] = array_values($_SESSION['wishlist']);
-        }
-    } elseif ($_POST['action'] == 'add_to_cart') {
-        if (!in_array($product_id, $_SESSION['cart'])) {
-            $_SESSION['cart'][] = $product_id;
-        }
-        $_SESSION['cart_quantities'][$product_id] = $quantity;
-    } elseif ($_POST['action'] == 'remove_from_cart') {
-        if (($key = array_search($product_id, $_SESSION['cart'])) !== false) {
-            unset($_SESSION['cart'][$key]);
-            unset($_SESSION['cart_quantities'][$product_id]);
-            $_SESSION['cart'] = array_values($_SESSION['cart']);
-        }
-    }
-}
 
 
 ?>
@@ -238,6 +193,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Header Area Start -->
     <header class="header">
 
+
+
         <?php
 
         function isUserSignedInbtn()
@@ -251,9 +208,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             include 'navbar_guest.php';
         }
-
-
-
         ?>
     </header>
     <!-- Header Area End -->
@@ -445,11 +399,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             </button>
                                         </form>
 
-                                        <form id="wishlist-form" method="post" onsubmit="return toggleWishlist(event, <?php echo $product_id; ?>)">
+                                        <form id="wishlist-form-<?php echo $product_id; ?>" method="post" onsubmit="return toggleWishlist(event, <?php echo $product_id; ?>)">
                                             <input type="hidden" name="action" value="add_to_wishlist">
                                             <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
                                             <button type="submit" class="btn bg-primary cart-hart">
-                                                <svg id="Heart" xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
+                                                <svg id="wishlist-icon-<?php echo $product_id; ?>" xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 22 20">
                                                     <g id="Repeat_Grid_1" data-name="Repeat Grid 1">
                                                         <g transform="translate(1 1)">
                                                             <path id="Heart-2" data-name="Heart" d="M20.007,4.59a5.148,5.148,0,0,0-7.444,0L11.548,5.636,10.534,4.59a5.149,5.149,0,0,0-7.444,0,5.555,5.555,0,0,0,0,7.681L4.1,13.317,11.548,21l7.444-7.681,1.014-1.047a5.553,5.553,0,0,0,0-7.681Z" transform="translate(-1.549 -2.998)" fill="#fff" stroke="#335aff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
@@ -458,6 +412,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                 </svg>
                                             </button>
                                         </form>
+
+
                                     </div>
                                 </div>
 
@@ -634,92 +590,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row align-items-center newsletter-area">
-                <div class="col-lg-5">
-                    <div class="newsletter-area-text">
-                        <h4 class="text-white">Subscribe to get notification.</h4>
-                        <p>
-                            Receive our weekly newsletter.
-                            For dietary content, fashion insider and the best offers.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-6 offset-lg-1">
-                    <div class="newsletter-area-button">
-                        <form action="#">
-                            <div class="form">
-                                <input type="email" name="email" id="mail" placeholder="Enter your email address" class="form-control">
-                                <button class="btn bg-secondary border text-capitalize">Subscribe</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <!-- <div class="row main-footer">
-                <div class="col-lg-4 col-md-12 col-sm-12 col-12">
-                    <div class="main-footer-info">
-                        <img src="dist/images/logo/white.png" alt="Logo" class="img-fluid">
-                        <p>
-                            We’re available by phone +962 782 615 549<br>
-                            info@example.com<br>
-                            Sunday till Friday 10 to 6 EST
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-2 offset-lg-2 col-md-4 col-sm-6 col-12">
-                    <div class="main-footer-quicklinks">
-                        <h6>Company</h6>
-                        <ul class="quicklink">
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Help &amp; Support</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms of Service</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
-                    <div class="main-footer-quicklinks">
-                        <h6>Quick links</h6>
-                        <ul class="quicklink">
-                            <li><a href="#">New Realease</a></li>
-                            <li><a href="#">Customize</a></li>
-                            <li><a href="#">Sale &amp; Discount</a></li>
-                            <li><a href="#">Men</a></li>
-                            <li><a href="#">Women</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
-                    <div class="main-footer-quicklinks">
-                        <h6>Account</h6>
-                        <ul class="quicklink">
-                            <li><a href="#">Your Bag</a></li>
-                            <li><a href="#">Profile</a></li>
-                            <li><a href="#">Order Completed</a></li>
-                            <li><a href="#">Log-out</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div> -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="copyright d-flex justify-content-between align-items-center">
-                        <div class="copyright-text order-2 order-lg-1">
-                            <p>&copy; 2024. All rights reserved. </p>
-                        </div>
-                        <div class="copyright-links order-1 order-lg-2">
-                            <a href="soon.php" class="ml-0"><i class="fab fa-facebook-f"></i></a>
-                            <a href="soon.php"><i class="fab fa-twitter"></i></a>
-                            <a href="soon.php"><i class="fab fa-youtube"></i></a>
-                            <a href="soon.php"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php
+    include 'footer.php';
+    ?>
     <!-- Footer -->
 
     <script src="src/js/jquery.min.js"></script>
@@ -930,79 +803,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 document.querySelector(".minus #Arrow").style.stroke = '#989ba7';
             }
         }
-
-        function toggleWishlist(event, productId) {
-            event.preventDefault();
-            const form = document.getElementById('wishlist-form');
-            const formData = new FormData(form);
-
-            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", {
-                    method: "POST",
-                    body: formData
-                })
-                .then(response => response.text())
-                .then(data => {
-                    const actionInput = form.querySelector('input[name="action"]');
-                    if (actionInput.value === 'add_to_wishlist') {
-                        actionInput.value = 'remove_from_wishlist';
-                    } else {
-                        actionInput.value = 'add_to_wishlist';
-                    }
-                    updateWishlistCount();
-                })
-                .catch(error => console.error('Error:', error));
-
-            return false;
-        }
-
-        function toggleCart(event, productId) {
-            event.preventDefault();
-            const form = document.getElementById('cart-form');
-            const formData = new FormData(form);
-            const quantity = document.getElementById('quantity').value;
-            formData.set('quantity', quantity);
-
-            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", {
-                    method: "POST",
-                    body: formData
-                })
-                .then(response => response.text())
-                .then(data => {
-                    const actionInput = form.querySelector('input[name="action"]');
-                    updateCartCount();
-                    if (actionInput.value === 'add_to_cart') {
-                        actionInput.value = 'remove_from_cart';
-                    } else {
-                        actionInput.value = 'add_to_cart';
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-
-            return false;
-        }
-
-        function updateCartCount() {
-            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_cart_count.php")
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('cart-count').innerText = data.count;
-                })
-                .catch(error => console.error('Error:', error));
-        }
-
-        function updateWishlistCount() {
-            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_wishlist_count.php")
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('wishlist-count').innerText = data.count;
-                })
-                .catch(error => console.error('Error:', error));
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            updateCartCount();
-            updateWishlistCount();
-        });
     </script>
 
     <!-- <script src="src/js/searching.js"></script> -->

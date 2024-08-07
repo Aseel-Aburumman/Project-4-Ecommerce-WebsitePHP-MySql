@@ -35,7 +35,14 @@ $popresult = $conn->query($popquery);
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $product_id = $_POST['product_id'];
+    if (isset($_POST['product_id'])) {
+        $product_id = $_POST['product_id'];
+    } else {
+        // Handle the error appropriately, e.g., by logging or displaying an error message
+        echo "Error: product_id is not set";
+        exit;
+    }
+
     if (!isset($_SESSION['wishlist'])) {
         $_SESSION['wishlist'] = array();
     }
@@ -44,28 +51,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['cart_quantities'] = [];
     }
 
-    if ($_POST['action'] == 'add_to_wishlist') {
-        if (!in_array($product_id, $_SESSION['wishlist'])) {
-            $_SESSION['wishlist'][] = $product_id;
+    if (isset($_POST['action'])) {
+        if ($_POST['action'] == 'add_to_wishlist') {
+            if (!in_array($product_id, $_SESSION['wishlist'])) {
+                $_SESSION['wishlist'][] = $product_id;
+            }
+        } elseif ($_POST['action'] == 'remove_from_wishlist') {
+            if (($key = array_search($product_id, $_SESSION['wishlist'])) !== false) {
+                unset($_SESSION['wishlist'][$key]);
+                $_SESSION['wishlist'] = array_values($_SESSION['wishlist']);
+            }
+        } elseif ($_POST['action'] == 'add_to_cart') {
+            if (!in_array($product_id, $_SESSION['cart'])) {
+                $_SESSION['cart'][] = $product_id;
+                $_SESSION['cart_quantities'][$product_id] = 1;
+            }
+        } elseif ($_POST['action'] == 'remove_from_cart') {
+            if (($key = array_search($product_id, $_SESSION['cart'])) !== false) {
+                unset($_SESSION['cart'][$key]);
+                $_SESSION['cart'] = array_values($_SESSION['cart']);
+            }
         }
-    } elseif ($_POST['action'] == 'remove_from_wishlist') {
-        if (($key = array_search($product_id, $_SESSION['wishlist'])) !== false) {
-            unset($_SESSION['wishlist'][$key]);
-            $_SESSION['wishlist'] = array_values($_SESSION['wishlist']);
-        }
-    } elseif ($_POST['action'] == 'add_to_cart') {
-        if (!in_array($product_id, $_SESSION['cart'])) {
-            $_SESSION['cart'][] = $product_id;
-            $_SESSION['cart_quantities'][$product_id] = 1;
-        }
-    } elseif ($_POST['action'] == 'remove_from_cart') {
-        if (($key = array_search($product_id, $_SESSION['cart'])) !== false) {
-            unset($_SESSION['cart'][$key]);
-            $_SESSION['cart'] = array_values($_SESSION['cart']);
-        }
+    } else {
+        // Handle the error appropriately, e.g., by logging or displaying an error message
+        echo "Error: action is not set";
+        exit;
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -152,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <li><a href="shop.php?<?php echo "gender=$gender&product_type=Hoodies"; ?>">Hoodies</a></li>
                                     <li><a href="shop.php?<?php echo "gender=$gender&product_type=Jeans"; ?>">Jeans</a></li>
                                     <li><a href="shop.php?<?php echo "gender=$gender&product_type=Casual"; ?>">Casual</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Pajamas"; ?>">Pajamas</a></li>
+                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Accessories"; ?>">Accessories</a></li>
                                     <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shorts"; ?>">Shorts</a></li>
                                 </ul>
                             </li>
@@ -365,7 +379,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             const form = document.getElementById(`wishlist-form-${productId}`);
             const formData = new FormData(form);
 
-            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -391,33 +405,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
 
-        function toggleCart(event, productId) {
+        function toggleWishlist(event, productId) {
             event.preventDefault(); // Prevent the form from submitting normally
-            const form = document.getElementById(`cart-form-${productId}`);
+            const form = document.getElementById(`wishlist-form-${productId}`);
+            if (!form) {
+                console.error(`Form with ID 'wishlist-form-${productId}' not found.`);
+                return false;
+            }
             const formData = new FormData(form);
 
-            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
                 .then(response => response.text())
                 .then(data => {
-                    // Toggle the cart icon
-                    const actionInput = form.querySelector('input[name="action"]');
-                    updateCartCount(); // Update the cart count
-                    if (actionInput.value === 'add_to_cart') {
-                        actionInput.value = 'remove_from_cart';
-                    } else {
-                        actionInput.value = 'add_to_cart';
+                    // Toggle the heart icon
+                    const icon = document.getElementById(`wishlist-icon-${productId}`);
+                    if (!icon) {
+                        console.error(`Icon with ID 'wishlist-icon-${productId}' not found.`);
+                        return;
                     }
+                    const actionInput = form.querySelector('input[name="action"]');
+                    if (actionInput.value === 'add_to_wishlist') {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        actionInput.value = 'remove_from_wishlist';
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        actionInput.value = 'add_to_wishlist';
+                    }
+                    updateWishlistCount();
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                });
 
             return false;
         }
 
+
         function updateCartCount() {
-            fetch("http://localhost/ecommercebreifdb/api/get_cart_count.php")
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_cart_count.php")
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('cart-count').innerText = data.count;
@@ -426,7 +456,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         function updateWishlistCount() {
-            fetch("http://localhost/ecommercebreifdb/api/get_wishlist_count.php")
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_wishlist_count.php")
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('wishlist-count').innerText = data.count;

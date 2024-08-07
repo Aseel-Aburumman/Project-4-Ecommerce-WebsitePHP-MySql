@@ -165,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <li><a href="shop.php?<?php echo "gender=$gender&product_type=Hoodies"; ?>">Hoodies</a></li>
                                     <li><a href="shop.php?<?php echo "gender=$gender&product_type=Jeans"; ?>">Jeans</a></li>
                                     <li><a href="shop.php?<?php echo "gender=$gender&product_type=Casual"; ?>">Casual</a></li>
-                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Pajamas"; ?>">Pajamas</a></li>
+                                    <li><a href="shop.php?<?php echo "gender=$gender&product_type=Accessories"; ?>">Accessories</a></li>
                                     <li><a href="shop.php?<?php echo "gender=$gender&product_type=Shorts"; ?>">Shorts</a></li>
                                 </ul>
                             </li>
@@ -378,9 +378,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         function toggleWishlist(event, productId) {
             event.preventDefault(); // Prevent the form from submitting normally
             const form = document.getElementById(`wishlist-form-${productId}`);
+            if (!form) {
+                console.error(`Form with ID 'wishlist-form-${productId}' not found.`);
+                return false;
+            }
             const formData = new FormData(form);
 
-            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -388,6 +392,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 .then(data => {
                     // Toggle the heart icon
                     const icon = document.getElementById(`wishlist-icon-${productId}`);
+                    if (!icon) {
+                        console.error(`Icon with ID 'wishlist-icon-${productId}' not found.`);
+                        return;
+                    }
                     const actionInput = form.querySelector('input[name="action"]');
                     if (actionInput.value === 'add_to_wishlist') {
                         icon.classList.remove('far');
@@ -400,7 +408,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                     updateWishlistCount();
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                });
 
             return false;
         }
@@ -411,7 +421,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             const form = document.getElementById(`cart-form-${productId}`);
             const formData = new FormData(form);
 
-            fetch("http://localhost/ecommercebreifdb/index.php", { // Use the current page URL
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -432,7 +442,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         function updateCartCount() {
-            fetch("http://localhost/ecommercebreifdb/api/get_cart_count.php")
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_cart_count.php")
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('cart-count').innerText = data.count;
@@ -441,7 +451,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         function updateWishlistCount() {
-            fetch("http://localhost/ecommercebreifdb/api/get_wishlist_count.php")
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_wishlist_count.php")
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('wishlist-count').innerText = data.count;

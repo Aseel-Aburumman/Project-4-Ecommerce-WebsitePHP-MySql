@@ -306,9 +306,9 @@ $productCount7 = $row7['product_count'];
                         <div class="col-lg-6">
                             <div class="about-area-content-text">
                                 <h3>Why Shop with Olog</h3>
-                                <p>Fortify your hair follicles, give thinning areas some volume, and treat your
-                                    body’s
-                                    skin like driving your dream car off the lot.</p>
+                                <p>Discover stylish outfits, enhance your wardrobe, and feel confident like stepping into the spotlight.
+
+                                </p>
                                 <div class="icon-area-content">
                                     <div class="icon-area">
                                         <i class="far fa-check-circle"></i>
@@ -320,7 +320,7 @@ $productCount7 = $row7['product_count'];
                                     </div>
                                     <div class="icon-area">
                                         <i class="far fa-check-circle"></i>
-                                        <span>Shop in 2 languages</span>
+                                        <span>Timeless outfits</span>
                                     </div>
 
                                 </div>
@@ -419,10 +419,10 @@ $productCount7 = $row7['product_count'];
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="shop.php?gender=men&product_type=T-Shirt"> <img src="dist/images/categorys/T-Shirt.jpg" alt="images"></a>
+                                <a href="shop.php?gender=Clothing&product_type=T-Shirt"> <img src="dist/images/categorys/T-Shirt.jpg" alt="images"></a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="shop.php?gender=men&product_type=T-Shirt">
+                                <a href="shop.php?gender=Clothing&product_type=T-Shirt">
                                     <h6>T-Shirt</h6>
                                     <span><?php echo $productCount1; ?>Products</span>
                                 </a>
@@ -432,10 +432,10 @@ $productCount7 = $row7['product_count'];
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="shop.php?gender=men&product_type=Shoes"><img src="dist/images/categorys/Shoes.jpg" alt="images"> </a>
+                                <a href="shop.php?gender=Footwear&product_type=Shoes"><img src="dist/images/categorys/Shoes.jpg" alt="images"> </a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="shop.php?gender=men&product_type=Shoes">
+                                <a href="shop.php?gender=Footwear&product_type=Shoes">
                                     <h6>Shoes</h6>
                                     <span><?php echo $productCount2; ?> Products</span>
                                 </a>
@@ -445,10 +445,10 @@ $productCount7 = $row7['product_count'];
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="shop.php?gender=men&product_type=Hoodies"><img src="dist/images/categorys/Hoodies.png" alt="images"></a>
+                                <a href="shop.php?gender=Clothing&product_type=Hoodies"><img src="dist/images/categorys/Hoodies.png" alt="images"></a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="shop.php?gender=men&product_type=Hoodies">
+                                <a href="shop.php?gender=Clothing&product_type=Hoodies">
                                     <h6>Hoodies</h6>
                                     <span><?php echo $productCount3; ?> Products</span>
                                 </a>
@@ -458,10 +458,10 @@ $productCount7 = $row7['product_count'];
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="shop.php?gender=men&product_type=Jeans"><img src="dist/images/categorys/Jeans.jpg" alt="images"></a>
+                                <a href="shop.php?gender=Clothing&product_type=Jeans"><img src="dist/images/categorys/Jeans.jpg" alt="images"></a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="shop.php?gender=men&product_type=Jeans">
+                                <a href="shop.php?gender=Clothing&product_type=Jeans">
                                     <h6>Jeans</h6>
                                     <span><?php echo $productCount4; ?> Products</span>
                                 </a>
@@ -471,10 +471,10 @@ $productCount7 = $row7['product_count'];
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="shop.php?gender=men&product_type=T-Shirt"><img src="dist/images/categorys/Casual.webp" alt="images"></a>
+                                <a href="shop.php?gender=Clothing&product_type=T-Shirt"><img src="dist/images/categorys/Casual.webp" alt="images"></a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="shop.php?gender=men&product_type=T-Shirt">
+                                <a href="shop.php?gender=Clothing&product_type=T-Shirt">
                                     <h6>Casual</h6>
                                     <span><?php echo $productCount5; ?> Products</span>
                                 </a>
@@ -484,11 +484,11 @@ $productCount7 = $row7['product_count'];
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="shop.php?gender=men&product_type=Pajamas"><img src="dist/images/categorys/Pajamas.webp" alt="images"></a>
+                                <a href="shop.php?gender=Accessories&product_type=Accessories"><img src="dist/images/categorys/Pajamas.webp" alt="images"></a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="shop.php?gender=men&product_type=Pajamas">
-                                    <h6>Pajamas</h6>
+                                <a href="shop.php?gender=Accessories&product_type=Accessories">
+                                    <h6>Accessories</h6>
                                     <span><?php echo $productCount6; ?> Products</span>
                                 </a>
                             </div>
@@ -497,10 +497,10 @@ $productCount7 = $row7['product_count'];
                     <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                         <div class="productcategory text-center">
                             <div class="productcategory-img">
-                                <a href="shop.php?gender=men&product_type=Shorts"><img src="dist/images/categorys/Shorts.jpg" alt="images"></a>
+                                <a href="shop.php?gender=Clothing&product_type=Shorts"><img src="dist/images/categorys/Shorts.jpg" alt="images"></a>
                             </div>
                             <div class="productcategory-text">
-                                <a href="shop.php?gender=men&product_type=Shorts">
+                                <a href="shop.php?gender=Clothing&product_type=Shorts">
                                     <h6>Shorts</h6>
                                     <span><?php echo $productCount7; ?> Products</span>
                                 </a>
