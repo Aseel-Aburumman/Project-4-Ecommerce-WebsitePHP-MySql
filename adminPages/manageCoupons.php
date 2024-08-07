@@ -1,10 +1,10 @@
 <?php
 session_start();
+
 if (!isset($_SESSION['user_name'])) {
-    header("Location: login.php");
+    header("Location: ../account (1).php");
     exit();
 }
-
 
 function getFirstTwoWords($string) {
     $words = explode(' ', $string);
@@ -21,40 +21,63 @@ include '../connection.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - List of Coupons</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="manageStyle.css">
+    <style>
+        .status-circle {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+        .status-active {
+            background-color: green;
+        }
+        .status-inactive {
+            background-color: red;
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
-            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-            <div class="position-sticky pt-3">
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+                <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link active" href="dashboard.php">
-                                Main dashboard
+                                <i class="fa fa-cloud"></i> Main dashboard
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="manageUser.php">
-                                Manage Users
+                                <i class="fa-solid fa-table-columns"></i> Manage Users
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#manage-categories">
-                                Manage Categories
+                            <a class="nav-link" href="manageCategories.php">
+                                <i class="fas fa-list"></i> Manage Categories
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="manageProducts.php">
-                                Manage Products
+                                <i class="fas fa-boxes"></i> Manage Products
                             </a>
                         </li>
-                        <li lass="nav-item"><a class="nav-link" href="manageProductType.php">Manage Product Type</a></li>
-                        <li lass="nav-item"><a class="nav-link" href="manageCoupons.php">Manage Coupons</a></li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../account (1).php">
-                                Logout
+                            <a class="nav-link" href="manageProductType.php">
+                                <i class="fas fa-tags"></i> Manage Product Type
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="manageCoupons.php">
+                                <i class="fas fa-ticket-alt"></i> Manage Coupons
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="logout.php">
+                                <i class="fas fa-sign-out-alt"></i> Logout
                             </a>
                         </li>
                     </ul>
@@ -67,10 +90,10 @@ include '../connection.php';
                     <p class="h5"><?php echo htmlspecialchars($firstTwoWords); ?></p>
                 </div>
 
-                <h2>List of Categories</h2>
+                <h2>List of Coupons</h2>
                 <div class="d-flex mb-3">
                     <form class="d-flex me-3" method="get" action="">
-                        <input class="form-control me-2" type="search" name="search" placeholder="Search clients" aria-label="Search">
+                        <input class="form-control me-2" type="search" name="search" placeholder="Search Coupons" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
                     <div>
@@ -85,8 +108,8 @@ include '../connection.php';
                             <tr>
                                 <th>ID</th>
                                 <th>Code</th>
-                                <th>discount</th>
-                                <th>Max discount amount</th>
+                                <th>Discount</th>
+                                <th>Max Discount Amount</th>
                                 <th>Is Active</th>
                                 <th>Expiry Date</th>
                                 <th class="actions">Actions</th>
@@ -103,17 +126,16 @@ include '../connection.php';
                             }
 
                             while ($row = $result->fetch_assoc()) {
+                                $status_class = $row['is_active'] == 1 ? 'status-active' : 'status-inactive';
                                 echo "
                                 <tr>
-                                <td>{$row['id']}</td>
+                                    <td>{$row['id']}</td>
                                     <td>{$row['code']}</td>
                                     <td>{$row['discount']}</td>
                                     <td>{$row['max_discount_amount']}</td>
-                                    <td>{$row['is_active']}</td>
+                                    <td><span class='status-circle $status_class'></span></td>
                                     <td>{$row['expiry_date']}</td>
-                                  
                                     <td class='actions'>
-        
                                         <a class='btn btn-warning btn-sm' href='editCoupons.php?category_id={$row['id']}'>Edit</a>
                                         <a class='btn btn-danger btn-sm' href='delete.php?category_id={$row['id']}'>Delete</a>
                                     </td>

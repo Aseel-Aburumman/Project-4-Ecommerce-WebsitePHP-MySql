@@ -1,11 +1,10 @@
-
 <?php
 session_start();
+
 if (!isset($_SESSION['user_name'])) {
-    header("Location: login.php");
+    header("Location: ../account (1).php");
     exit();
 }
-
 
 function getFirstTwoWords($string) {
     $words = explode(' ', $string);
@@ -15,15 +14,13 @@ function getFirstTwoWords($string) {
 $firstTwoWords = getFirstTwoWords($_SESSION['user_name']);
 include '../connection.php';
 
-
 $count_admins = 0;
 $count_users = 0;
 $count_orders = 0;
-$count_items1 = 0;
-$count_items2 = 0;
-$count_items3 = 0;
-$sum_total=0;
+$category_counts = [];
+$sum_total = 0;
 
+// Count users by role
 $sql = "SELECT role_id, COUNT(*) AS count FROM users GROUP BY role_id";
 $result = $conn->query($sql);
 
@@ -36,42 +33,40 @@ if ($result->num_rows > 0) {
         }
     }
 }
-//-----------------------------------------------------
-$sql = "SELECT category_id , COUNT(*) AS countC FROM products GROUP BY category_id ";
+
+// Count products by category and get category names
+$sql = "SELECT categories.category_name, COUNT(products.product_id) AS countC 
+        FROM products 
+        JOIN categories ON products.category_id = categories.category_id 
+        GROUP BY products.category_id";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        if ($row['category_id'] == 1) {
-            $count_items1 = $row['countC'];
-        } elseif ($row['category_id'] == 2) {
-            $count_items2 = $row['countC'];
-        } elseif ($row['category_id'] == 3) {
-            $count_items3  = $row['countC'];
-        }
+        $category_counts[$row['category_name']] = $row['countC'];
     }
 }
-//---------------------------------------
 
-$sql = "SELECT  COUNT(order_id) AS countOrders FROM orders ";
+// Count orders
+$sql = "SELECT COUNT(order_id) AS countOrders FROM orders";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $count_orders = $row['countOrders'];
 }
-//-------------------------------
-$sql = "SELECT sum(total) as total FROM orders ";
+
+// Calculate total sales
+$sql = "SELECT SUM(total) AS total FROM orders";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $sum_total = $row['total'];
 }
+
 $conn->close();
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -80,19 +75,19 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <div class="sidebar">
             <ul>
-            <li><a href="dashboard.php">Main dashboard</a></li>
-
-                <li><a href="manageUser.php">Manage Users</a></li>
-                <li><a href="manageCategories.php">Manage Categories</a></li>
-                <li><a href="manageProducts.php">Manage Products</a></li>
-                <li><a href="manageProductType.php">Manage Product Type</a></li>
-                <li><a href="manageCoupons.php">Manage Coupons</a></li>
-                <li><a href="../account (1).php">Logout</a></li>
+                <li><a href="dashboard.php"><i class="fa fa-cloud"></i> Main Dashboard</a></li>
+                <li><a href="manageUser.php"><i class="fa-solid fa-table-columns"></i> Manage Users</a></li>
+                <li><a href="manageCategories.php"><i class="fas fa-list"></i> Manage Categories</a></li>
+                <li><a href="manageProducts.php"><i class="fas fa-boxes"></i> Manage Products</a></li>
+                <li><a href="manageProductType.php"><i class="fas fa-tags"></i> Manage Product Type</a></li>
+                <li><a href="manageCoupons.php"><i class="fas fa-ticket-alt"></i> Manage Coupons</a></li>
+                <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </div>
         <div class="main-content">
@@ -103,31 +98,25 @@ $conn->close();
             <div class="dashboard-container">
                 <div class="dashboard">
                     <div class="card">
-                        <h3>Number of Orders</h3>
+                        <h3><i class="fas fa-shopping-cart"></i> Number of Orders</h3>
                         <p><?php echo $count_orders?></p>
                     </div>
                     <div class="card">
-                        <h3>Number of Users</h3>
+                        <h3><i class="fas fa-user"></i> Number of Users</h3>
                         <p><?php echo $count_users ?></p>
                     </div>
                     <div class="card">
-                        <h3>Number of Admins</h3>
+                        <h3><i class="fas fa-user-shield"></i> Number of Admins</h3>
                         <p><?php echo $count_admins ?></p>
                     </div>
+                    <?php foreach ($category_counts as $category_name => $count): ?>
+                        <div class="card">
+                            <h3><i class="fas fa-box"></i> Items in <?php echo htmlspecialchars($category_name); ?></h3>
+                            <p><?php echo $count; ?></p>
+                        </div>
+                    <?php endforeach; ?>
                     <div class="card">
-                        <h3>Total Items in Category 1</h3>
-                        <p><?php echo $count_items1?></p>
-                    </div>
-                    <div class="card">
-                        <h3>Total Items in Category 2</h3>
-                        <p><?php echo $count_items2?></p>
-                    </div>
-                    <div class="card">
-                        <h3>Total Items in Category 3</h3>
-                        <p><?php echo $count_items3?></p>
-                    </div>
-                    <div class="card">
-                        <h3>Total sales</h3>
+                        <h3><i class="fas fa-dollar-sign"></i> Total Sales</h3>
                         <p><?php echo $sum_total?></p>
                     </div>
                 </div>

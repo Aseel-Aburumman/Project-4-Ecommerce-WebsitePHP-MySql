@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f4f3f3;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -14,7 +14,7 @@ body {
 
 .sidebar {
     width: 250px; /* Adjusted width */
-    background-color: #fff; /* Changed to white */
+    background-color: #bfd8d5; /* Changed to white */
     color: #333; /* Changed text color to dark */
     height: 100vh;
     padding-top: 20px;
@@ -94,7 +94,7 @@ body {
 }
 
 .card {
-    background-color: #fff;
+    background-color: #7ba7a6;
     padding: 40px; /* Increased padding for larger cards */
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -111,13 +111,13 @@ body {
 .card h3 {
     margin: 0 0 10px;
     font-size: 24px; /* Increased font size */
-    color: #333;
+    color: white;
 }
 
 .card p {
     font-size: 32px; /* Increased font size */
     margin: 0;
-    color: #666;
+    color: white;
 }
 
 /* Media Queries */
