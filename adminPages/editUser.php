@@ -121,6 +121,7 @@ $conn->close();
                                 <i class="fas fa-ticket-alt"></i> Manage Coupons
                             </a>
                         </li>
+                        <li lass="nav-item"><a class="nav-link" href="manageOrders.php"> <i class="fas fa-shopping-cart"></i> Manage Orders</a></li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">
                                 <i class="fas fa-sign-out-alt"></i> Logout
@@ -156,37 +157,37 @@ $conn->close();
                         <div class="row mb-3">
                             <label class="col-sm-3 col-form-label">First Name</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="firstname" value="<?php echo htmlspecialchars($row['firstname']); ?>" required>
+                                <input type="text" class="form-control" name="firstname" value="<?php echo htmlspecialchars($row['firstname']); ?>" >
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label class="col-sm-3 col-form-label">Last Name</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="lastname" value="<?php echo htmlspecialchars($row['lastname']); ?>" required>
+                                <input type="text" class="form-control" name="lastname" value="<?php echo htmlspecialchars($row['lastname']); ?>" >
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label class="col-sm-3 col-form-label">Address</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="address" value="<?php echo htmlspecialchars($row['address']); ?>" required>
+                                <input type="text" class="form-control" name="address" value="<?php echo htmlspecialchars($row['address']); ?>" >
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label class="col-sm-3 col-form-label">Building</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="building" value="<?php echo htmlspecialchars($row['building']); ?>" required>
+                                <input type="text" class="form-control" name="building" value="<?php echo htmlspecialchars($row['building']); ?>" >
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label class="col-sm-3 col-form-label">City</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="city" value="<?php echo htmlspecialchars($row['city']); ?>" required>
+                                <input type="text" class="form-control" name="city" value="<?php echo htmlspecialchars($row['city']); ?>" >
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label class="col-sm-3 col-form-label">Phone</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="phone" value="<?php echo htmlspecialchars($row['phone']); ?>" required>
+                                <input type="text" class="form-control" name="phone" value="<?php echo htmlspecialchars($row['phone']); ?>" >
                             </div>
                         </div>
 

@@ -69,6 +69,7 @@ function truncateText($text, $maxWords) {
                         <i class="fas fa-ticket-alt"></i>
                             Manage Coupons
                         </a></li>
+                        <li lass="nav-item"><a class="nav-link" href="manageOrders.php"> <i class="fas fa-shopping-cart"></i> Manage Orders</a></li>
                         <li class="nav-item"><a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i>   Logout</a></li>
                     </ul>
                 </div>
@@ -101,8 +102,8 @@ function truncateText($text, $maxWords) {
                                 <th>Description</th>
                                 <th>Price</th>
                                 <th>discount</th>
-                                <th>Category id</th>
-                                <th>Product type id</th>
+                                <th>Category </th>
+                                <th>Product type </th>
                                 
                                 <th class="actions">Actions</th>
                             </tr>
@@ -134,8 +135,8 @@ function truncateText($text, $maxWords) {
                                     <td>{$row['type_name']}</td>
                                        <td class='actions'>
         
-                                        <a class='btn btn-warning btn-sm' href='editProducts.php?product_id={$row['product_id']}'>Edit</a>
-                                        <a class='btn btn-danger btn-sm' href='delete.php?product_id={$row['product_id']}'>Delete</a>
+                                        <a  href='editProducts.php?product_id={$row['product_id']}'><i class='fa-solid fa-pen-to-square' style='color: #007BFF;'></i></a>
+                                        <a  href='delete.php?product_id={$row['product_id']}'><i class='fa-solid fa-trash' style='color: #ff0000;'></i></a>
                                     </td>
                                 </tr>
                                 ";

@@ -60,6 +60,7 @@ include '../connection.php';
                         <i class="fas fa-ticket-alt"></i>
                             Manage Coupons
                         </a></li>
+                        <li lass="nav-item"><a class="nav-link" href="manageOrders.php"> <i class="fas fa-shopping-cart"></i> Manage Orders</a></li>
                         <li class="nav-item"><a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i>   Logout</a></li>
                     </ul>
                 </div>
@@ -109,8 +110,8 @@ include '../connection.php';
                                     <td>{$row['product_type_id']}</td>
                                     <td>{$row['type_name']}</td>
                                     <td class='actions'>
-                                        <a class='btn btn-warning btn-sm' href='editPType.php?product_type_id={$row['product_type_id']}'>Edit</a>
-                                        <a class='btn btn-danger btn-sm' href='delete.php?product_type_id={$row['product_type_id']}'>Delete</a>
+                                        <a  href='editPType.php?product_type_id={$row['product_type_id']}'><i class='fa-solid fa-pen-to-square' style='color: #007BFF;'></i></a>
+                                        <a  href='delete.php?product_type_id={$row['product_type_id']}'><i class='fa-solid fa-trash' style='color: #ff0000;'></i></a>
                                     </td>
                                 </tr>
                                 ";

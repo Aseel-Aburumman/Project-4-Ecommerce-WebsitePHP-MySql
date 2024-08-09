@@ -77,6 +77,8 @@ $conn->close();
                                 Manage Coupons
                             </a>
                         </li>
+                        <li lass="nav-item"><a class="nav-link" href="manageOrders.php"> <i class="fas fa-shopping-cart"></i> Manage Orders</a></li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">
                                 Logout
