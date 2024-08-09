@@ -76,6 +76,7 @@ include '../connection.php';
                             </a>
                         </li>
                         <li lass="nav-item"><a class="nav-link" href="manageOrders.php"> <i class="fas fa-shopping-cart"></i> Manage Orders</a></li>
+                        <li lass="nav-item"><a class="nav-link" href="editAdmin.php"><i class="fas fa-user-shield"></i> Your Profile</a></li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">
                                 <i class="fas fa-sign-out-alt"></i> Logout
@@ -99,7 +100,7 @@ include '../connection.php';
                     </form>
                     <div>
                         <a class="btn btn-primary me-2" href="addCoupons.php" role="button">Add Coupons</a>
-                        <a class="btn btn-secondary" href="dashboard.php" role="button">Back</a>
+                       
                     </div>
                 </div>
 
@@ -137,8 +138,8 @@ include '../connection.php';
                                     <td><span class='status-circle $status_class'></span></td>
                                     <td>{$row['expiry_date']}</td>
                                     <td class='actions'>
-                                        <a  href='editCoupons.php?category_id={$row['id']}'><i class='fa-solid fa-pen-to-square' style='color: #007BFF;'></i></a>
-                                        <a  href='delete.php?category_id={$row['id']}'><i class='fa-solid fa-trash' style='color: #ff0000;'></i></a>
+                                        <a  href='editCoupons.php?coupon_id={$row['id']}'><i class='fa-solid fa-pen-to-square' style='color: #007BFF;'></i></a>
+                                        <a  href='delete.php?coupon_id={$row['id']}'><i class='fa-solid fa-trash' style='color: #ff0000;'></i></a>
                                     </td>
                                 </tr>
                                 ";

@@ -84,7 +84,7 @@ include '../connection.php';
                     </form>
                     <div>
                         <a class="btn btn-primary me-2" href="addRType.php" role="button">Add Product Type</a>
-                        <a class="btn btn-secondary" href="dashboard.php" role="button">Back</a>
+
                     </div>
                 </div>
 

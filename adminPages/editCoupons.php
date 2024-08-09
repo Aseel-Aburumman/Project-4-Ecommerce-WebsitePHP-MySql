@@ -17,8 +17,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if (isset($_GET['category_id'])) {
-    $id = $_GET['category_id'];
+if (isset($_GET['coupon_id'])) {
+    $id = $_GET['coupon_id'];
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $code = $conn->real_escape_string($_POST['code']);
         $discount = $conn->real_escape_string($_POST['discount']);
@@ -98,7 +98,7 @@ $conn->close();
                             </a>
                         </li>
                         <li lass="nav-item"><a class="nav-link" href="manageOrders.php"> <i class="fas fa-shopping-cart"></i> Manage Orders</a></li>
-
+                        <li lass="nav-item"><a class="nav-link" href="editAdmin.php"><i class="fas fa-user-shield"></i> Your Profile</a></li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">
                                 <i class="fas fa-sign-out-alt"></i> Logout

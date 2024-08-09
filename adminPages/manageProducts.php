@@ -93,7 +93,7 @@ function truncateText($text, $maxWords)
                     </form>
                     <div>
                         <a class="btn btn-primary me-2" href="addProducts.php" role="button">Add Products</a>
-                        <a class="btn btn-secondary" href="dashboard.php" role="button">Back</a>
+
                     </div>
                 </div>
 
@@ -101,7 +101,7 @@ function truncateText($text, $maxWords)
                     <table class="table table-striped table-sm">
                         <thead>
                             <tr>
-                                <th>ID</th>
+
                                 <th>Product name</th>
                                 <th>Description</th>
                                 <th>Price</th>
@@ -129,7 +129,7 @@ function truncateText($text, $maxWords)
                             while ($row = $result->fetch_assoc()) {
                                 echo "
                                 <tr>
-                                    <td>{$row['product_id']}</td>
+                                   
                                     <td>" . truncateText($row['product_name'], 2) . "</td>
                                     <td>" . truncateText($row['description'], 3) . "</td>
                                     <td>{$row['price']}</td>
@@ -138,7 +138,6 @@ function truncateText($text, $maxWords)
                                     <td>{$row['category_name']}</td>
                                     <td>{$row['type_name']}</td>
                                        <td class='actions'>
-                                        <a  href='viewProducts.php?product_id={$row['product_id']}'><i class='fa-solid fa-pen-to-square' style='color: #007BFF;'></i></a>
         
                                         <a  href='editProducts.php?product_id={$row['product_id']}'><i class='fa-solid fa-pen-to-square' style='color: #007BFF;'></i></a>
                                         <a  href='delete.php?product_id={$row['product_id']}'><i class='fa-solid fa-trash' style='color: #ff0000;'></i></a>

@@ -6,8 +6,7 @@ if (!isset($_SESSION['user_name'])) {
     exit();
 }
 
-function getFirstTwoWords($string)
-{
+function getFirstTwoWords($string) {
     $words = explode(' ', $string);
     return implode(' ', array_slice($words, 0, 2));
 }
@@ -71,7 +70,6 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -79,7 +77,6 @@ $conn->close();
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-
 <body>
     <div class="container">
         <div class="sidebar">
@@ -91,6 +88,7 @@ $conn->close();
                 <li><a href="manageProductType.php"><i class="fas fa-tags"></i> Manage Product Type</a></li>
                 <li><a href="manageCoupons.php"><i class="fas fa-ticket-alt"></i> Manage Coupons</a></li>
                 <li><a href="manageOrders.php"><i class="fas fa-ticket-alt"></i> Manage Orders</a></li>
+                <li><a href="editAdmin.php"><i class="fas fa-user-shield"></i> Your Profile</a></li>
                 <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </div>
@@ -103,7 +101,7 @@ $conn->close();
                 <div class="dashboard">
                     <div class="card">
                         <h3><i class="fas fa-shopping-cart"></i> Number of Orders</h3>
-                        <p><?php echo $count_orders ?></p>
+                        <p><?php echo $count_orders?></p>
                     </div>
                     <div class="card">
                         <h3><i class="fas fa-user"></i> Number of Users</h3>
@@ -121,12 +119,11 @@ $conn->close();
                     <?php endforeach; ?>
                     <div class="card">
                         <h3><i class="fas fa-dollar-sign"></i> Total Sales</h3>
-                        <p><?php echo $sum_total ?></p>
+                        <p><?php echo $sum_total?></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
-
 </html>
