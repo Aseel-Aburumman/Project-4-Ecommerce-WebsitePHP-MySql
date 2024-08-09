@@ -91,6 +91,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Olog - Home</title>
     <link rel="stylesheet" href="dist/main.css">
     <style>
+        .signInBtn {
+            width: 120px;
+            padding-left: 20px;
+            padding-top: 10px;
+            height: 40px;
+            padding-right: 20px;
+        }
+
+        .header-bottom .search-bar {
+            margin-left: 16px;
+            min-width: 358px;
+        }
+
         #suggestions {
             position: absolute;
             top: 44px;
@@ -150,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <ul class="main-menu d-flex align-items-center">
                             <li><a href="shop.php?gender=Clothing">Clothing</a></li>
                             <li><a href="shop.php?gender=Footwear">Footwear</a></li>
-                            <li><a href="shop.php?gender=Accessories">Accessories</a></li>
+                            <!-- <li><a href="shop.php?gender=Accessories">Accessories</a></li> -->
                             <li><a href="shop.php">Shop</a></li>
                             <li>
                                 <a href="javascript:void(0)">Category
@@ -227,6 +240,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             </g>
                                         </svg>
                                     </a>
+                                </li>
+                                <li>
+                                    <button type="submit" class="btn bg-secondary border text-capitalize signInBtn">
+                                        <a href="/Project-4-Ecommerce-WebsitePHP-MySql/api/logout.php">Log Out
+                                            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
+                                            <g id="Account" transform="translate(1 1)">
+                                                <path id="Path_86" data-name="Path 86" d="M20,21V19a4,4,0,0,0-4-4H8a4,4,0,0,0-4,4v2" transform="translate(-4 -3)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                                                <circle id="Ellipse_9" data-name="Ellipse 9" cx="4" cy="4" r="4" transform="translate(4)" fill="#fff" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                                            </g>
+                                        </svg> -->
+                                        </a>
+                                    </button>
                                 </li>
                             </ul>
                         </div>

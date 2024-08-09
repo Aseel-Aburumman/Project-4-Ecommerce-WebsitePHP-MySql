@@ -3,6 +3,7 @@
 <?php
 
 include 'connection.php';
+session_start();
 
 // Delfault value
 $gender = 'all';
@@ -86,7 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             return isset($_SESSION['user_id']);
         }
         // اكاونت من عبسي
-
         if (isUserSignedInbtn()) {
             include 'navbar.php';
         } else {
