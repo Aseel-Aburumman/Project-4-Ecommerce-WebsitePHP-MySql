@@ -5,7 +5,8 @@ if (!isset($_SESSION['user_name'])) {
     exit();
 }
 
-function getFirstTwoWords($string) {
+function getFirstTwoWords($string)
+{
     $words = explode(' ', $string);
     return implode(' ', array_slice($words, 0, 2));
 }
@@ -16,6 +17,7 @@ include '../connection.php';
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,43 +27,44 @@ include '../connection.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="manageStyle.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row">
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link active" href="dashboard.php">
-                            <i class="fa fa-cloud"></i>
+                                <i class="fa fa-cloud"></i>
                                 Main dashboard
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="manageUser.php">
-                            <i class="fa-solid fa-table-columns"></i>
+                                <i class="fa-solid fa-table-columns"></i>
                                 Manage Users
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="manageCategories.php">
-                            <i class="fas fa-list"></i>
+                                <i class="fas fa-list"></i>
                                 Manage Categories
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="manageProducts.php">
-                            <i class="fas fa-boxes"></i>
+                                <i class="fas fa-boxes"></i>
                                 Manage Products
                             </a>
                         </li>
                         <li lass="nav-item"><a class="nav-link" href="manageProductType.php"> <i class="fas fa-tags"></i> Manage Product Type</a></li>
                         <li lass="nav-item"><a class="nav-link" href="manageCoupons.php">
-                        <i class="fas fa-ticket-alt"></i>
-                            Manage Coupons
-                        </a></li>
+                                <i class="fas fa-ticket-alt"></i>
+                                Manage Coupons
+                            </a></li>
                         <li lass="nav-item"><a class="nav-link" href="manageOrders.php"> <i class="fas fa-shopping-cart"></i> Manage Orders</a></li>
-                        <li class="nav-item"><a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i>   Logout</a></li>
+                        <li class="nav-item"><a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                     </ul>
                 </div>
             </nav>
@@ -128,4 +131,5 @@ include '../connection.php';
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+Wwl5kL5MW/xyxF2YLVivBcc2xMMJ" crossorigin="anonymous"></script>
 </body>
+
 </html>

@@ -18,29 +18,36 @@ session_start();
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Olog - Account Settings</title>
     <link rel="stylesheet" href="dist/main.css">
+    <style>
+        mark {
+            background: linear-gradient(-100deg, hsla(48, 92%, 75%, .3), hsla(48, 92%, 75%, .7) 95%, hsla(48, 92%, 75%, .1));
+            border-radius: 1em 0;
+            padding: .5rem;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Header Area Start -->
     <header class="header">
 
-    <?php
+        <?php
 
-function isUserSignedInbtn()
-{
-    return isset($_SESSION['user_id']);
-}
-// اكاونت من عبسي
+        function isUserSignedInbtn()
+        {
+            return isset($_SESSION['user_id']);
+        }
+        // اكاونت من عبسي
 
-if (isUserSignedInbtn()) {
-    include 'navbar.php';
-} else {
-    include 'navbar_guest.php';
-}
+        if (isUserSignedInbtn()) {
+            include 'navbar.php';
+        } else {
+            include 'navbar_guest.php';
+        }
 
 
 
-?>
+        ?>
     </header>
     <!-- Header Area End -->
 
@@ -51,6 +58,10 @@ if (isUserSignedInbtn()) {
                 <div class="row">
                     <div class="col-lg-12">
                         <nav aria-label="breadcrumb">
+                            <?php if (isUserSignedInbtn()) {
+                                echo '<h3 style="font-size: 1.5rem;" class="breadcrumb-item"><a href="user-dashboard.php">Hi <mark id="usernameHighlight"></mark></a></h3>';
+                            }
+                            ?>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Account</li>
@@ -178,7 +189,21 @@ if (isUserSignedInbtn()) {
     ?>
     <!-- Footer -->
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/fetch_aseel_user_data.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        let firstName = data.username.split(' ')[0];
+                        document.getElementById('usernameHighlight').textContent = firstName;
+                    } else {
+                        alert(data.error);
+                    }
+                });
 
+        })
+    </script>
     <script src="src/js/jquery.min.js"></script>
     <script src="src/js/bootstrap.min.js"></script>
     <script src="src/scss/vendors/plugin/js/jquery.nice-select.min.js"></script>

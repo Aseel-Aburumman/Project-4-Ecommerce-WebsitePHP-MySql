@@ -6,6 +6,28 @@ session_start();
 
 $cartItems = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
+
+// Handle quantity update via AJAX
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
+
+    if ($_POST['action'] == 'update_quantity') {
+        $product_id = $_POST['product_id'];
+        $quantity = max(1, intval($_POST['quantity'])); // Ensure quantity is at least 1
+        $_SESSION['cart_quantities'][$product_id] = $quantity;
+        echo json_encode(['success' => true]);
+        exit;
+    } elseif ($_POST['action'] == 'remove_from_cart') {
+        $product_id = $_POST['product_id'];
+        if (($key = array_search($product_id, $_SESSION['cart'])) !== false) {
+            unset($_SESSION['cart'][$key]);
+            unset($_SESSION['cart_quantities'][$product_id]); // Remove the quantity as well
+            // Re-index the array to maintain proper indexing
+            $_SESSION['cart'] = array_values($_SESSION['cart']);
+        }
+        echo json_encode(['success' => true]);
+        exit;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -17,6 +39,7 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Olog -Billing-Information</title>
     <link rel="stylesheet" href="dist/main.css">
+
     <style>
         mark {
             background: linear-gradient(-100deg, hsla(48, 92%, 75%, .3), hsla(48, 92%, 75%, .7) 95%, hsla(48, 92%, 75%, .1));
@@ -29,21 +52,29 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
 <body>
     <!-- Header Area Start -->
     <header class="header">
+
         <?php
+
         function isUserSignedInbtn()
         {
             return isset($_SESSION['user_id']);
         }
+        // اكاونت من عبسي
+
         if (isUserSignedInbtn()) {
             include 'navbar.php';
         } else {
             include 'navbar_guest.php';
         }
+
+
+
         ?>
+
     </header>
     <!-- Header Area End -->
 
-    <!-- BreadCrumb Start -->
+    <!-- BreadCrumb Start-->
     <section class="breadcrumb-area mt-15">
         <div class="container">
             <div class="row">
@@ -51,7 +82,8 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                     <nav aria-label="breadcrumb">
                         <?php if (isUserSignedInbtn()) {
                             echo '<h3 style="font-size: 1.5rem;" class="breadcrumb-item"><a href="user-dashboard.php">Hi <mark id="usernameHighlight"></mark></a></h3>';
-                        } ?>
+                        }
+                        ?>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                             <li class="breadcrumb-item" aria-current="page">Cart</li>
@@ -63,34 +95,32 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
             </div>
         </div>
     </section>
-    <!-- BreadCrumb End -->
-
+    <!-- BreadCrumb Start-->
     <main>
         <!-- Billing Info Area Start -->
         <section class="billing-info-area">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <!-- Dashboard-Nav Start -->
+                        <!-- Dashboard-Nav  Start-->
                         <div class="dashboard-nav">
                             <ul class="list-inline">
-                                <li class="list-inline-item"><a href="billing-information.php" class="active">Billing information</a>
+                                <li class="list-inline-item"><a href="billing-information.php" class="active">Billing
+                                        information</a>
                                     <i class="fas fa-angle-right"></i>
                                 </li>
-                                <li class="list-inline-item"><a href="shipping.php">Shipping</a>
-                                    <i class="fas fa-angle-right"></i>
-                                </li>
+                                <li class="list-inline-item"><a href="shipping.php">Shipping</a> <i class="fas fa-angle-right"></i></li>
                                 <li class="list-inline-item"><a href="payment.php" class="mr-0">Payment</a></li>
                             </ul>
                         </div>
-                        <!-- Dashboard-Nav End -->
+                        <!-- Dashboard-Nav  End-->
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-7 order-2 order-lg-1">
                         <div class="payment-method-area">
                             <h5>Available payment methods</h5>
-                            <div class="payment-method d-flex justify-content-between align-items-center flex-wrap" style="justify-content: space-evenly;">
+                            <div style="justify-content: space-evenly;" class="payment-method d-flex justify-content-between align-items-center flex-wrap">
                                 <div class="method">
                                     <a href="#">
                                         <svg id="Apple" xmlns="http://www.w3.org/2000/svg" width="66.418" height="27.232" viewBox="0 0 66.418 27.232">
@@ -120,6 +150,7 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                                         </svg>
                                     </a>
                                 </div>
+
                             </div>
                             <div class="payment-method-area-text text-center">
                                 <p>or</p>
@@ -128,18 +159,18 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                         </div>
                         <div class="deliver-info-form">
                             <h6>Billing information</h6>
-                            <form id="billingForm">
+                            <form action="#">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6">
                                         <div class="form__div">
                                             <input type="text" name="firstname" class="form__input" placeholder=" ">
-                                            <label class="form__label">First Name</label>
+                                            <label for="" class="form__label">First Name</label>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-6">
                                         <div class="form__div">
                                             <input type="text" name="lastname" class="form__input" placeholder=" ">
-                                            <label class="form__label">Last Name</label>
+                                            <label for="" class="form__label">Last Name</label>
                                         </div>
                                     </div>
                                 </div>
@@ -147,7 +178,7 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                                     <div class="col-12">
                                         <div class="form__div">
                                             <input type="text" name="address" class="form__input" placeholder=" ">
-                                            <label class="form__label">Address</label>
+                                            <label for="" class="form__label">Address</label>
                                         </div>
                                     </div>
                                 </div>
@@ -155,7 +186,7 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                                     <div class="col-12">
                                         <div class="form__div">
                                             <input type="text" name="building" class="form__input" placeholder=" ">
-                                            <label class="form__label">Apartment, House</label>
+                                            <label for="" class="form__label">Apartment, House</label>
                                         </div>
                                     </div>
                                 </div>
@@ -163,7 +194,7 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                                     <div class="col-12">
                                         <div class="form__div mb-0">
                                             <input type="text" name="city" class="form__input" placeholder=" ">
-                                            <label class="form__label">City</label>
+                                            <label for="" class="form__label">City</label>
                                         </div>
                                     </div>
                                 </div>
@@ -174,7 +205,7 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                                     <div class="col-12">
                                         <div class="form__div">
                                             <input type="text" name="phone" class="form__input" placeholder=" ">
-                                            <label class="form__label">Phone</label>
+                                            <label for="" class="form__label">Phone</label>
                                         </div>
                                     </div>
                                 </div>
@@ -182,7 +213,7 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                                     <div class="col-12">
                                         <div class="form__div">
                                             <input type="email" name="email" class="form__input" placeholder=" " readonly>
-                                            <label class="form__label">Email</label>
+                                            <label for="" class="form__label">Email</label>
                                         </div>
                                     </div>
                                 </div>
@@ -192,13 +223,13 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left">
                                                 <polyline points="15 18 9 12 15 6"></polyline>
                                             </svg>
-                                            Return to cart
-                                        </a>
+                                            Return to cart</a>
                                         <button class="btn bg-primary mt-0" type="submit">Continue</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
+
                     </div>
                     <div class="col-lg-5 order-1 order-lg-2">
                         <div class="card-price">
@@ -243,7 +274,9 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                                     <p id="total-price">JD0.00</p>
                                 </div>
                             </div>
+
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -251,27 +284,33 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
         <!-- Billing Info Area End -->
     </main>
     <!-- Footer -->
-    <?php include 'footer.php'; ?>
+    <?php
+    include 'footer.php';
+    ?>
     <!-- Footer -->
 
-    <!-- Include jQuery -->
+
     <script src="src/js/jquery.min.js"></script>
-    <!-- Include ExZoom Plugin -->
-    <script src="/src/scss/vendors/plugin/js/jquery.exzoom.js"></script>
-    <!-- Other JS Files -->
     <script src="src/js/bootstrap.min.js"></script>
     <script src="src/scss/vendors/plugin/js/jquery.nice-select.min.js"></script>
+    <script src="path/to/jquery.exzoom.js"></script>
+
     <script src="dist/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize ExZoom plugin if it is loaded
-            if ($.fn.exzoom) {
-                $('.exzoom').exzoom();
-            }
+        function openNav() {
 
-            // Fetch and populate billing info
+            document.getElementById("mySidenav").style.width = "350px";
+            $('#overlayy').addClass("active");
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            $('#overlayy').removeClass("active");
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
             fetch('http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/fetch_billing_info.php')
                 .then(response => response.json())
                 .then(data => {
@@ -288,25 +327,40 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                     }
                 });
 
-            // Form submission with validation and error handling
-            document.getElementById('billingForm').onsubmit = async function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                const response = await fetch('http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/update_billing_info.php', {
+            fetch('http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/update_billing_info.php', {
                     method: 'POST',
                     body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert(data.message);
+                    if (data.success) {
+                        window.location.href = 'shipping.php';
+                    }
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                    alert('Failed to update billing information. Please try again.');
                 });
-                const result = await response.json();
-                alert(result.message);
-                if (result.success) {
-                    window.location.href = 'shipping.php';
-                }
-            };
 
-            // Update cart price summary
-            updateCardPrice();
         });
 
+
+
+
+
+
+
+
+        // Call updateCartCount on page load to set the initial cart count
+        document.addEventListener('DOMContentLoaded', updateCartCount);
+
+        // the cart coupon funcitionality
         function updateCardPrice() {
             fetch('http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/get_cart_summary.php')
                 .then(response => response.json())
@@ -317,6 +371,26 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                     document.getElementById('taxes').innerText = 'JD' + data.taxes.toFixed(2);
                     document.getElementById('total-price').innerText = 'JD' + data.totalPrice.toFixed(2);
                 });
+        }
+
+        // Call updateCardPrice initially to populate data
+        updateCardPrice();
+
+        document.getElementById('coupon-form').onsubmit = async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch('http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/applyCoupon.php', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            document.getElementById('coupon-message').innerHTML = result.message;
+            if (result.success) {
+                document.getElementById('coupon-message').classList.add('success');
+            } else {
+                document.getElementById('coupon-message').classList.add('error');
+            }
+            updateCardPrice();
         }
 
         function updateQuantity(productId, delta, quantity = null) {
@@ -342,7 +416,7 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
             formData.append('product_id', productId);
             formData.append('quantity', currentQuantity);
 
-            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/cart.php", {
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/cart.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -350,7 +424,7 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                 .then(data => {
                     if (data.success) {
                         updateCartCount();
-                        updateCardPrice();
+                        updateCardPrice(); // Update the card price summary
                     }
                 })
                 .catch(error => console.error('Error:', error));
@@ -360,11 +434,12 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
             event.preventDefault();
             const itemElement = document.querySelector(`.item[data-product-id="${productId}"]`);
 
+            // Remove item from session via AJAX
             const formData = new FormData();
             formData.append('action', 'remove_from_cart');
             formData.append('product_id', productId);
 
-            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/cart-Guest.php", {
+            fetch("http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/cart-Guest.php", { // Use the current page URL
                     method: "POST",
                     body: formData
                 })
@@ -373,13 +448,12 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                     if (data.success) {
                         itemElement.remove();
                         updateCartCount();
-                        updateCardPrice();
+                        updateCardPrice(); // Update the card price summary
                     }
                 })
                 .catch(error => console.error('Error:', error));
         }
     </script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetch('http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/fetch_aseel_user_data.php')
@@ -392,8 +466,7 @@ $coupon = isset($_SESSION['coupon']) ? $_SESSION['coupon'] : null;
                         alert(data.error);
                     }
                 });
-        });
+
+        })
     </script>
 </body>
-
-</html>

@@ -1,5 +1,7 @@
 <?php
 include "connection.php";
+session_start();
+
 
 $check = '';
 
@@ -26,17 +28,35 @@ $product = $result->fetch_assoc();
 
 
 
+// if (isset($_SESSION['user_id'])) {
+//     $user_name =  $_SESSION['user_name'];
+// } else {
+//     $user_name = false;
+// }
 
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    echo $user_id;
+
+    $sql_get_username = "SELECT username FROM users WHERE user_id = $user_id";
+    $result = $conn->query($sql_get_username);
+
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $user_name = $row['username'];
+    } else {
+        $user_name = false;
+    }
+} else {
+    $user_name = false;
+}
 // go to line 593 - 629
 if (isset($_REQUEST['submit_send_comminte'])) {
 
-    if (isset($_REQUEST['username'])  && isset($_REQUEST['usercomminte'])) {
+    if ($user_name  && isset($_REQUEST['usercomminte'])) {
 
         $product_id = $product['product_id'];
 
-        $comment_for_id = $product['product_id'];
-        //  $username = $_REQUEST['username'];
-        $username = 'regular_user';    //                                            is this Loging in ? or gest?
         $comminte = $_REQUEST['usercomminte'];
 
         $rating = 'null';    // Default Value
@@ -51,7 +71,7 @@ if (isset($_REQUEST['submit_send_comminte'])) {
         if ($username && $comminte) {
             $sql_set_commint = "INSERT INTO reviews (reviews.product_id, reviews.user_id, reviews.rating, reviews.comment, reviews.review_date)
                  VALUES 
-                 ($product_id,(SELECT users.user_id FROM users WHERE users.username='$username'), $rating,'$comminte', '2022-11-3');";
+                 ($product_id,(SELECT users.user_id FROM users WHERE users.username='$user_name'), $rating,'$comminte', '2022-11-3');";
             $conn->query($sql_set_commint);
         }
         header("Location: product-details.php?id=$product_id");
@@ -59,6 +79,7 @@ if (isset($_REQUEST['submit_send_comminte'])) {
         header("Location: product-details.php?id=$product_id");
     }
 }
+
 
 
 
@@ -70,7 +91,6 @@ if (isset($_REQUEST['product_name'])) {
 }
 
 
-session_start();
 
 
 $query = 'SELECT * FROM products WHERE product_id < 5';
@@ -117,18 +137,6 @@ $result = $conn->query($query);
             color: #fef200;
             transition: color 0.3s;
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
         #suggestions {
             position: absolute;
@@ -183,6 +191,57 @@ $result = $conn->query($query);
         .star_on {
             color: gold;
         }
+
+
+
+        .comment_count {
+            color: #9ca3c0;
+            font-weight: 300;
+        }
+
+        .comment_div {
+            background-color: #aeaeae45;
+            height: auto !important;
+            padding: 7px 10px 12px 14px;
+            border-radius: 12px;
+        }
+
+        .comment_name {
+            color: #000000;
+            font-size: 17px;
+        }
+
+        .comment_date {
+            font-size: small;
+            margin: 0 0 0 3px;
+            color: #1a2224a8;
+        }
+
+        .show-comment-btn {
+            color: #00000066 !important;
+            border: none !important;
+        }
+
+        .hide-comment-btn {
+            color: #00000066 !important;
+            border: none !important;
+        }
+
+        .show-comment-btn:hover {
+            color: #000 !important;
+            border: none !important;
+        }
+
+        .hide-comment-btn:hover {
+            color: #000 !important;
+            border: none !important;
+        }
+
+        mark {
+            background: linear-gradient(-100deg, hsla(48, 92%, 75%, .3), hsla(48, 92%, 75%, .7) 95%, hsla(48, 92%, 75%, .1));
+            border-radius: 1em 0;
+            padding: .5rem;
+        }
     </style>
     <!-- <link rel="stylesheet" href="assets/css/style_search.css"> -->
     <!-- <link rel="stylesheet" href="{{ get_public_template_url('style_search.css') }}"> -->
@@ -219,6 +278,11 @@ $result = $conn->query($query);
                 <div class="row">
                     <div class="col-lg-12">
                         <nav aria-label="breadcrumb">
+
+                            <?php if (isUserSignedInbtn()) {
+                                echo '<h3 style="font-size: 1.5rem;" class="breadcrumb-item"><a href="user-dashboard.php">Hi <mark id="usernameHighlight"></mark></a></h3>';
+                            }
+                            ?>
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html">Home</a></li>
                                 <li class="breadcrumb-item" aria-current="page">Category</li>
@@ -462,7 +526,58 @@ $result = $conn->query($query);
 
 
         <!-- Commint Section Start -->
-        <section style="display:flex; justify-content:center; width:100%;">
+        <?php
+
+
+        $list_comments = [];
+
+        $sql_rating = "SELECT  reviews.comment, reviews.review_date, users.username  FROM reviews 
+         JOIN users ON users.user_id = reviews.user_id
+         WHERE reviews.product_id = $product_id
+         GROUP BY reviews.review_id";
+
+        $result_rating = $conn->query($sql_rating);
+
+        while ($rating = $result_rating->fetch_assoc()) {
+            $list_comments[] = $rating;
+        }
+
+
+        ?>
+        <section style="display:flex; justify-content:center; width:100%; margin: 2vh 0 8vh">
+            <div class="account-setting" style="width: 83%;">
+                <h6>Comments <span class="comment_count"><?= count($list_comments) ?></span></h6>
+                <div class="p-comment" style="height:auto">
+
+                    <?php for ($i = 0; $i < count($list_comments); $i++) :
+                        $c_name = $list_comments[$i]['username'];
+                        $c_date = explode(' ', $list_comments[$i]['review_date'])[0];
+                        $c_para = $list_comments[$i]['comment'];
+                    ?>
+                        <div class="form__div comment_div c_<?= $i ?>">
+                            <span class="comment_name"><?= $c_name ?></span> <span class="comment_date"><?= $c_date ?></span>
+                            <p class="comment_p"><?= $c_para ?></p>
+                        </div>
+                    <?php endfor; ?>
+
+                    <input type="submit" style="background-color: #ffffff !important;" name="submit_send_comminte" class="btn bg-primary show-comment-btn" value="...show more">
+                    <input type="submit" style="background-color: #ffffff !important;" name="submit_send_comminte" class="btn bg-primary hide-comment-btn" value="hide">
+
+                </div>
+            </div>
+        </section>
+        <!-- show Commint End -->
+
+
+        <!-- Commint Section Start -->
+        <?php
+        if ($user_name) {
+            $put_comment =  'display:flex';
+        } else {
+            $put_comment =  'display:none';
+        }
+        ?>
+        <section style="<?= $put_comment ?>; justify-content:center; width:100%;">
             <div class="account-setting" style="width: 83%;">
                 <h6>Commint</h6>
                 <form action="<?= $_SERVER['PHP_SELF'] ?>" method="get">
@@ -481,10 +596,6 @@ $result = $conn->query($query);
                     </div>
 
                     <input type="hidden" name="id" value="<?= $product_id ?>">
-                    <div class="form__div">
-                        <input type="text" class="form__input" placeholder="" name="username">
-                        <label for="" class="form__label">Full Name</label>
-                    </div>
 
                     <div class="form__div">
                         <input type="text" class="form__input" placeholder="" name="usercomminte">
@@ -615,50 +726,7 @@ $result = $conn->query($query);
     </script>
 
 
-    <script>
-        // console.log('before');
-        // console.log(myYousef);
-        // myYousef.style.borderColor = 'green' ;
-        // myYousef.style.visibility = 'hidden' ;
-        // console.log('after');
 
-
-        // function quantity_minus(myele) {
-
-        //     let quantity_value_string = document.getElementById("quantity").value;
-        //     let quantity_value = parseInt(quantity_value_string);
-
-        //     if (quantity_value > 1) {
-        //         quantity_value -= 1;
-        //         document.getElementById("quantity").value = quantity_value;
-        //     }
-
-
-        //     if (quantity_value > 1) {
-        //         document.querySelector(".minus #Arrow").style.stroke = '#1a2224';
-        //     } else {
-        //         document.querySelector(".minus #Arrow").style.stroke = '#989ba7';
-        //     }
-        // }
-
-        // function quantity_plus() {
-        //     let quantity_value_string = document.getElementById("quantity").value;
-        //     let quantity_value = parseInt(quantity_value_string);
-
-
-
-        //     if (true) {
-        //         quantity_value += 1;
-        //         document.getElementById("quantity").value = quantity_value;
-        //     }
-
-        //     if (quantity_value > 1) {
-        //         document.querySelector(".minus #Arrow").style.stroke = '#1a2224';
-        //     } else {
-        //         document.querySelector(".minus #Arrow").style.stroke = '#989ba7';
-        //     }
-        // }
-    </script>
 
 
 
@@ -725,7 +793,7 @@ $result = $conn->query($query);
 
             const filteredData = list_for_search.filter(item => item.name.toLowerCase().includes(query));
 
-            console.log(filteredData)
+            // console.log(filteredData)
 
             if (filteredData.length > 0) {
 
@@ -753,27 +821,6 @@ $result = $conn->query($query);
         }
 
 
-        // عشان لما تطلع من الاينبوت يحذف الخيارات
-
-        // document.getElementById('searchInput').addEventListener('focusout', onfocusout);
-
-
-        // if(document.getElementById('searchInput_down')){
-        //     document.getElementById('searchInput_down').addEventListener('blur', onfocusout_down);
-        // }
-
-        //function onfocusout(){
-        //    document.querySelector('.suggestion-item1').addEventListener('mouseover', function hi(){
-        //        console.log("hi");
-        //    } );
-        //    
-        //
-        //    document.getElementById('suggestions').innerHTML = '';
-        //    check_my_div()
-        //}
-        // function onfocusout_down(){
-        //       document.getElementById('suggestions_down').innerHTML = '';
-        // }
         function quantity_minus(myele) {
             let quantity_value_string = document.getElementById("quantity").value;
             let quantity_value = parseInt(quantity_value_string);
@@ -805,7 +852,66 @@ $result = $conn->query($query);
         }
     </script>
 
+    <script>
+        let s_c_b = document.querySelector('.show-comment-btn');
+        let h_c_b = document.querySelector('.hide-comment-btn');
+
+        let number_comment = document.querySelectorAll('.p-comment div').length;
+
+        if (number_comment < 2) {
+            s_c_b.style.display = 'none';
+        }
+        h_c_b.style.display = 'none';
+
+
+        s_c_b.addEventListener('click', function() {
+            s_c_b.style.display = 'none';
+            h_c_b.style.display = 'block';
+
+            for (let i = 0; i <= number_comment; i++) {
+                document.querySelector(`.c_${i}`).style.display = 'block';
+            }
+        });
+
+        if (document.querySelector('.p-comment').getBoundingClientRect().height > 500) {
+            document.querySelector('.p-comment').style.overflow = 'auto';
+        }
+
+        h_c_b.addEventListener('click', function() {
+            s_c_b.style.display = 'block';
+            h_c_b.style.display = 'none';
+
+            for (let i = 0; i <= number_comment; i++) {
+                if (i > 1) {
+                    document.querySelector(`.c_${i}`).style.display = 'none';
+                }
+            }
+        });
+
+
+        for (let i = 0; i <= number_comment; i++) {
+            if (i > 1) {
+                document.querySelector(`.c_${i}`).style.display = 'none';
+            }
+        }
+    </script>
+
+
     <!-- <script src="src/js/searching.js"></script> -->
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/fetch_aseel_user_data.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        let firstName = data.username.split(' ')[0];
+                        document.getElementById('usernameHighlight').textContent = firstName;
+                    } else {
+                        alert(data.error);
+                    }
+                });
 
+        })
+    </script>
 </body>

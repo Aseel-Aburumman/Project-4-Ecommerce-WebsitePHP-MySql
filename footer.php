@@ -1,3 +1,29 @@
+<?php
+require 'connection.php';
+
+
+$success = false;
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'])) {
+    $email = $_POST['email'];
+    echo $email;
+    echo 'hi';
+    $stmt = $conn->prepare("INSERT INTO newsletter_subscribers (email) VALUES (?)");
+    $stmt->bind_param("s", $email);
+
+    if ($stmt->execute()) {
+        $success = true;
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+
+    $stmt->close();
+}
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,7 +46,7 @@
 
         .AS_popup-content {
             background-color: #fefefe;
-            margin: 15% auto;
+            margin: 7% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
@@ -56,7 +82,7 @@
         }
 
         .AS_popup-body p {
-            color: #FFD700;
+            color: #0055a7;
             margin-bottom: 20px;
         }
 
@@ -90,9 +116,9 @@
                 </div>
                 <div class="col-lg-6 offset-lg-1">
                     <div class="newsletter-area-button">
-                        <form id="newsletter-form">
+                        <form id="newsletter-form" method="POST">
                             <div class="form">
-                                <input type="email" name="email" id="mail" placeholder="Enter your email address" class="form-control ">
+                                <input type="email" name="email" id="mail" placeholder="Enter your email address" class="form-control" required>
                                 <button type="submit" class="btn bg-secondary border text-capitalize">Subscribe</button>
                             </div>
                         </form>
@@ -137,13 +163,30 @@
 
     <script>
         var modal = document.getElementById("thankyouModal");
-
         var closeBtn = document.getElementsByClassName("AS_close-btn")[0];
         var doneBtn = document.getElementsByClassName("AS_done-btn")[0];
 
         document.getElementById("newsletter-form").addEventListener("submit", function(event) {
-            event.preventDefault();
-            modal.style.display = "block";
+            event.preventDefault(); // Prevent the default form submission
+
+            var formData = new FormData(this);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/Project-4-Ecommerce-WebsitePHP-MySql/api/newsletter_submit.php", true);
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    if (xhr.responseText === "success") {
+                        modal.style.display = "block"; // Show the popup if successful
+                    } else {
+                        alert(xhr.responseText); // Display error message
+                    }
+                } else {
+                    alert("An error occurred during the request.");
+                }
+            };
+
+            xhr.send(formData); // Send the form data via AJAX
         });
 
         closeBtn.onclick = function() {

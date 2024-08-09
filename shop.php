@@ -73,6 +73,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             border: none !important;
             box-shadow: 0 -4px 5px #0000001f;
         }
+
+
+
+
+        .filter-div-btn {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .filter_btn {
+            width: 141px;
+            background-color: #335AFF;
+            border: none;
+            color: white;
+            height: 44px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .filter_btn:hover {
+            border: 2px solid #335AFF;
+            background-color: white;
+            color: #335AFF;
+        }
+
+
+        mark {
+            background: linear-gradient(-100deg, hsla(48, 92%, 75%, .3), hsla(48, 92%, 75%, .7) 95%, hsla(48, 92%, 75%, .1));
+            border-radius: 1em 0;
+            padding: .5rem;
+        }
     </style>
 </head>
 
@@ -107,18 +140,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 <div class="row">
                     <div class="col-lg-12">
                         <nav aria-label="breadcrumb">
+                            <?php if (isUserSignedInbtn()) {
+                                echo '<h3 style="font-size: 1.5rem;" class="breadcrumb-item"><a href="user-dashboard.php">Hi <mark id="usernameHighlight"></mark></a></h3>';
+                            }
+                            ?>
+
                             <ol class="breadcrumb">
 
                                 <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Shop</li>
 
-                                <?php if (1 == 2) : ?>
-                                    <li class="breadcrumb-item active" aria-current="page"><?php echo '' ?></li>
-                                <?php endif ?>
 
-                                <?php if (1 == 4) : ?>
-                                    <li class="breadcrumb-item active" aria-current="page"><?php echo '' ?></li>
-                                <?php endif ?>
 
                             </ol>
                         </nav>
@@ -129,179 +161,208 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         </section>
         <!-- BreadCrumb Start-->
 
-        <!-- Catagory Search Start -->
-
-        <!-- <section class="search">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="search-wrapper">
-                        <?php
-                        // if(isset($_REQUEST['sub12'])){header('Location:shop.php');
-                        // }
-
-                        // 
-                        ?>
-                        <form class="search-wrapper-box" method="GET" action="">
-                            <input type="text" placeholder="Search Heare." id="searchInput_down" oninput="performSearch(this)">
-                            <button class="btn bg-primary" type="submit" value="shop.php?<?= "gender=$gender?product_type=$product_type" ?>" name="sub12">
-                            SEARCH
-                            </button>
-                        </form>
-                        <div id="suggestions_down"></div>
-                    </div>
-                </div>
-            </div>
-        </section> -->
-
-        <!-- Catagory Search End -->
-
         <!-- Catagory item start -->
-        <!-- <section class="categoryitem">
+        <section class="categoryitem">
             <div class="container">
-                <div class="row justify-content-center">
+                <!-- <div class="row justify-content-center"> -->
+                <form action="" class="row justify-content-center">
+                    <!-- <form action="" class="categoryitem-wrapper"> -->
                     <div class="categoryitem-wrapper">
+
                         <div class="categoryitem-wrapper-itembox">
                             <h6>Categories</h6>
-                            <select name="taskOption">
-                                <option data-display="All">All</option>
-                                <option value="1">Clothing</option>
-                                <option value="2">Footwear</option>
-                                <option value="4">Accessories</option>
+                            <select name="gneder">
+                                <option data-display="All">all</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Footwear">Footwear</option>
+                                <option value="Accessories">Accessories</option>
                             </select>
                         </div>
 
                         <div class="categoryitem-wrapper-itembox">
-                            <h6>Category</h6>
-                            <select>
-                                <option data-display="All">All</option>
-                                <option value="1">T-Shirt</option>
-                                <option value="2">Shoes</option>
-                                <option value="3">Hoodies</option>
-                                <option value="4">Jeans</option>
-                                <option value="5">Casual</option>
-                                <option value="6">Pajamas</option>
-                                <option value="7">Shorts</option>
+                            <h6>Sub-Category</h6>
+                            <select name="product_type">
+                                <option data-display="All">all</option>
+                                <option value="T-Shirt">T-Shirt</option>
+                                <option value="Shoes">Shoes</option>
+                                <option value="Hoodies">Hoodies</option>
+                                <option value="Jeans">Jeans</option>
+                                <option value="Casual">Casual</option>
+                                <option value="Pajamas">Pajamas</option>
+                                <option value="Shorts">Shorts</option>
                             </select>
                         </div>
 
                         <div class="categoryitem-wrapper-price">
                             <h6>Price</h6>
-                            <form class="price-item">
-                                <input type="number" placeholder="$ Min">
+                            <div class="price-item">
+                                <input type="number" placeholder="$ Min" name="min">
                                 <span>|</span>
-                                <input type="number" placeholder="$ Max">
-                            </form>
+                                <input type="number" placeholder="$ Max" name="max">
+                            </div>
                         </div>
 
-                        <input type="submit" value="SEND"> 
+                        <div class="filter-div-btn">
+                            <input type="submit" value="SEND" class="filter_btn">
+                        </div>
 
                     </div>
-                </div>
+                </form>
+
+                <!-- </div> -->
             </div>
-        </section> -->
+        </section>
         <!-- Catagory item End -->
 
         <!-- Populer Product Strat -->
         <section class="populerproduct bg-white p-0 shop-product">
             <div class="container">
                 <div class="row">
-
                     <?php
-                    // if(isset($_REQUEST['page'])){
-                    //     if($_REQUEST['page']){
+                    $minPrice = 0;
+                    $maxPrice = 10000000;
 
-                    //         $curent_number = $_REQUEST['page'] -1;
+                    if (isset($_REQUEST['min']) || isset($_REQUEST['max'])) {
+                        if ($_REQUEST['max'] > $_REQUEST['min'] && $_REQUEST['min'] >= 0) {
+                            $minPrice = $_REQUEST['min'];
+                            $maxPrice = $_REQUEST['max'];
+                        } elseif ($_REQUEST['max'] >= 0) {
+                            $maxPrice = $_REQUEST['max'];
+                        } elseif ($_REQUEST['min'] >= 0) {
+                            $minPrice = $_REQUEST['min'];
+                        }
+                    }
 
-                    //         $from = 1+($curent_number * 8);
-                    //         $to = 12+($curent_number * 8);
-                    //     }
-                    // }else{
-                    //     $from = 1;
-                    //     $to = 12;   
-                    // }
+
+                    $from = 1;
+                    $to = 12;
+
+                    if (isset($_REQUEST['page'])) {
+                        if ($_REQUEST['page']) {
+
+                            $curent_number = $_REQUEST['page'] - 1;
+
+                            $from = 1 + ($curent_number * 12);
+                            $to = 12 + ($curent_number * 12);
+                        }
+                    }
+
+
 
                     if ($gender != 'all' && $product_type != 'all') {
 
-                        $sql = "SELECT products.product_id, products.product_name, products.description, products.price, products.image,
-                          products.category_id, products.product_type_id FROM products 
-                          Join categories ON products.category_id = categories.category_id
-                          Join producttypes ON products.product_type_id = producttypes.product_type_id
-                                          
-                          WHERE
-                          products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender') 
-                          AND
-                          products.product_type_id=(SELECT producttypes.product_type_id FROM producttypes WHERE producttypes.type_name='$product_type')
-                          
-                          ORDER BY product_id;";
+
+
+
+                        $sql = "SELECT * FROM products 
+                                 WHERE 
+                                products.category_id=(SELECT category_id FROM categories WHERE category_name='$gender') AND            
+                                products.product_type_id=(SELECT  product_type_id FROM producttypes WHERE type_name ='$product_type') AND
+                    
+                    
+                    
+                                products.product_id  BETWEEN
+
+                                (SELECT fm.product_id  FROM (SELECT * FROM products WHERE products.product_type_id=(SELECT  product_type_id FROM producttypes WHERE type_name ='$product_type') and products.category_id=(SELECT category_id FROM categories WHERE category_name='$gender') LIMIT $from) fm 
+                                 HAVING fm.product_id = 
+                                (SELECT MAX(f.product_id) FROM (SELECT * FROM products WHERE products.product_type_id=(SELECT  product_type_id FROM producttypes WHERE type_name ='$product_type') and products.category_id=(SELECT category_id FROM categories WHERE category_name='$gender') LIMIT $from) f))
+
+                                     AND
+
+                                (SELECT fm.product_id  FROM (SELECT * FROM products WHERE products.product_type_id=(SELECT  product_type_id FROM producttypes WHERE type_name ='$product_type') and products.category_id=(SELECT category_id FROM categories WHERE category_name='$gender') LIMIT $to) fm 
+                                HAVING fm.product_id = 
+                                (SELECT MAX(f.product_id) FROM (SELECT * FROM products WHERE products.product_type_id=(SELECT  product_type_id FROM producttypes WHERE type_name ='$product_type') and products.category_id=(SELECT category_id FROM categories WHERE category_name='$gender') LIMIT $to) f))
+                                And 
+                                products.price BETWEEN $minPrice and $maxPrice
+                        ";
+
+                        $sql_for_count = "SELECT COUNT(product_id) as c FROM products 
+                        WHERE products.price BETWEEN $minPrice and $maxPrice
+                        and products.product_type_id=(SELECT product_type_id FROM producttypes WHERE type_name ='$product_type')
+                        and products.category_id=(SELECT category_id FROM categories WHERE category_name='$gender')";
                     } elseif ($gender != 'all') {
-                        $sql = "SELECT products.product_id, products.product_name, products.description, products.price, products.image,
-                          products.category_id, products.product_type_id FROM products 
-                          Join categories ON products.category_id = categories.category_id
-                          Join producttypes ON products.product_type_id = producttypes.product_type_id
-                          WHERE
-                          products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender')
-                          ORDER BY product_id;";
-
-
-                        // $sql = "SELECT products.product_id, products.product_name, products.description, products.price, products.image,
-                        //         products.category_id, products.product_type_id FROM products 
-                        //         Join categories ON products.category_id = categories.category_id
-                        //         Join producttypes ON products.product_type_id = producttypes.product_type_id
-
-                        //         HAVING 
-                        //         products.product_id 
-                        //         BETWEEN
-
-
-                        //         	(SELECT fm.product_id  FROM 
-                        //             (SELECT * FROM products WHERE products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender') ORDER BY product_id LIMIT $from) fm 
-                        //         	HAVING fm.product_id = (SELECT MAX(f.product_id) FROM (SELECT * FROM products WHERE products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender') ORDER BY product_id LIMIT $from) f))
-
-                        //         	AND
-
-                        //         	(SELECT fm.product_id  FROM (SELECT * FROM products WHERE products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender') ORDER BY product_id LIMIT $to) fm 
-                        //         	HAVING fm.product_id = (SELECT MAX(f.product_id) FROM (SELECT * FROM products WHERE products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender') ORDER BY product_id LIMIT $to) f))
 
 
 
+                        $sql = "SELECT * FROM products 
+                                WHERE 
+                                
+                               products.category_id=(SELECT category_id FROM categories WHERE category_name='$gender') AND
+                    
+                    
+                    
+                               products.product_id  BETWEEN
 
-                        //         AND
-                        //         products.category_id=(SELECT categories.category_id FROM categories WHERE categories.category_name='$gender')";
+                               (SELECT fm.product_id  FROM (SELECT * FROM products WHERE products.category_id=(SELECT category_id FROM categories WHERE category_name='$gender') LIMIT $from) fm 
+                                HAVING fm.product_id = 
+                               (SELECT MAX(f.product_id) FROM (SELECT * FROM products WHERE products.category_id=(SELECT category_id FROM categories WHERE category_name='$gender') LIMIT $from) f))
+
+                                    AND
+
+                                (SELECT fm.product_id  FROM (SELECT * FROM products WHERE products.category_id=(SELECT category_id FROM categories WHERE category_name='$gender') LIMIT $to) fm 
+                                HAVING fm.product_id = 
+                                (SELECT MAX(f.product_id) FROM (SELECT * FROM products WHERE products.category_id=(SELECT category_id FROM categories WHERE category_name='$gender') LIMIT $to) f))
+                                And 
+                                products.price BETWEEN $minPrice and $maxPrice
+                        ";
 
 
-
-
-
-
+                        $sql_for_count = "SELECT COUNT(product_id) as c FROM products 
+                        WHERE products.price BETWEEN $minPrice and $maxPrice
+                        and products.category_id=(SELECT category_id FROM categories WHERE category_name='$gender')";
                     } elseif ($product_type != 'all') {
 
-                        $sql = "SELECT products.product_id, products.product_name, products.description, products.price, products.image,
-                          products.category_id, products.product_type_id
-                          FROM products 
-                          Join categories ON products.category_id = categories.category_id
-                          Join producttypes ON products.product_type_id = producttypes.product_type_id
-                          WHERE
-                          products.product_type_id=(SELECT producttypes.product_type_id FROM producttypes WHERE producttypes.type_name='$product_type') 
-                          
-                          ORDER BY product_id;";
+
+
+
+
+                        $sql = "SELECT * FROM products 
+                                WHERE 
+                                
+                                products.product_type_id=(SELECT product_type_id FROM producttypes WHERE type_name ='$product_type') AND
+                    
+                    
+                    
+                                products.product_id  BETWEEN
+
+                                (SELECT fm.product_id  FROM (SELECT * FROM products WHERE products.product_type_id=(SELECT  product_type_id FROM producttypes WHERE type_name ='$product_type') LIMIT $from) fm 
+                                 HAVING fm.product_id = 
+                                (SELECT MAX(f.product_id) FROM (SELECT * FROM products WHERE products.product_type_id=(SELECT  product_type_id FROM producttypes WHERE type_name ='$product_type') LIMIT $from) f))
+
+                                     AND
+
+                                (SELECT fm.product_id  FROM (SELECT * FROM products WHERE products.product_type_id=(SELECT  product_type_id FROM producttypes WHERE type_name ='$product_type') LIMIT $to) fm 
+                                HAVING fm.product_id = 
+                                (SELECT MAX(f.product_id) FROM (SELECT * FROM products WHERE products.product_type_id=(SELECT  product_type_id FROM producttypes WHERE type_name ='$product_type') LIMIT $to) f))
+                                And 
+                                products.price BETWEEN $minPrice and $maxPrice
+                        ";
+
+                        $sql_for_count = "SELECT COUNT(product_id) as c FROM products 
+                        WHERE products.price BETWEEN $minPrice and $maxPrice
+                        and products.product_type_id=(SELECT product_type_id FROM producttypes WHERE type_name ='$product_type')";
                     } else {
 
 
-                        // $sql = "SELECT * FROM products 
-                        //         WHERE products.product_id 
+                        $sql = "SELECT * FROM products 
+                                WHERE products.product_id 
 
-                        //         BETWEEN
+                                BETWEEN
 
-                        //         (SELECT fm.product_id  FROM (SELECT * FROM products ORDER BY product_id LIMIT $from) fm 
-                        //         HAVING fm.product_id = (SELECT MAX(f.product_id) FROM (SELECT * FROM products ORDER BY product_id LIMIT $from) f))
+                                (SELECT fm.product_id  FROM (SELECT * FROM products ORDER BY product_id LIMIT $from) fm 
+                                HAVING fm.product_id = (SELECT MAX(f.product_id) FROM (SELECT * FROM products ORDER BY product_id LIMIT $from) f))
 
-                        //         AND
+                                AND
 
-                        //         (SELECT fm.product_id  FROM (SELECT * FROM products ORDER BY product_id LIMIT $to) fm 
-                        //         HAVING fm.product_id = (SELECT MAX(f.product_id) FROM (SELECT * FROM products ORDER BY product_id LIMIT $to) f))
-                        //         ";
-                        $sql = "SELECT * FROM products ORDER BY product_id";
+                                (SELECT fm.product_id  FROM (SELECT * FROM products ORDER BY product_id LIMIT $to) fm 
+                                HAVING fm.product_id = (SELECT MAX(f.product_id) FROM (SELECT * FROM products ORDER BY product_id LIMIT $to) f))
+                                And 
+                                products.price BETWEEN $minPrice and $maxPrice
+                        ";
+
+                        $sql_for_count = "SELECT COUNT(product_id) as c FROM products WHERE products.price BETWEEN $minPrice and $maxPrice";
                     }
+
                     $result =  $conn->query($sql);
                     $GLOBALS['list_data'] = [];
                     $number_in_one_dev = 12;
@@ -311,9 +372,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                     $class_dev = 1;
                     // كلاسات الصفحة والبروداكت بهاي الرقم 
 
-                    $pageNumber = 1;
                     if (isset($_REQUEST['page'])) {
                         $pageNumber = $_REQUEST['page'];
+                    } else {
+                        $pageNumber = 1;
                     }
 
                     // نقطتين 
@@ -330,7 +392,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                         // var_dump($list_data);
                     ?>
                         <!-- بدل echo مساواة كافية -->
-                        <div class="col-md-4 col-sm-6 <?= "page$class_dev" ?>" style="display: <?= $class_dev != $pageNumber ? "none" : "block"; ?> !important;">
+                        <div class="col-md-4 col-sm-6 <?= "page$class_dev" ?>">
                             <!-- <div class="col-md-4 col-sm-6 <?= "page" ?>"> -->
                             <?php
                             $isInWishlist = isset($_SESSION['wishlist']) && in_array($product['product_id'], $_SESSION['wishlist']);
@@ -352,6 +414,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
                                         <img style="width: 400px; height: 400px;object-fit: cover;" src="<?= $src ?>" alt="<?php echo $product['product_name']; ?>" class="img-fluid">
                                     </a>
+
 
                                     <div class="cart-icon">
                                         <form id="wishlist-form-<?php echo $product['product_id']; ?>" method="post" style="display:inline;" onsubmit="return toggleWishlist(event, <?php echo $product['product_id']; ?>)">
@@ -404,15 +467,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
                         <?php
                         // عملت كومنت وفعلت الي تحتها 
-                        //  $sql = "SELECT COUNT(product_id) as c FROM products";
-                        //  $result =  $conn->query($sql);
-                        //  $count = $result->fetch_assoc();
+
+                        $result =  $conn->query($sql_for_count);
+                        $count = $result->fetch_assoc();
+
 
                         //  $GLOBALS['list_data'] = [];
                         //  echo count($list_data);
 
-                        // $numProd = $count['c'];
-                        $numProd = count($list_data);
+                        $numProd = $count['c'];
+                        // $numProd = count($list_data);
                         // معادلة لحساب عدد الصفحات التوتال 
                         // (15-15/12)/12
                         $numPag = ($numProd - $numProd % 12) / 12;
@@ -455,92 +519,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row align-items-center newsletter-area">
-                <div class="col-lg-5">
-                    <div class="newsletter-area-text">
-                        <h4 class="text-white">Subscribe to get notification.</h4>
-                        <p>
-                            Receive our weekly newsletter.
-                            For dietary content, fashion insider and the best offers.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-6 offset-lg-1">
-                    <div class="newsletter-area-button">
-                        <form action="#">
-                            <div class="form">
-                                <input type="email" name="email" id="mail" placeholder="Enter your email address" class="form-control">
-                                <button class="btn bg-secondary border text-capitalize">Subscribe</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <!-- <div class="row main-footer">
-                <div class="col-lg-4 col-md-12 col-sm-12 col-12">
-                    <div class="main-footer-info">
-                        <img src="dist/images/logo/white.png" alt="Logo" class="img-fluid">
-                        <p>
-                            We’re available by phone +962 782 615 549<br>
-                            info@example.com<br>
-                            Sunday till Friday 10 to 6 EST
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-2 offset-lg-2 col-md-4 col-sm-6 col-12">
-                    <div class="main-footer-quicklinks">
-                        <h6>Company</h6>
-                        <ul class="quicklink">
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Help &amp; Support</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms of Service</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
-                    <div class="main-footer-quicklinks">
-                        <h6>Quick links</h6>
-                        <ul class="quicklink">
-                            <li><a href="#">New Realease</a></li>
-                            <li><a href="#">Customize</a></li>
-                            <li><a href="#">Sale &amp; Discount</a></li>
-                            <li><a href="#">Men</a></li>
-                            <li><a href="#">Women</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
-                    <div class="main-footer-quicklinks">
-                        <h6>Account</h6>
-                        <ul class="quicklink">
-                            <li><a href="#">Your Bag</a></li>
-                            <li><a href="#">Profile</a></li>
-                            <li><a href="#">Order Completed</a></li>
-                            <li><a href="#">Log-out</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div> -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="copyright d-flex justify-content-between align-items-center">
-                        <div class="copyright-text order-2 order-lg-1">
-                            <p>&copy; 2024. All rights reserved. </p>
-                        </div>
-                        <div class="copyright-links order-1 order-lg-2">
-                            <a href="soon.php" class="ml-0"><i class="fab fa-facebook-f"></i></a>
-                            <a href="soon.php"><i class="fab fa-twitter"></i></a>
-                            <a href="soon.php"><i class="fab fa-youtube"></i></a>
-                            <a href="soon.php"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php
+    include 'footer.php';
+    ?>
     <!-- Footer -->
 
     <script src="src/js/jquery.min.js"></script>
@@ -661,96 +642,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             updateWishlistCount();
 
         });
-
-
-
-
-
-        // let list_for_search = [];
-
-        // async function fetchData() {
-        //     // try {
-        //     let response = await fetch(`api_get.php/products.json`);
-        //     let data = await response.json();
-        //     list_for_search = data.map(element => ({
-        //         name: element['product_name']
-        //     }));
-        //     // } catch (error) {
-        //     //     console.error('Error fetching data:', error);
-        //     // }
-        // }
-        // fetchData();
-
-        // function check_my_div() {
-        //     let myYousef = document.querySelector("#suggestions");
-        //     if (myYousef.innerHTML === '') {
-        //         document.querySelector("#searchInput").className = 'style_searching_input';
-        //         myYousef.style.visibility = 'hidden';
-        //     } else {
-        //         document.querySelector("#searchInput").className = 'style_searching_input_with_results';
-        //         myYousef.style.visibility = 'visible';
-        //     }
-        // }
-
-        // function performSearch(ele) {
-        //     console.log('jfdlksfjsld');
-        //     const search_id = 'searchInput';
-        //     const div_id = 'suggestions';
-        //     const query = ele.value.toLowerCase();
-        //     const suggestionsDiv = document.getElementById(div_id);
-        //     suggestionsDiv.innerHTML = '';
-
-        //     if (query.length === 0) {
-        //         check_my_div();
-        //         return;
-        //     }
-
-        //     const filteredData = list_for_search.filter(item => item.name.toLowerCase().includes(query));
-
-        //     if (filteredData.length > 0) {
-        //         filteredData.forEach(item => {
-        //             const div = document.createElement('input');
-        //             div.type = 'submit';
-        //             div.name = 'serch_product';
-        //             div.value = item.name;
-        //             div.className = 'suggestion-item';
-        //             // div.onclick = () => selectSuggestion(item.name, search_id, div_id);
-        //             suggestionsDiv.appendChild(div);
-        //         });
-        //     }
-        //     check_my_div();
-        // }
-
-        // function selectSuggestion(suggestion = '', search_id = '', div_id = '') {
-        //     if (suggestion && search_id && div_id) {
-        //         document.getElementById(search_id).value = suggestion;
-        //         document.getElementById(div_id).innerHTML = '';
-        //     }
-        // }
-
-
-
-        // عشان لما تطلع من الاينبوت يحذف الخيارات
-
-        // document.getElementById('searchInput').addEventListener('focusout', onfocusout);
-
-
-        // if(document.getElementById('searchInput_down')){
-        //     document.getElementById('searchInput_down').addEventListener('blur', onfocusout_down);
-        // }
-
-        //function onfocusout(){
-        //    document.querySelector('.suggestion-item1').addEventListener('mouseover', function hi(){
-        //        console.log("hi");
-        //    } );
-        //    
-        //
-        //    document.getElementById('suggestions').innerHTML = '';
-        //    check_my_div()
-        //}
-        // function onfocusout_down(){
-        //       document.getElementById('suggestions_down').innerHTML = '';
-        // }
     </script>
 
     <script>
@@ -841,5 +732,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 document.getElementById(div_id).innerHTML = '';
             }
         }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/fetch_aseel_user_data.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        let firstName = data.username.split(' ')[0];
+                        document.getElementById('usernameHighlight').textContent = firstName;
+                    } else {
+                        alert(data.error);
+                    }
+                });
+
+        })
     </script>
 </body>

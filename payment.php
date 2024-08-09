@@ -91,6 +91,12 @@ $conn->close();
         .form__input {
             margin-bottom: 0.5em;
         }
+
+        mark {
+            background: linear-gradient(-100deg, hsla(48, 92%, 75%, .3), hsla(48, 92%, 75%, .7) 95%, hsla(48, 92%, 75%, .1));
+            border-radius: 1em 0;
+            padding: .5rem;
+        }
     </style>
 </head>
 
@@ -124,6 +130,11 @@ $conn->close();
             <div class="row">
                 <div class="col-lg-12">
                     <nav aria-label="breadcrumb">
+
+                        <?php if (isUserSignedInbtn()) {
+                            echo '<h3 style="font-size: 1.5rem;" class="breadcrumb-item"><a href="user-dashboard.php">Hi <mark id="usernameHighlight"></mark></a></h3>';
+                        }
+                        ?>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                             <li class="breadcrumb-item" aria-current="page">Cart</li>
@@ -602,5 +613,20 @@ $conn->close();
                 })
                 .catch(error => console.error('Error:', error));
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/fetch_aseel_user_data.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        let firstName = data.username.split(' ')[0];
+                        document.getElementById('usernameHighlight').textContent = firstName;
+                    } else {
+                        alert(data.error);
+                    }
+                });
+
+        })
     </script>
 </body>
