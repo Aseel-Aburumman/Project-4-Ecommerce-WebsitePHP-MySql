@@ -63,6 +63,7 @@ include '../connection.php';
                             Manage Coupons
                         </a></li>
                         <li lass="nav-item"><a class="nav-link" href="manageOrders.php"> <i class="fas fa-shopping-cart"></i> Manage Orders</a></li>
+                        <li lass="nav-item"><a class="nav-link" href="editAdmin.php"><i class="fas fa-user-shield"></i> Your Profile</a></li>
                         <li class="nav-item"><a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i>   Logout</a></li>
                     </ul>
                 </div>
@@ -77,13 +78,10 @@ include '../connection.php';
                 <h2>List of Orders</h2>
                 <div class="d-flex mb-3">
                     <form class="d-flex me-3" method="get" action="">
-                        <input class="form-control me-2" type="search" name="search" placeholder="Search Orders" aria-label="Search">
+                        <input class="form-control me-2" type="search" name="search" placeholder="Search By Order ID" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
-                    <div>
-                       
-                        <a class="btn btn-secondary" href="dashboard.php" role="button">Back</a>
-                    </div>
+                    
                 </div>
 
                 <div class="table-responsive">
@@ -92,6 +90,7 @@ include '../connection.php';
                             <tr>
                                 <th>Order ID</th>
                                 <th>Order date</th>
+                                <th>User name</th>
                                 <th>Total</th>
                                 <th>Coupon ID</th>
                                 <th>status</th>
@@ -103,13 +102,20 @@ include '../connection.php';
                         <tbody>
                             <?php
                             $search = isset($_GET["search"]) ? $conn->real_escape_string($_GET["search"]) : '';
-                            $sql = $search ? "SELECT orders.order_id, orders.user_id, orders.order_date, orders.total, orders.coupon_id, orders.status_id, order_status.status_name 
-                 FROM orders 
-                 INNER JOIN order_status ON orders.status_id = order_status.id 
-                 WHERE order_status.status_name LIKE '%$search%'" : 
-                 "SELECT orders.order_id, orders.user_id, orders.order_date, orders.total, orders.coupon_id, orders.status_id, order_status.status_name 
-                 FROM orders 
-                 INNER JOIN order_status ON orders.status_id = order_status.id";
+                            $sql = $search ? 
+                            "SELECT orders.order_id, orders.user_id, DATE(orders.order_date) AS order_date, orders.total, orders.coupon_id, orders.status_id, 
+                                    order_status.status_name, users.username 
+                             FROM orders 
+                             INNER JOIN order_status ON orders.status_id = order_status.id 
+                             INNER JOIN users ON orders.user_id = users.user_id
+                             WHERE orders.order_id = '$search' 
+                             ORDER BY orders.order_id" : 
+                            "SELECT orders.order_id, orders.user_id, DATE(orders.order_date) AS order_date, orders.total, orders.coupon_id, orders.status_id, 
+                                    order_status.status_name, users.username 
+                             FROM orders 
+                             INNER JOIN order_status ON orders.status_id = order_status.id 
+                             INNER JOIN users ON orders.user_id = users.user_id
+                             ORDER BY orders.order_id";
                             $result = $conn->query($sql);
 
                             if (!$result) {
@@ -118,22 +124,21 @@ include '../connection.php';
 
                             while ($row = $result->fetch_assoc()) {
                                 echo "
-                                <tr>
-                                    <td>{$row['order_id']}</td>
-                                  <td>{$row['order_date']}</td>
-                                    <td>{$row['total']}</td>
-                                    <td>{$row['coupon_id']}</td>
-                                    	
-                                    <td>{$row['status_name']}</td>
-                                   
-                                       <td class='actions'>
-        
-                                        <a  href='editOrders.php?order_id={$row['order_id']}'><i class='fa-solid fa-pen-to-square' style='color: #007BFF;'></i></a>
-                                      
-                                    </td>
-                                </tr>
+                               <tr>
+        <td>{$row['order_id']}</td>
+        <td>{$row['order_date']}</td>
+        <td>{$row['username']}</td>
+        <td>{$row['total']}</td>
+        <td>{$row['coupon_id']}</td>
+        <td>{$row['status_name']}</td>
+        <td class='actions'>
+            <a href='updateOrderStatus.php?order_id={$row['order_id']}&status=2' title='Accept'><i class='fa-solid fa-check' style='color: green;'></i></a>
+            <a href='updateOrderStatus.php?order_id={$row['order_id']}&status=3' title='Reject'><i class='fa-solid fa-times' style='color: red;'></i></a>
+        </td>
+    </tr>
                                 ";
                             }
+                            
 
                             $conn->close();
                             ?>

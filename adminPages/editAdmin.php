@@ -1,9 +1,12 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_name'])) {
+if (!isset($_SESSION['user_name']) || !isset($_SESSION['user_id'])) {
     header("Location: ../account (1).php");
     exit();
 }
+
+$user_id = $_SESSION['user_id'];
+$error = ''; 
 
 function getFirstTwoWords($string) {
     $words = explode(' ', $string);
@@ -17,34 +20,47 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if (isset($_GET['coupon_id'])) {
-    $id = $_GET['coupon_id'];
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $code = $conn->real_escape_string($_POST['code']);
-        $discount = $conn->real_escape_string($_POST['discount']);
-        $max_discount_amount = $conn->real_escape_string($_POST['max_discount_amount']);
-        $is_active = $conn->real_escape_string($_POST['is_active']);
-        $expiry_date = $conn->real_escape_string($_POST['expiry_date']);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $conn->real_escape_string($_POST['username']);
+    $email = $conn->real_escape_string($_POST['email']);
+    $password = isset($_POST['password']) ? $conn->real_escape_string($_POST['password']) : '';
+    $password_confirm = isset($_POST['password_confirm']) ? $conn->real_escape_string($_POST['password_confirm']) : '';
 
-        $sql = "UPDATE coupons SET code='$code', discount='$discount', max_discount_amount='$max_discount_amount', is_active='$is_active', expiry_date='$expiry_date' WHERE id=$id";
-        if ($conn->query($sql) === TRUE) {
-            header("Location: manageCoupons.php");
-            exit();
+
+    if (!empty($password) && $password !== $password_confirm) {
+        $error = "Password and Confirm Password do not match!";
+    } else {
+    
+        $sql_user = "UPDATE users SET username='$name', email='$email' WHERE user_id=$user_id";
+        if ($conn->query($sql_user) === TRUE) {
+          
+            $_SESSION['user_name'] = $name;
+
+          
+            if (!empty($password)) {
+               
+                $sql_password = "UPDATE users SET password='$password' WHERE user_id=$user_id";
+                if (!$conn->query($sql_password)) {
+                    $error = "Error updating password: " . $conn->error;
+                }
+            }
+
+            if (empty($error)) {
+                header("Location: manageUser.php");
+                exit();
+            }
         } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
+            $error = "Error updating user: " . $conn->error;
         }
     }
+}
 
-    $sql = "SELECT * FROM coupons WHERE id=$id";
-    $result = $conn->query($sql);
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-    } else {
-        echo "Record not found.";
-        exit();
-    }
+$sql = "SELECT * FROM users WHERE user_id=$user_id";
+$result = $conn->query($sql);
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
 } else {
-    echo "No ID provided.";
+    echo "Record not found.";
     exit();
 }
 
@@ -56,7 +72,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Coupon</title>
+    <title>Edit Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="manageStyle.css">
@@ -115,47 +131,44 @@ $conn->close();
                 </div>
 
                 <div class="container my-5">
-                    <h2>Edit Coupon</h2>
+                    <h2>Edit Admin</h2>
+                    <?php if (!empty($error)): ?>
+                        <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
+                    <?php endif; ?>
                     <form action="" method="post">
                         <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">Coupon Code</label>
+                            <label class="col-sm-3 col-form-label">Username</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" name="code" value="<?php echo htmlspecialchars($row['code']); ?>" required>
+                                <input type="text" class="form-control" name="username" value="<?php echo htmlspecialchars($row['username']); ?>" required>
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">Discount (%)</label>
+                            <label class="col-sm-3 col-form-label">Email</label>
                             <div class="col-sm-6">
-                                <input type="number" step="0.01" class="form-control" name="discount" value="<?php echo htmlspecialchars($row['discount']); ?>" required>
+                                <input type="email" class="form-control" name="email" value="<?php echo htmlspecialchars($row['email']); ?>" required>
+                            </div>
+                        </div>
+
+                        <h2>Change Password (optional)</h2>
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label">New Password</label>
+                            <div class="col-sm-6">
+                                <input type="password" class="form-control" name="password">
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">Max Discount Amount</label>
+                            <label class="col-sm-3 col-form-label">Confirm Password</label>
                             <div class="col-sm-6">
-                                <input type="number" step="0.01" class="form-control" name="max_discount_amount" value="<?php echo htmlspecialchars($row['max_discount_amount']); ?>" required>
+                                <input type="password" class="form-control" name="password_confirm">
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">Expiry Date</label>
-                            <div class="col-sm-6">
-                                <input type="date" class="form-control" name="expiry_date" value="<?php echo htmlspecialchars($row['expiry_date']); ?>" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label class="col-sm-3 col-form-label">Is Active</label>
-                            <div class="col-sm-6">
-                                <select class="form-control" name="is_active" required>
-                                    <option value="1" <?php echo ($row['is_active'] == 1) ? 'selected' : ''; ?>>True</option>
-                                    <option value="0" <?php echo ($row['is_active'] == 0) ? 'selected' : ''; ?>>False</option>
-                                </select>
-                            </div>
-                        </div>
+
                         <div class="row mb-3">
                             <div class="offset-sm-3 col-sm-3 d-grid">
                                 <button type="submit" class="btn btn-primary">Update</button>
                             </div>
                             <div class="col-sm-3 d-grid">
-                                <a class="btn btn-outline-primary" href="manageCoupons.php" role="button">Cancel</a>
+                                <a class="btn btn-outline-primary" href="manageUser.php" role="button">Cancel</a>
                             </div>
                         </div>
                     </form>
@@ -163,7 +176,7 @@ $conn->close();
             </main>
         </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+Wwl5kL5MW/xyxF2YLVivBcc2xMMJ" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -61,6 +61,7 @@ include '../connection.php';
                             Manage Coupons
                         </a></li>
                         <li lass="nav-item"><a class="nav-link" href="manageOrders.php"> <i class="fas fa-shopping-cart"></i> Manage Orders</a></li>
+                        <li lass="nav-item"><a class="nav-link" href="editAdmin.php"><i class="fas fa-user-shield"></i> Your Profile</a></li>
                         <li class="nav-item"><a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i>   Logout</a></li>
                     </ul>
                 </div>
@@ -81,7 +82,7 @@ include '../connection.php';
                     </form>
                     <div>
                         <a class="btn btn-primary me-2" href="addRType.php" role="button">Add Product Type</a>
-                        <a class="btn btn-secondary" href="dashboard.php" role="button">Back</a>
+                   
                     </div>
                 </div>
 
