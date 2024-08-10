@@ -350,7 +350,7 @@ $result = $conn->query($query);
 
 
                                         $list_stars_staut = ['star_off', 'star_off', 'star_off', 'star_off', 'star_off'];
-
+                                        $h_r_r = 0;
                                         if ($rating[0]['r'] && $rating[0]['n']) {
 
 

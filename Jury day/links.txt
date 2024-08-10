@@ -1,0 +1,23 @@
+Main page:
+
+http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/index.php
+
+-----------------------------------------------------------------------------------------------
+
+reset session:
+
+http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/resetWishlist.php
+
+-----------------------------------------------------------------------------------------------
+
+Read session:
+
+http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/api/resetWishlist.php
+
+-----------------------------------------------------------------------------------------------
+
+Admindash page:
+
+http://localhost/Project-4-Ecommerce-WebsitePHP-MySql/adminPages/dashboard.php
+
+-----------------------------------------------------------------------------------------------
