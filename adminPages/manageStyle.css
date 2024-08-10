@@ -4,13 +4,15 @@ body {
 }
 
 .sidebar {
+
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     z-index: 100;
     padding: 48px 0 0;
-    background-color: #bfd8d5;
+    /* background-color: #bfd8d5; */
+    background-color: #8ba1fd61;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -96,7 +98,8 @@ body {
 }
 
 .table th {
-    background-color: #7ba7a6; /* Darker shade matching sidebar */
+    /* background-color: #7ba7a6; */
+    background-color: #5068c7d6;
     color: white;
     text-transform: uppercase;
 }
@@ -143,12 +146,15 @@ body {
 }
 
 .actions .btn-primary {
-    background-color: #3498db;
+    /* background-color: #3498db; */
+    background-color: #5068c7d6;
     color: white;
 }
 
 .actions .btn-primary:hover {
-    background-color: #2980b9;
+    /* background-color: #2980b9; */
+    background-color: #97a2ced6;
+
 }
 
 .actions .btn-secondary {

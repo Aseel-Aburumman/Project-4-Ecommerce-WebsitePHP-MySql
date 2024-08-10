@@ -6,7 +6,8 @@ if (!isset($_SESSION['user_name'])) {
     exit();
 }
 
-function getFirstTwoWords($string) {
+function getFirstTwoWords($string)
+{
     $words = explode(' ', $string);
     return implode(' ', array_slice($words, 0, 2));
 }
@@ -70,60 +71,92 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        img {
+            margin-left: 20px;
+        }
+
+        hr {
+            margin-left: 20px;
+            margin-right: 20px;
+            color: white;
+            border-color: white
+        }
+
+        ul {
+            color: #3d62ff;
+        }
+
+        .sidebarItems {
+            font-weight: bolder;
+            color: #3d62ff;
+        }
+
+        .card>h3,
+        .card>p {
+            color: #2943b1;
+        }
+    </style>
 </head>
+
 <body>
     <div class="container">
-        <div class="sidebar">
+
+        <div style="background-color: #8ba1fd61;" class="sidebar">
+            <img style="margin-left: 20px;" src="../dist/images/Logo.png" alt="">
+            <hr style="margin-left: 20px; margin-right: 20px; color:white ;border-color:white">
             <ul>
-                <li><a href="dashboard.php"><i class="fa fa-cloud"></i> Main Dashboard</a></li>
-                <li><a href="manageUser.php"><i class="fa-solid fa-table-columns"></i> Manage Users</a></li>
-                <li><a href="manageCategories.php"><i class="fas fa-list"></i> Manage Categories</a></li>
-                <li><a href="manageProducts.php"><i class="fas fa-boxes"></i> Manage Products</a></li>
-                <li><a href="manageProductType.php"><i class="fas fa-tags"></i> Manage Product Type</a></li>
-                <li><a href="manageCoupons.php"><i class="fas fa-ticket-alt"></i> Manage Coupons</a></li>
-                <li><a href="manageOrders.php"><i class="fas fa-ticket-alt"></i> Manage Orders</a></li>
-                <li><a href="editAdmin.php"><i class="fas fa-user-shield"></i> Your Profile</a></li>
-                <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li><a style="background-color: #F1F0F0; color: #2943b1; font-weight: bold;" href="dashboard.php"><i class="fa fa-cloud"></i> Main Dashboard</a></li>
+                <li><a style="color: #2943b1;" class="sidebarItems" href="manageUser.php"><i class="fa-solid fa-table-columns"></i> Manage Users</a></li>
+                <li><a style="color: #2943b1;" class="sidebarItems" href="manageCategories.php"><i class="fas fa-list"></i> Manage Categories</a></li>
+                <li><a style="color: #2943b1;" class="sidebarItems" href="manageProducts.php"><i class="fas fa-boxes"></i> Manage Products</a></li>
+                <li><a style="color: #2943b1;" class="sidebarItems" href="manageProductType.php"><i class="fas fa-tags"></i> Manage Product Type</a></li>
+                <li><a style="color: #2943b1;" class="sidebarItems" href="manageCoupons.php"><i class="fas fa-ticket-alt"></i> Manage Coupons</a></li>
+                <li><a style="color: #2943b1;" class="sidebarItems" href="manageOrders.php"><i class="fas fa-ticket-alt"></i> Manage Orders</a></li>
+                <li><a style="color: #2943b1;" class="sidebarItems" href="editAdmin.php"><i class="fas fa-user-shield"></i> Your Profile</a></li>
+                <li><a style="color: #2943b1;" class="sidebarItems" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </div>
         <div class="main-content">
             <div class="welcome-message">
-                <h2>Admin Dashboard</h2>
-                <p class="admin-name"><?php echo htmlspecialchars($firstTwoWords); ?></p>
+                <h2 style="color: #3d62ff;">Admin Dashboard</h2>
+                <p style="color: #3d62ff;" class="admin-name"><?php echo htmlspecialchars($firstTwoWords); ?></p>
             </div>
             <div class="dashboard-container">
                 <div class="dashboard">
-                    <div class="card">
+                    <div style="background-color: #8ba1fd8c;" class="card">
                         <h3><i class="fas fa-shopping-cart"></i> Number of Orders</h3>
-                        <p><?php echo $count_orders?></p>
+                        <p><?php echo $count_orders ?></p>
                     </div>
-                    <div class="card">
+                    <div style="background-color: #8ba1fd8c;" class="card">
                         <h3><i class="fas fa-user"></i> Number of Users</h3>
                         <p><?php echo $count_users ?></p>
                     </div>
-                    <div class="card">
+                    <div style="background-color: #8ba1fd8c;" class="card">
                         <h3><i class="fas fa-user-shield"></i> Number of Admins</h3>
                         <p><?php echo $count_admins ?></p>
                     </div>
                     <?php foreach ($category_counts as $category_name => $count): ?>
-                        <div class="card">
+                        <div style="background-color: #8ba1fd8c;" class="card">
                             <h3><i class="fas fa-box"></i> Items in <?php echo htmlspecialchars($category_name); ?></h3>
                             <p><?php echo $count; ?></p>
                         </div>
                     <?php endforeach; ?>
-                    <div class="card">
+                    <div style="background-color: #8ba1fd8c;" class="card">
                         <h3><i class="fas fa-dollar-sign"></i> Total Sales</h3>
-                        <p><?php echo $sum_total?></p>
+                        <p><?php echo $sum_total ?></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
+
 </html>

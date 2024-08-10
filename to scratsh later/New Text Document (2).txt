@@ -62,3 +62,52 @@
             border-radius: 1em 0;
             padding: .5rem;
         }
+--------------------------------------------------------------------------------------------------------------
+            <nav style="padding:0; background-color: #8ba1fd61;" class="col-md-3 col-lg-2 d-md-block sidebar">
+                <div class="position-sticky pt-3">
+                    <img style="margin-left: 20px;" src="../dist/images/Logo.png" alt="">
+                    <hr style="margin-left: 20px; margin-right: 20px; color:white ;border-color:white">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a style="color: #2943b1;" class="sidebarItems" class="nav-link active" href="dashboard.php">
+                                <i class="fa fa-cloud"></i>
+                                Main dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a style="color: #2943b1;" class="sidebarItems" class="nav-link active" href="manageUser.php">
+                                <i class="fa-solid fa-table-columns"></i>
+                                Manage Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a style="background-color: #F1F0F0; color: #2943b1;" class="sidebarItems" class="nav-link" href="manageCategories.php">
+                                <i class="fas fa-list"></i>
+                                Manage Categories
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a style="color: #2943b1;" class="sidebarItems" class="nav-link" href="manageProducts.php">
+                                <i class="fas fa-boxes"></i>
+                                Manage Products
+                            </a>
+                        </li>
+                        <li lass="nav-item"><a style="color: #2943b1;" class="sidebarItems" class="nav-link" href="manageProductType.php"> <i class="fas fa-tags"></i> Manage Product Type</a></li>
+                        <li lass="nav-item"><a style="color: #2943b1;" class="sidebarItems" class="nav-link" href="manageCoupons.php">
+                                <i class="fas fa-ticket-alt"></i>
+                                Manage Coupons
+                            </a></li>
+                        <li lass="nav-item"><a style="color: #2943b1;" class="sidebarItems" class="nav-link" href="manageOrders.php"> <i class="fas fa-shopping-cart"></i> Manage Orders</a></li>
+                        <li lass="nav-item"><a style="color: #2943b1;" class="sidebarItems" class="nav-link" href="editAdmin.php"><i class="fas fa-user-shield"></i> Your Profile</a></li>
+                        <li class="nav-item"><a style="color: #2943b1;" class="sidebarItems" class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 style="color: #3d62ff;" class="h2">Admin Dashboard</h1>
+                    <p style="color: #3d62ff;" class="h5"><?php echo htmlspecialchars($firstTwoWords); ?></p>
+                </div>
+
+                <h2 style="color: #2943b1;">
