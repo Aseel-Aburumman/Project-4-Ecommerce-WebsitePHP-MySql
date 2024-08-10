@@ -171,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
                         <div class="categoryitem-wrapper-itembox">
                             <h6>Categories</h6>
-                            <select name="gneder">
+                            <select name="gender">
                                 <option data-display="All">all</option>
                                 <option value="Clothing">Clothing</option>
                                 <option value="Footwear">Footwear</option>
@@ -188,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                                 <option value="Hoodies">Hoodies</option>
                                 <option value="Jeans">Jeans</option>
                                 <option value="Casual">Casual</option>
-                                <option value="Pajamas">Pajamas</option>
+                                <option value="Accessories">Accessories</option>
                                 <option value="Shorts">Shorts</option>
                             </select>
                         </div>

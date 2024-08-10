@@ -36,7 +36,6 @@ $product = $result->fetch_assoc();
 
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
-    echo $user_id;
 
     $sql_get_username = "SELECT username FROM users WHERE user_id = $user_id";
     $result = $conn->query($sql_get_username);
@@ -67,11 +66,11 @@ if (isset($_REQUEST['submit_send_comminte'])) {
                 $rating = $_REQUEST['rating'];
             }
         }
-
+        $date_for_comment = date("Y-m-d h:i:s");
         if ($username && $comminte) {
             $sql_set_commint = "INSERT INTO reviews (reviews.product_id, reviews.user_id, reviews.rating, reviews.comment, reviews.review_date)
                  VALUES 
-                 ($product_id,(SELECT users.user_id FROM users WHERE users.username='$user_name'), $rating,'$comminte', '2022-11-3');";
+                 ($product_id,(SELECT users.user_id FROM users WHERE users.username='$user_name'), $rating,'$comminte', '$date_for_comment');";
             $conn->query($sql_set_commint);
         }
         header("Location: product-details.php?id=$product_id");

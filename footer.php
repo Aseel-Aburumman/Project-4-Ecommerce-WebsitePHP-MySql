@@ -173,6 +173,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'])) {
 
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "/Project-4-Ecommerce-WebsitePHP-MySql/api/newsletter_submit.php", true);
+            // true: Indicates that the request should be asynchronous, 
+            // the code will continue to run while the request is being processed.
 
             xhr.onload = function() {
                 if (xhr.status === 200) {
