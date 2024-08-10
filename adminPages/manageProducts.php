@@ -138,7 +138,7 @@ function truncateText($text, $maxWords)
                                     <td>{$row['category_name']}</td>
                                     <td>{$row['type_name']}</td>
                                        <td class='actions'>
-        
+                                        <a  href='viewProducts.php?product_id={$row['product_id']}'><i class='fa-solid fa-eye' style='color: #007BFF;'></i></a>
                                         <a  href='editProducts.php?product_id={$row['product_id']}'><i class='fa-solid fa-pen-to-square' style='color: #007BFF;'></i></a>
                                         <a  href='delete.php?product_id={$row['product_id']}'><i class='fa-solid fa-trash' style='color: #ff0000;'></i></a>
                                     </td>
