@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $signup_error4 = "Passwords do not match.";
         } else {
             if ($user->register($fullName, $email, $password)) {
-                echo "Registration successful!";
+                // echo "Registration successful!";
             } else {
                 $signup_error = "Error registering user.";
             }
@@ -73,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['user_name'] = $user->getUsername($email);
                 $_SESSION['user_id'] = $user->getUserId($email); // Save user ID in session
                 $_SESSION['user_role'] = $user->getRoleId($email);
-                echo "Login successful!";
+                // echo "Login successful!";
                 if ($_SESSION['user_role'] == 1) {
                     header("Location: adminPages/dashboard.php");
                 } elseif ($_SESSION['user_role'] == 2) {
